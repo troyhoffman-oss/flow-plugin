@@ -1,0 +1,12 @@
+# {{PROJECT_NAME}} — Lessons Learned
+
+Format: PATTERN → CAUSE → FIX → RULE
+
+## Execution Patterns
+<!-- Lessons about workflow, delegation, verification -->
+
+## Domain Knowledge
+<!-- Lessons about business logic, data models, user behavior -->
+
+## Technical Patterns
+<!-- Lessons about the tech stack, libraries, deployment -->

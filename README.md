@@ -1,0 +1,56 @@
+# Flow Plugin
+
+**Formalized workflow skills for Claude Code. Turns Troy's proven spec-interview, agent-team-execution, session-handoff pattern into reusable `/flow:*` commands.**
+
+## What It Does
+
+- `/flow:init` -- Initialize a new project or milestone with planning scaffolding
+- `/flow:spec` -- Run a spec interview that produces an executable PRD with wave-based phases
+- `/flow:go` -- Execute the next phase from the PRD using agent teams
+- `/flow:done` -- Session-end docs, lessons refinement, and handoff prompt generation
+- `/flow:status` -- Quick "where am I?" orientation
+
+## Installation
+
+```bash
+# Mac/Linux
+git clone https://github.com/troyhoffman/flow-plugin.git && cd flow-plugin && bash setup.sh
+
+# Windows (PowerShell)
+git clone https://github.com/troyhoffman/flow-plugin.git; cd flow-plugin; .\setup.ps1
+```
+
+**Update:** `git pull && bash setup.sh` (or `.\setup.ps1` on Windows)
+
+## How It Works
+
+Skills install to `~/.claude/skills/` and are immediately available in any Claude Code session. The workflow:
+
+1. `/flow:init` -- Creates `.planning/` directory structure, CLAUDE.md, and initial docs
+2. `/flow:spec` -- Interviews you about the milestone, produces PRD.md with wave-based phases
+3. `/flow:go` -- Reads PRD, spawns agent teams per wave structure, verifies, commits
+4. `/flow:done` -- Updates STATE.md, ROADMAP.md, lessons.md, generates handoff prompt
+5. `/flow:status` -- Read-only orientation check
+
+## Lifecycle
+
+```
+/flow:init -> /flow:spec -> /flow:go (repeat per phase) -> /flow:done
+                                                               |
+                                                handoff prompt for next session
+```
+
+## Compatible with GSD
+
+Uses the same `.planning/` directory structure. You can still use `/gsd:debug`, `/gsd:map-codebase`, etc. alongside Flow commands.
+
+## Philosophy
+
+- Front-load decisions into the spec interview, making execution simple
+- Knowledge compounds through lessons.md to CLAUDE.md promotion lifecycle
+- Fresh context per session; memory lives in the repo, not the conversation
+- PRD is the execution contract -- agents execute what was specified
+
+## Requirements
+
+Claude Code CLI with skills support.

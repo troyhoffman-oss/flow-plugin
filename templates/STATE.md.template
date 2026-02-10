@@ -1,0 +1,23 @@
+# {{PROJECT_NAME}} — Project State
+
+## Current Position
+- **Milestone:** {{FIRST_MILESTONE}} (v1)
+- **Phase:** Not started — run `/flow:spec` to build PRD
+- **Branch:** main
+- **Last Session:** {{DATE}}
+
+## Milestone Progress
+
+| Phase | Name | Status |
+|-------|------|--------|
+| — | Run `/flow:spec` to define phases | — |
+
+## What Was Built (This Session)
+- Project initialized with `/flow:init`
+- Created: CLAUDE.md, STATE.md, ROADMAP.md, tasks/lessons.md
+
+## Key Decisions
+- (none yet)
+
+## Next Actions
+1. Run `/flow:spec` to interview and generate PRD for {{FIRST_MILESTONE}}

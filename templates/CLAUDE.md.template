@@ -1,0 +1,31 @@
+# {{PROJECT_NAME}} — Claude Code Instructions
+
+## Quick Context
+{{PROJECT_DESCRIPTION}}
+
+**Tech Stack:** {{TECH_STACK}}
+
+### START (Every Session)
+1. Read this file (CLAUDE.md)
+2. Read `.planning/STATE.md` for current status
+3. Read `.planning/ROADMAP.md` for milestone progress
+4. Read `PRD.md` for current execution spec (if one exists)
+
+## Execution Rules
+- **Plan before building.** For non-trivial work, read the PRD phase section before touching anything.
+- **Delegate immediately.** If a task touches 3+ files, spawn an agent team within your first 2 tool calls.
+- **Verify everything.** Run {{VERIFY_COMMANDS}} after agent work lands. Nothing is done until proven.
+
+## Git Workflow
+- All changes via PR. Never commit directly to main.
+- Branch naming: `fix/short-description` or `feat/short-description`
+
+## Session-End Docs (MANDATORY)
+1. `.planning/STATE.md` — replace session notes (don't append), keep <80 lines
+2. `.planning/ROADMAP.md` — update phase progress
+3. `tasks/lessons.md` — add new lessons, refine existing ones
+4. Commit doc updates to feature branch
+
+## Critical Rules
+- No assumptions — ask if requirements unclear
+- Fight entropy — leave code better than you found it

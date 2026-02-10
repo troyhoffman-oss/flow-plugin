@@ -1,0 +1,15 @@
+# {{PROJECT_NAME}} — Roadmap
+
+## Milestones
+
+| Version | Milestone | Status | Phases |
+|---------|-----------|--------|--------|
+| v1 | {{FIRST_MILESTONE}} | Pending — needs `/flow:spec` | TBD |
+
+---
+
+## v1: {{FIRST_MILESTONE}}
+
+**Goal:** {{MILESTONE_GOAL}}
+
+**Phases:** Run `/flow:spec` to define implementation phases.
