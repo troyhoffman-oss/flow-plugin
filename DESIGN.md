@@ -18,12 +18,15 @@ Troy has organically converged on a workflow where a single handoff prompt kicks
 ~/.claude/skills/
 ├── flow-init.md        # /flow:init -- New project or milestone setup
 ├── flow-spec.md        # /flow:spec -- Spec interview -> executable PRD
+├── flow-task.md        # /flow:task -- Lightweight task execution (no PRD needed)
 ├── flow-go.md          # /flow:go -- Execute next phase from PRD
 ├── flow-done.md        # /flow:done -- Session-end docs + handoff
 └── flow-status.md      # /flow:status -- Quick orientation
 ```
 
 Each skill is a single markdown file containing the prompt instructions. No code, no setup scripts beyond the initial copy. Instantly active once installed.
+
+**`flow-task.md`** is the lightweight companion to `flow-spec.md` + `flow-go.md`. Where the spec-to-execution pipeline handles milestone-level work through PRDs and agent teams, `/flow:task` handles bug fixes, cleanup, and small features in a single execution context. It works standalone without `/flow:init`, making it the lowest-friction entry point to Flow.
 
 ## File Structure (Universal Template)
 
