@@ -46,13 +46,22 @@ If installed version equals latest version, print this and stop:
 Flow is up to date (v<version>)
 ```
 
-## Step 4: Confirm update
+## Step 4: Show what's new
 
-Print the available update and ask the user to confirm:
+Fetch the CHANGELOG.md from the Flow repo to show the user what changed:
+
+1. Run: `npx -y -p flow-cc@<latest> node -e "const fs=require('fs'),p=require('path');try{console.log(fs.readFileSync(p.join(require.resolve('flow-cc/package.json'),'..','CHANGELOG.md'),'utf8'))}catch(e){console.log('CHANGELOG not available')}"`
+2. Parse the output and extract only the section for `v<latest>` (from the `## [<latest>]` heading to the next `## [` heading or end of file)
+3. Print:
 
 ```
 Update available: v<installed> → v<latest>
+
+Here's what's new in v<latest>:
+<extracted changelog section>
 ```
+
+If the CHANGELOG fetch fails, just print the version line without the changelog section. Don't let a missing changelog block the update.
 
 Wait for user confirmation before proceeding.
 

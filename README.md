@@ -121,6 +121,12 @@ Flow uses the same `.planning/` directory structure as [GSD](https://github.com/
 
 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI with skills support.
 
+## Links
+
+- [Changelog](CHANGELOG.md) — what changed in each version
+- [Contributing](CONTRIBUTING.md) — how to report bugs, suggest features, submit PRs
+- [Design](DESIGN.md) — architecture decisions and system design
+
 ## License
 
 MIT

@@ -1,6 +1,6 @@
 {
   "name": "flow-cc",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Structured workflow system for Claude Code — spec interviews, agent-team execution, session handoffs, compounding knowledge",
   "author": "Troy Hoffman",
   "license": "MIT",
@@ -25,11 +25,16 @@
   "bin": {
     "flow-cc": "bin/install.js"
   },
+  "engines": {
+    "node": ">=18"
+  },
   "files": [
     "bin",
     "skills",
     "hooks",
     "templates",
-    "VERSION"
+    "VERSION",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md"
   ]
 }

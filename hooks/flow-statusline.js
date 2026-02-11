@@ -7,6 +7,25 @@ const path = require('path');
 const os = require('os');
 
 const homeDir = os.homedir();
+const errorLog = path.join(homeDir, '.claude', 'hooks', 'flow-error.log');
+
+function logError(context, err) {
+  try {
+    const line = `[${new Date().toISOString()}] flow-statusline: ${context}: ${err.message || err}\n`;
+    // Cap log at 50KB — truncate oldest entries
+    if (fs.existsSync(errorLog)) {
+      const stat = fs.statSync(errorLog);
+      if (stat.size > 50 * 1024) {
+        const content = fs.readFileSync(errorLog, 'utf8');
+        const lines = content.split('\n');
+        fs.writeFileSync(errorLog, lines.slice(Math.floor(lines.length / 2)).join('\n'));
+      }
+    }
+    fs.appendFileSync(errorLog, line);
+  } catch (_) {
+    // Logging must never throw
+  }
+}
 
 // Read JSON from stdin (Claude Code statusline protocol)
 let input = '';
@@ -56,9 +75,13 @@ process.stdin.on('end', () => {
             const todos = JSON.parse(fs.readFileSync(path.join(todosDir, files[0].name), 'utf8'));
             const inProgress = todos.find(t => t.status === 'in_progress');
             if (inProgress) task = inProgress.activeForm || '';
-          } catch (e) {}
+          } catch (e) {
+            logError('parse-todos', e);
+          }
         }
-      } catch (e) {}
+      } catch (e) {
+        logError('read-todos', e);
+      }
     }
 
     // --- Flow update notification ---
@@ -78,6 +101,7 @@ process.stdin.on('end', () => {
           shouldCheck = true;
         }
       } catch (e) {
+        logError('parse-cache', e);
         shouldCheck = true;
       }
     } else {
@@ -96,7 +120,9 @@ process.stdin.on('end', () => {
           });
           child.unref();
         }
-      } catch (e) {}
+      } catch (e) {
+        logError('spawn-update-check', e);
+      }
     }
 
     // --- Output ---
@@ -107,6 +133,7 @@ process.stdin.on('end', () => {
       process.stdout.write(`${flowUpdate}\x1b[2m${model}\x1b[0m \u2502 \x1b[2m${dirname}\x1b[0m${ctx}`);
     }
   } catch (e) {
+    logError('main', e);
     // Silent fail — statusline must never crash
   }
 });

@@ -65,6 +65,8 @@ Structure:
 - Mark completed phases with completion date
 - Ensure pending phases have enough detail that the next session can start with a one-line prompt
 - **Archive check:** If the current milestone is fully complete:
+  - If `.planning/` does not exist, skip archiving entirely — there's nothing to archive
+  - Create `.planning/archive/` if it doesn't already exist (use `mkdir -p` or equivalent)
   - Move milestone phase details to `.planning/archive/milestones-vX.md`
   - Keep only the summary row in the ROADMAP milestone table
   - Move `PRD.md` to `.planning/archive/PRD-vX.md`

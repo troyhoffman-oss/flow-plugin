@@ -16,8 +16,9 @@ You are executing the `/flow:spec` skill. This is the KEYSTONE skill of the flow
 2. Read `CLAUDE.md` — understand project rules and tech stack
 3. Read `PRD.md` if it exists — check for existing spec to build on
 4. **Codebase scan** (brownfield projects):
-   - Use Glob to find: components, pages/routes, API endpoints, types, utilities, config files, database models
-   - Use Grep for: export patterns, route definitions, key function signatures
+   - **Size check first:** Use Glob with `**/*` to estimate total file count. If > 500 files, switch to focused mode (see below).
+   - **Standard mode (≤ 500 files):** Use Glob to find components, pages/routes, API endpoints, types, utilities, config files, database models. Use Grep for export patterns, route definitions, key function signatures. **Cap at 50 files sampled** — prioritize entry points, config, and type definitions.
+   - **Focused mode (> 500 files):** Scan ONLY: package.json/config files, entry points (index.ts, main.ts, app.ts), route definitions, database schema/models, and type definition files. Skip component trees, test files, and generated code entirely.
    - Build internal summary: "Here's what exists that we can reuse"
 5. Print a brief context summary to the user: "Here's what I found in the codebase: [key components, patterns, data layer]. Starting the spec interview."
 
