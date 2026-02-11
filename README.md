@@ -16,14 +16,12 @@
 ## Installation
 
 ```bash
-# Mac/Linux
-git clone https://github.com/troyhoffman/flow-plugin.git && cd flow-plugin && bash setup.sh
-
-# Windows (PowerShell)
-git clone https://github.com/troyhoffman/flow-plugin.git; cd flow-plugin; .\setup.ps1
+npx flow-cc
 ```
 
-**Update:** Run `/flow:update` in any Claude Code session
+That's it. Installs all skills, hooks, templates, and configures your statusLine.
+
+**Update:** Run `/flow:update` in any Claude Code session, or just `npx flow-cc` again.
 
 ## Getting Started
 
