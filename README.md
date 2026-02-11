@@ -30,39 +30,48 @@ Flow fixes this by giving Claude Code a **memory system and execution framework*
 - **Session handoffs** preserve context across fresh sessions — no more "where was I?"
 - **Lessons compound** — mistakes get captured, refined, and promoted into permanent rules
 
-## Commands
-
-| Command | What it does |
-|---|---|
-| `/flow:intro` | Walkthrough of the system — **start here** |
-| `/flow:setup` | Set up a new project with `.planning/` scaffolding, CLAUDE.md, templates |
-| `/flow:milestone` | Archive completed milestone and start a new one |
-| `/flow:spec` | Spec interview that produces an executable PRD with phased execution plan |
-| `/flow:go` | Execute the next phase from the PRD using wave-based agent teams |
-| `/flow:task` | Bug fixes, cleanup, small features — no PRD needed |
-| `/flow:done` | Session-end documentation, lessons refinement, handoff prompt |
-| `/flow:status` | Quick orientation — current milestone, phase progress, next actions |
-| `/flow:update` | Update Flow to the latest version |
-
 ## How It Works
 
-```
-/flow:setup → /flow:spec → /flow:go (repeat per phase) → /flow:done
-                                                             ↓
-                                               handoff prompt for next session
-                                                             ↓
-                                               /flow:milestone → next cycle
+**One-time setup**, then a repeating build cycle:
 
-/flow:task  ← standalone path for bug fixes and small features
+```
+/flow:setup  →  /flow:spec  →  /flow:go  →  /flow:done
+   (once)        (once per       (once per     (end of
+                 milestone)       phase)        session)
 ```
 
-**The lifecycle in practice:**
+1. **`/flow:setup`** — Scaffolds your project with planning docs and execution rules
+2. **`/flow:spec`** — Interviews you, then writes an executable PRD with phases, acceptance criteria, and agent-team structure
+3. **`/flow:go`** — Spawns parallel agent teams to build the next phase, verifies, commits
+4. **`/flow:done`** — Updates docs, captures lessons, generates a handoff prompt so the next session starts instantly
 
-1. **`/flow:setup`** — Creates `.planning/` directory, CLAUDE.md, STATE.md, ROADMAP.md, lessons.md
-2. **`/flow:spec`** — Interviews you about the milestone. Produces a PRD with wave-based phases, acceptance criteria, and agent-team structure
-3. **`/flow:go`** — Reads the PRD, spawns parallel agent teams per wave, builds, verifies, commits
-4. **`/flow:done`** — Updates all planning docs, captures lessons, generates a one-line handoff prompt so the next session starts instantly
-5. **Repeat** — Next session picks up from the handoff. Context lives in the repo, not the conversation.
+Run `/flow:go` repeatedly until all phases are done, then `/flow:done` to wrap up. Next session, paste the handoff prompt and keep going.
+
+## Commands
+
+**The build cycle:**
+
+| Command | When to use |
+|---|---|
+| `/flow:setup` | Once per project — creates `.planning/`, CLAUDE.md, templates |
+| `/flow:spec` | Once per milestone — interview that produces the PRD |
+| `/flow:go` | Once per phase — executes the next phase with agent teams |
+| `/flow:done` | End of session — updates docs, generates handoff prompt |
+
+**Standalone:**
+
+| Command | When to use |
+|---|---|
+| `/flow:task` | Anytime — bug fixes, cleanup, small features (no PRD needed) |
+| `/flow:milestone` | Between milestones — archives the old one, starts the next |
+
+**Utility:**
+
+| Command | When to use |
+|---|---|
+| `/flow:intro` | First time — walkthrough of the system |
+| `/flow:status` | Anytime — where am I? What's next? |
+| `/flow:update` | Anytime — update Flow to the latest version |
 
 ## What Gets Installed
 
