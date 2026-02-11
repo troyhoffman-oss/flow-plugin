@@ -1,7 +1,27 @@
 {
   "name": "flow-cc",
   "version": "0.1.0",
-  "description": "Flow workflow plugin for Claude Code",
+  "description": "Structured workflow system for Claude Code — spec interviews, agent-team execution, session handoffs, compounding knowledge",
+  "author": "Troy Hoffman",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/troyhoffman-oss/flow-plugin.git"
+  },
+  "homepage": "https://github.com/troyhoffman-oss/flow-plugin",
+  "bugs": {
+    "url": "https://github.com/troyhoffman-oss/flow-plugin/issues"
+  },
+  "keywords": [
+    "claude-code",
+    "claude",
+    "workflow",
+    "ai-agents",
+    "developer-tools",
+    "cli",
+    "skills",
+    "anthropic"
+  ],
   "bin": {
     "flow-cc": "bin/install.js"
   },
