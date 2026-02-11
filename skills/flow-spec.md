@@ -23,38 +23,93 @@ You are executing the `/flow:spec` skill. This is the KEYSTONE skill of the flow
 
 ## Phase 2 — Adaptive Interview
 
-Ask questions using AskUserQuestion. Cover these areas IN ORDER. Ask 2-3 questions at a time (not all at once).
+### CRITICAL RULES (follow these exactly)
 
-**Round 1 — Scope:**
-- What features are IN scope for this milestone?
-- What is explicitly OUT of scope / deferred?
-- Is there any code that is sacred (must NOT be touched)?
+1. **USE AskUserQuestion FOR ALL QUESTIONS.** Never just print questions as text. Always use the AskUserQuestion tool so the user gets structured prompts with selectable options. Provide 2-4 concrete options per question based on what you learned in Phase 1.
 
-**Round 2 — User Stories:**
-- What does the user actually DO? Walk through the key workflows.
-- What should they see at each step?
+2. **ASK NON-OBVIOUS QUESTIONS.** Don't just ask "what features do you want?" — you already read the codebase. Ask questions that PROBE deeper:
+   - "I see you have [existing pattern]. Should we extend that or build a new approach?"
+   - "What happens when [edge case] occurs?"
+   - "You mentioned [X] — does that mean [Y] is also needed, or is that separate?"
+   - "What's the failure mode here? What does the user see when things go wrong?"
+   - "Who else touches this data/workflow? Any downstream effects?"
+   - "What's the minimum version of this that would be useful?"
+
+3. **CONTINUE UNTIL THE USER SAYS STOP.** Do NOT stop after covering all 7 areas once. After each answer, immediately ask the next question. Keep going deeper until the user says "done", "finalize", "that's enough", "ship it", or similar. A thorough interview is 15-30 questions, not 5.
+
+4. **MAINTAIN A RUNNING DRAFT.** Every 2-3 questions, update PRD.md with what you've learned so far. Print: "Updated PRD draft — added [brief summary]." The user should see the spec taking shape in real-time, not all at the end.
+
+5. **BE ADAPTIVE.** Base your next question on the previous answer. If the user reveals something surprising, probe deeper on THAT — don't robotically move to the next category. The best specs come from following interesting threads.
+
+### First-Principles Mode (optional)
+
+If the user says "challenge this", "first principles", or "push back" — start with 3-5 challenge questions before detailed spec gathering:
+- "Why build this at all? What's the cost of NOT building it?"
+- "Is there a simpler way to achieve 80% of this value?"
+- "What assumptions are we making that might be wrong?"
+- "Who is this really for, and have they asked for it?"
+- "What would you cut if you had half the time?"
+
+Then proceed to the coverage areas below.
+
+### Coverage Areas
+
+Cover these areas thoroughly. There are no "rounds" — move fluidly between areas based on the conversation. Circle back to earlier areas when later answers reveal new information.
+
+**1. Scope Definition**
+- What features are IN scope for this milestone? What's the MVP vs. the full vision?
+- What is explicitly OUT of scope / deferred to a future milestone?
+- Is there any code that is sacred (must NOT be touched)? Why?
+- What existing code/features should we ignore entirely (not break, not improve, not touch)?
+
+**2. User Stories (CRITICAL — spend the most time here)**
+- What does the user actually DO? Walk through the key workflows step by step.
+- What should they see at each step? What feedback do they get?
 - Frame as: "As [role], I want [action], so that [outcome]"
-- Each story needs specific, testable acceptance criteria
+- **Story-splitting:** If a story has more than 3-4 acceptance criteria, split it into smaller stories. Each story should be independently deliverable.
+- **Anti-vagueness enforcement:**
+  - BAD acceptance criteria: "Works correctly", "Is fast", "Handles errors well", "Looks good"
+  - GOOD acceptance criteria: "Returns 200 with JSON body for valid input", "Shows error toast with message for invalid email format", "Page renders in < 200ms on 3G", "Matches Figma comp within 4px"
+  - If the user gives vague criteria, push back: "How would you specifically test that? What would you check?"
+- **Verification per story:** Each story must have at least one concrete verification step (a command to run, a page to visit, a state to check)
 
-**Round 3 — Technical Design:**
-- What database changes are needed? (new tables, columns, indexes)
-- What API endpoints? (method, path, request/response shape)
-- What new files need to be created? What existing files modified?
-- What existing utilities/components should be reused (not rebuilt)?
+**3. Technical Design**
+- What database changes are needed? (new tables, columns, indexes, migrations)
+- What API endpoints? (method, path, request/response shape, auth requirements)
+- What new files need to be created? What existing files get modified?
+- What existing utilities/components/DAL queries should be reused (not rebuilt)?
+- What's the data flow? Where does data originate, transform, and render?
+- Any wave-parallelization opportunities? (independent agents building separate files)
 
-**Round 4 — Trade-offs & Constraints:**
+**4. User Experience**
+- What are the key user flows? Walk through click-by-click.
+- What edge cases exist? (empty states, error states, loading states, partial data)
+- Accessibility requirements? (keyboard navigation, screen readers, ARIA labels)
+- Mobile/responsive behavior? (breakpoints, touch targets, layout shifts)
+- What does the user see while waiting? (loading spinners, skeletons, optimistic updates)
+
+**5. Trade-offs & Constraints**
 - Performance vs. simplicity? What's good enough for v1?
+- Any security considerations? (auth, data access, input validation)
 - Any third-party dependencies or integrations?
-- Mobile/responsive requirements?
+- What technical debt is acceptable for now vs. must be done right?
+- Any browser/device support requirements?
 
-**Round 5 — Implementation Phases:**
+**6. Implementation Phases**
 - How should this break into sequential phases?
-- What can be parallelized within each phase?
-- What's the critical path?
+- What can be parallelized within each phase? (wave-based agent structure)
+- What's the critical path — what must be built first?
+- What's the minimum viable first phase? (what gives us something testable fastest?)
+- Any phases that could be cut if time runs short?
 
-**Between rounds:** Update PRD.md draft progressively so the user can see it taking shape. Print: "Updated PRD draft. [brief summary of what was added]."
+**7. Verification & Feedback Loops**
+- What commands verify the build works? (`tsc`, `biome`, test suite)
+- What does "done" look like for each phase? How do we know it worked?
+- Are there integration points that need end-to-end testing?
+- What should we check after each phase before moving to the next?
+- Any monitoring or logging needed to confirm production behavior?
 
-**User signals done:** If the user says "done", "finalize", "that's enough", "ship it", or similar — immediately skip remaining rounds and go to Phase 3.
+**User signals done:** If the user says "done", "finalize", "that's enough", "ship it", or similar — immediately stop interviewing and go to Phase 3. Finalize the PRD with whatever depth has been achieved.
 
 ## Phase 3 — PRD Generation
 
