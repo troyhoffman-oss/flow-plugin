@@ -20,25 +20,26 @@ Flow is 6 commands that turn your specs into shipped code through agent teams. E
 
 ```
 /flow:setup → /flow:spec → /flow:go (repeat) → /flow:done
-                                                    ↓
-                                        handoff prompt for next session
-                                                    ↓
-                                        /flow:milestone → next cycle
+  (captures      ↑                                  |
+  full roadmap)  |     auto-transitions to          |
+                 +---- next planned milestone ------+
 
-/flow:task ← standalone path for bug fixes, cleanup, small features (no PRD needed)
+/flow:milestone ← add milestones to roadmap anytime
+/flow:task      ← standalone path for bug fixes, cleanup, small features (no PRD needed)
 ```
 
 ### Command by Command
 
 **`/flow:setup`** — Run once per project
-- Asks you 4-5 questions (what is it, tech stack, verify commands, first milestone)
+- Asks you 4-5 questions (what is it, tech stack, verify commands, roadmap/milestones)
+- Captures your full roadmap upfront (paste a list or build one milestone at a time)
 - Creates the scaffolding: `CLAUDE.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, `tasks/lessons.md`
 - If project already set up, tells you to use `/flow:milestone` or `/flow:spec` instead
 
-**`/flow:milestone`** — Run when starting a new milestone
-- Archives the completed milestone + PRD
-- Sets up fresh planning docs for the next milestone
-- Guards against archiving milestones with incomplete phases
+**`/flow:milestone`** — Add milestones to the roadmap
+- Adds new milestones to the project roadmap (paste a list or one at a time)
+- Shows current roadmap status before adding
+- If no milestone is active, activates the first new one
 
 **`/flow:task`** — Run anytime for small work
 - Bug fixes, cleanup, one-off features — anything that doesn't need a full PRD
@@ -62,6 +63,7 @@ Flow is 6 commands that turn your specs into shipped code through agent teams. E
 **`/flow:done`** — Run at end of every session
 - Replaces STATE.md with current status
 - Updates ROADMAP.md with phase completions
+- Auto-transitions to the next planned milestone when the current one completes
 - Asks about lessons, refines existing ones
 - Commits doc updates
 - Generates a handoff prompt you copy-paste to start the next session

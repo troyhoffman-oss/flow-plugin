@@ -5,6 +5,7 @@
 | Version | Milestone | Status | Phases |
 |---------|-----------|--------|--------|
 | v1 | {{FIRST_MILESTONE}} | Pending — needs `/flow:spec` | TBD |
+{{ADDITIONAL_MILESTONES_TABLE}}
 
 ---
 
@@ -13,3 +14,5 @@
 **Goal:** {{MILESTONE_GOAL}}
 
 **Phases:** Run `/flow:spec` to define implementation phases.
+
+{{ADDITIONAL_MILESTONES_SECTIONS}}

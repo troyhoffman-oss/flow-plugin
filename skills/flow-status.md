@@ -45,9 +45,13 @@ Use this explicit decision tree:
 → Primary: `/flow:spec` to create the execution plan
 → Alt: `/flow:task` for quick fixes or cleanup (no PRD needed)
 
-**IF all phases are complete:**
+**IF all phases are complete AND a next milestone with status "Planned" exists in ROADMAP.md:**
+→ Primary: `/flow:done` to finalize this milestone (will auto-transition to next milestone)
+→ Alt: `/flow:task` for quick fixes or cleanup (no PRD needed)
+
+**IF all phases are complete AND no next milestone exists:**
 → Primary: `/flow:done` to finalize this milestone
-→ Then: `/flow:milestone` to start the next milestone
+→ Then: `/flow:milestone` to add the next milestone
 → Alt: `/flow:task` for quick fixes or cleanup (no PRD needed)
 
 **IF no phases exist in ROADMAP (milestone defined but not planned):**

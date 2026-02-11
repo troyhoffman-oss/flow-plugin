@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-02-11
+
+### Added
+- Multi-milestone roadmap input in `/flow:setup` — capture your full roadmap upfront (paste a list or build one at a time)
+- Auto-transition between milestones in `/flow:done` — when a milestone completes and the next is planned, it transitions automatically
+- Two-path milestone input (paste/describe or guided) in both `/flow:setup` and `/flow:milestone`
+
+### Changed
+- `/flow:milestone` purpose shifted from "archive + start next" to "add new milestones to the roadmap" — archive logic moved to `/flow:done`
+- `/flow:done` handoff prompt now has three cases: next phase, next milestone (auto-transitioned), or all milestones complete
+- `/flow:status` routing updated — recommends `/flow:done` (not `/flow:milestone`) when next milestone exists, since transition is automatic
+- `/flow:setup` Question 4 changed from "first milestone" to full roadmap input
+- ROADMAP.md template supports multiple milestones with `{{ADDITIONAL_MILESTONES_TABLE}}` and `{{ADDITIONAL_MILESTONES_SECTIONS}}` placeholders
+- Updated lifecycle diagrams in README and `/flow:intro` to show pre-planned milestone flow
+- Updated command descriptions across intro, README, and install.js
+
 ## [0.3.0] - 2026-02-11
 
 ### Added

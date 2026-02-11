@@ -36,8 +36,9 @@ Flow fixes this by giving Claude Code a **memory system and execution framework*
 
 ```
 /flow:setup  →  /flow:spec  →  /flow:go  →  /flow:done
-   (once)        (once per       (once per     (end of
-                 milestone)       phase)        session)
+  (once,          (once per      (once per     (end of session,
+  captures        milestone)      phase)        auto-transitions
+  full roadmap)                                 between milestones)
 ```
 
 1. **`/flow:setup`** — Scaffolds your project with planning docs and execution rules
@@ -63,7 +64,7 @@ Run `/flow:go` repeatedly until all phases are done, then `/flow:done` to wrap u
 | Command | When to use |
 |---|---|
 | `/flow:task` | Anytime — bug fixes, cleanup, small features (no PRD needed) |
-| `/flow:milestone` | Between milestones — archives the old one, starts the next |
+| `/flow:milestone` | Anytime — add new milestones to the roadmap |
 
 **Utility:**
 

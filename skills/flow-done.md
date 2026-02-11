@@ -70,6 +70,10 @@ Structure:
   - Move milestone phase details to `.planning/archive/milestones-vX.md`
   - Keep only the summary row in the ROADMAP milestone table
   - Move `PRD.md` to `.planning/archive/PRD-vX.md`
+  - Mark the milestone as "Complete" in the ROADMAP table
+  - **Milestone transition:** Check ROADMAP.md for the NEXT milestone with status "Planned":
+    - **If a next milestone exists:** Update its status from "Planned" to "Pending — needs `/flow:spec`". Update STATE.md current milestone to point to the new milestone.
+    - **If no next milestone exists:** No transition needed — all planned milestones are done.
 
 ### 4. Update lessons.md
 
@@ -98,9 +102,13 @@ Determine the next action and generate a copyable handoff prompt:
   Phase [N]: [Name] — [short description]. Read STATE.md, ROADMAP.md, and PRD.md (US-X).
   [One sentence of context]. [One sentence of what NOT to do if relevant].
   ```
-- If milestone is complete:
+- If milestone is complete AND a next milestone was transitioned to (from Step 3):
   ```
-  Milestone [name] complete. Run /flow:milestone to start the next milestone.
+  Milestone [name] complete. Next: v[X] [next milestone name]. Run /flow:spec to plan it.
+  ```
+- If milestone is complete AND no next milestone exists:
+  ```
+  All milestones complete! Run /flow:milestone to plan what's next, or enjoy the win.
   ```
 
 Print the handoff prompt in a fenced code block so the user can copy it.

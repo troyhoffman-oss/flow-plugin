@@ -37,8 +37,24 @@ Use AskUserQuestion to gather project info. Ask these questions (you may combine
   - "cargo build && cargo test"
   - (Other — user types custom)
 
-**Question 4 — First milestone:**
-- "What's the first milestone?" (name + one-sentence goal)
+**Question 4 — Roadmap:**
+- "Do you already have a roadmap or list of milestones?" with options:
+  - "Yes — I'll paste or describe them"
+  - "No — let's figure it out together"
+
+**If user selects "Yes":**
+- Accept free text (bullet list, paragraph, pasted doc — any format)
+- Parse into milestones, each with a name + brief goal
+- Print back: "Here's what I got:" followed by the parsed list (e.g., "v1: Auth — user registration and login", "v2: Dashboard — analytics and settings")
+- Use AskUserQuestion to confirm: "Does this look right?" with options:
+  - "Yes — looks good"
+  - "Let me adjust" (user re-enters)
+
+**If user selects "No" (guided):**
+- Ask: "What's the first milestone?" (name + one-sentence goal)
+- Then: "Any more milestones you can see right now? List them, or skip to add them later with `/flow:milestone`." with options:
+  - "I have more to add" (user enters additional milestones)
+  - "That's it for now"
 
 **Question 5 — Brownfield scan:**
 - "Is this an existing codebase I should scan?" with options:
@@ -93,6 +109,8 @@ Create these 5 files (create directories as needed):
 | Version | Milestone | Status | Phases |
 |---------|-----------|--------|--------|
 | v1 | [first milestone] | Pending — needs `/flow:spec` | TBD |
+[For each additional milestone:]
+| v[N] | [milestone name] | Planned | TBD |
 
 ---
 
@@ -101,7 +119,17 @@ Create these 5 files (create directories as needed):
 **Goal:** [milestone goal from user]
 
 **Phases:** Run `/flow:spec` to define implementation phases.
+
+[For each additional milestone:]
+
+## v[N]: [milestone name]
+
+**Goal:** [milestone goal]
+
+**Phases:** Run `/flow:spec` when this milestone is active.
 ```
+
+Note: The first milestone gets status "Pending — needs `/flow:spec`". All subsequent milestones get status "Planned". Each milestone gets its own section with its goal.
 
 **`CLAUDE.md`:**
 ```

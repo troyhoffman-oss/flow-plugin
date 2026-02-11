@@ -1,12 +1,12 @@
 ---
 name: flow:milestone
-description: Archive completed milestone and start a new one
+description: Add new milestones to the roadmap
 user_invocable: true
 ---
 
-# /flow:milestone — Start New Milestone
+# /flow:milestone — Add New Milestones
 
-You are executing the `/flow:milestone` skill. This archives the current milestone and sets up a new one.
+You are executing the `/flow:milestone` skill. This adds new milestones to the project roadmap.
 
 ## Guard: Project Must Exist
 
@@ -17,51 +17,62 @@ Check if `.planning/STATE.md` exists:
 ## Step 1: Read Context
 
 Read `.planning/STATE.md` and `.planning/ROADMAP.md` to understand:
-- What milestone just completed (or is completing)
-- What version number to use next
-- Current state of the project
+- Current milestone status (what's active, what's complete, what's planned)
+- What version numbers are already used
 
-## Step 2: Check for Pending Phases
+## Step 2: Show Current Status
 
-Parse ROADMAP.md for the current milestone's phases:
-- If any phases have status "Pending" or "In Progress" (not complete):
-  - Print: "Warning: The current milestone has incomplete phases:"
-  - List the pending/in-progress phases
-  - Use AskUserQuestion: "Archive this milestone anyway?" with options:
-    - "Yes — archive and move on"
-    - "No — finish current phases first"
-  - If the user says No → Print: "Run `/flow:go` to continue the current milestone." and **STOP.**
+Print a summary of the roadmap:
+- List all milestones with their status (Complete, Pending, Planned, In Progress)
+- Highlight the currently active milestone (if any)
 
-## Step 3: Ask Milestone Question
+## Step 3: Check for Active Work
+
+If there is a milestone with status "Pending" or with incomplete phases (In Progress):
+- Print: "Note: [milestone name] is currently active. New milestones will be added after existing planned milestones."
+
+## Step 4: Gather New Milestones
 
 Use AskUserQuestion:
-- "What's the goal of this new milestone?" (free text)
-- "What should it be called?" (free text, or suggest a name based on context)
+- "How would you like to add milestones?" with options:
+  - "I'll paste or describe them"
+  - "One at a time (guided)"
 
-## Step 4: Archive Completed Milestone
+**If paste/describe:**
+- Accept free text (bullet list, paragraph, pasted doc — any format)
+- Parse into milestones, each with a name + brief goal
+- Print back: "Here's what I got:" followed by the parsed list
+- Use AskUserQuestion to confirm: "Does this look right?" with options:
+  - "Yes — looks good"
+  - "Let me adjust" (user re-enters)
 
-1. Read current ROADMAP.md phase details for the completed milestone
-2. Write them to `.planning/archive/milestones-vX.md` (where X is the completed version)
-3. If `PRD.md` exists, move it to `.planning/archive/PRD-vX.md` (read it, write to archive, delete original)
-4. In ROADMAP.md, replace the completed milestone's phase details with just the summary row (mark as "Complete")
+**If guided:**
+- Ask: "What's this milestone called?" (name) and "What's the goal?" (one-sentence description)
+- Then: "Add another milestone?" with options:
+  - "Yes — add another"
+  - "That's all"
+- Repeat until user says that's all
 
 ## Step 5: Update Planning Docs
 
 **ROADMAP.md:**
-- Add new milestone row to the table
-- Add new milestone section with goal and "Run `/flow:spec` to define phases"
+- Determine the next available version number (after existing milestones)
+- Add new milestone rows to the table with status "Planned"
+- Add new milestone sections with goals and "Run `/flow:spec` when this milestone is active."
 
-**STATE.md:**
-- Replace with fresh state for the new milestone
-- Reset phase progress table
-- Note the milestone transition in "What Was Built"
+**If no active milestone** (all existing milestones are "Complete" or there are none):
+- Set the first new milestone's status to "Pending — needs `/flow:spec`"
+- Update STATE.md to point to the new milestone as current
 
 ## Step 6: Print Completion Message
 
 ```
-Milestone [name] (v[X]) initialized.
-- Archived: previous milestone details + PRD
-- Updated: ROADMAP.md, STATE.md
+Added [N] milestone(s) to the roadmap:
+[list of added milestones with version numbers]
 
-Run `/flow:spec` to build the PRD for this milestone.
+[If a milestone was activated:]
+v[X] [name] is now active. Run /flow:spec to plan it.
+
+[If milestones were just queued:]
+These will activate in order as you complete current milestones.
 ```
