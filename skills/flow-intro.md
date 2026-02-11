@@ -14,28 +14,35 @@ Print this:
 
 ## Flow — Your Workflow System
 
-Flow is 5 commands that turn your specs into shipped code through agent teams. Each command feeds the next.
+Flow is 6 commands that turn your specs into shipped code through agent teams. Each command feeds the next.
 
 ### The Lifecycle
 
 ```
-/flow:init → /flow:spec → /flow:go (repeat) → /flow:done
+/flow:setup → /flow:spec → /flow:go (repeat) → /flow:done
                                                     ↓
                                         handoff prompt for next session
+                                                    ↓
+                                        /flow:milestone → next cycle
 
 /flow:task ← standalone path for bug fixes, cleanup, small features (no PRD needed)
 ```
 
 ### Command by Command
 
-**`/flow:init`** — Run once per project (or once per new milestone)
-- New project: asks you 4-5 questions (what is it, tech stack, verify commands, first milestone)
+**`/flow:setup`** — Run once per project
+- Asks you 4-5 questions (what is it, tech stack, verify commands, first milestone)
 - Creates the scaffolding: `CLAUDE.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, `tasks/lessons.md`
-- Existing project: archives the old milestone + PRD, sets up the next one
+- If project already set up, tells you to use `/flow:milestone` or `/flow:spec` instead
+
+**`/flow:milestone`** — Run when starting a new milestone
+- Archives the completed milestone + PRD
+- Sets up fresh planning docs for the next milestone
+- Guards against archiving milestones with incomplete phases
 
 **`/flow:task`** — Run anytime for small work
 - Bug fixes, cleanup, one-off features — anything that doesn't need a full PRD
-- Works standalone without `/flow:init` — lowest friction entry to Flow
+- Works standalone without `/flow:setup` — lowest friction entry to Flow
 - Executes, verifies, commits, and logs to STATE.md (if it exists)
 - Scope guard recommends `/flow:spec` if the task grows beyond 5 files or 3 layers
 
@@ -80,7 +87,7 @@ Flow is 5 commands that turn your specs into shipped code through agent teams. E
 ### Starting a Brand New Project
 
 ```
-1. /flow:init        ← scaffolds everything
+1. /flow:setup       ← scaffolds everything
 2. /flow:spec        ← interview → PRD
 3. /flow:go          ← phase 1
 4. /flow:done        ← wrap up

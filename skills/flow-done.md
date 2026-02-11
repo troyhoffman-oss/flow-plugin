@@ -100,7 +100,7 @@ Determine the next action and generate a copyable handoff prompt:
   ```
 - If milestone is complete:
   ```
-  Milestone [name] complete. Run /flow:init to start the next milestone.
+  Milestone [name] complete. Run /flow:milestone to start the next milestone.
   ```
 
 Print the handoff prompt in a fenced code block so the user can copy it.

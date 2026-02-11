@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-02-11
+
+### Added
+- `/flow:setup` command — replaces `/flow:init` for project scaffolding only. Adds overwrite protection (stops if project already initialized).
+- `/flow:milestone` command — extracted from `/flow:init` for milestone transitions. Adds guard for pending phases before archiving.
+- Codebase scan exclusions in `/flow:spec` — explicitly excludes `node_modules/`, `.git/`, `dist/`, `build/`, `.next/`, `__pycache__/`, `*.min.js`, `*.map`, `*.lock`. Uses targeted glob patterns instead of bare `**/*`.
+- Minimum viable PRD check in `/flow:spec` — validates at least 3 user stories, 1 phase, and 1 verification command before finalizing.
+- Agent timeout + progress indicators in `/flow:go` — prints wave spawn/completion status, checks stuck agents after 10 minutes.
+- Max retry limit (3 attempts) for verification in `/flow:go` — stops after 3 failures with user options instead of looping forever.
+- Wave failure handling in `/flow:go` — detects all-failed vs partial-failed waves, asks user how to proceed.
+
+### Changed
+- `/flow:init` split into `/flow:setup` (project scaffolding) and `/flow:milestone` (milestone transitions)
+- Skill count: 9 skills (was 8 — setup replaces init, milestone is new)
+- All cross-references updated: intro, done, status, go, task, README, install.js, DESIGN.md, templates
+
+### Removed
+- `/flow:init` command — replaced by `/flow:setup` and `/flow:milestone`
+
 ## [0.2.0] - 2026-02-11
 
 ### Added

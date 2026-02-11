@@ -16,7 +16,8 @@ You are executing the `/flow:spec` skill. This is the KEYSTONE skill of the flow
 2. Read `CLAUDE.md` — understand project rules and tech stack
 3. Read `PRD.md` if it exists — check for existing spec to build on
 4. **Codebase scan** (brownfield projects):
-   - **Size check first:** Use Glob with `**/*` to estimate total file count. If > 500 files, switch to focused mode (see below).
+   - **Exclusions:** NEVER scan these directories/files: `node_modules/`, `.git/`, `dist/`, `build/`, `.next/`, `__pycache__/`, `*.min.js`, `*.map`, `*.lock`. Use Glob with patterns like `src/**/*`, `app/**/*`, `lib/**/*` — never use bare `**/*` which includes generated files.
+   - **Size check first:** Use Glob with `src/**/*`, `app/**/*`, `lib/**/*`, `components/**/*` (excluding the above) to estimate relevant file count. If > 500 files, switch to focused mode (see below).
    - **Standard mode (≤ 500 files):** Use Glob to find components, pages/routes, API endpoints, types, utilities, config files, database models. Use Grep for export patterns, route definitions, key function signatures. **Cap at 50 files sampled** — prioritize entry points, config, and type definitions.
    - **Focused mode (> 500 files):** Scan ONLY: package.json/config files, entry points (index.ts, main.ts, app.ts), route definitions, database schema/models, and type definition files. Skip component trees, test files, and generated code entirely.
    - Build internal summary: "Here's what exists that we can reuse"
@@ -113,6 +114,20 @@ Cover these areas thoroughly. There are no "rounds" — move fluidly between are
 **User signals done:** If the user says "done", "finalize", "that's enough", "ship it", or similar — immediately stop interviewing and go to Phase 3. Finalize the PRD with whatever depth has been achieved.
 
 ## Phase 3 — PRD Generation
+
+### Minimum Viable PRD Check
+
+Before generating the final PRD, validate:
+- At least **3 user stories** with acceptance criteria have been discussed
+- At least **1 implementation phase** has been defined
+- At least **1 verification command** has been specified
+
+If any check fails, print what's missing and use AskUserQuestion:
+- "The PRD is thin — [missing items]. Want to continue the interview to flesh it out, or finalize as-is?"
+  - "Continue interview" — return to Phase 2 and probe the missing areas
+  - "Finalize as-is" — proceed with what we have
+
+### Write PRD
 
 Write `PRD.md` to the project root with this EXACT structure:
 

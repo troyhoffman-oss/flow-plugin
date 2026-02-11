@@ -35,7 +35,8 @@ Flow fixes this by giving Claude Code a **memory system and execution framework*
 | Command | What it does |
 |---|---|
 | `/flow:intro` | Walkthrough of the system — **start here** |
-| `/flow:init` | Initialize a project with `.planning/` scaffolding, CLAUDE.md, templates |
+| `/flow:setup` | Set up a new project with `.planning/` scaffolding, CLAUDE.md, templates |
+| `/flow:milestone` | Archive completed milestone and start a new one |
 | `/flow:spec` | Spec interview that produces an executable PRD with phased execution plan |
 | `/flow:go` | Execute the next phase from the PRD using wave-based agent teams |
 | `/flow:task` | Bug fixes, cleanup, small features — no PRD needed |
@@ -46,16 +47,18 @@ Flow fixes this by giving Claude Code a **memory system and execution framework*
 ## How It Works
 
 ```
-/flow:init → /flow:spec → /flow:go (repeat per phase) → /flow:done
-                                                            ↓
-                                              handoff prompt for next session
+/flow:setup → /flow:spec → /flow:go (repeat per phase) → /flow:done
+                                                             ↓
+                                               handoff prompt for next session
+                                                             ↓
+                                               /flow:milestone → next cycle
 
 /flow:task  ← standalone path for bug fixes and small features
 ```
 
 **The lifecycle in practice:**
 
-1. **`/flow:init`** — Creates `.planning/` directory, CLAUDE.md, STATE.md, ROADMAP.md, lessons.md
+1. **`/flow:setup`** — Creates `.planning/` directory, CLAUDE.md, STATE.md, ROADMAP.md, lessons.md
 2. **`/flow:spec`** — Interviews you about the milestone. Produces a PRD with wave-based phases, acceptance criteria, and agent-team structure
 3. **`/flow:go`** — Reads the PRD, spawns parallel agent teams per wave, builds, verifies, commits
 4. **`/flow:done`** — Updates all planning docs, captures lessons, generates a one-line handoff prompt so the next session starts instantly
@@ -66,7 +69,8 @@ Flow fixes this by giving Claude Code a **memory system and execution framework*
 ```
 ~/.claude/
 ├── commands/flow/
-│   ├── flow-init.md          # 8 skill files
+│   ├── flow-setup.md         # 9 skill files
+│   ├── flow-milestone.md
 │   ├── flow-spec.md
 │   ├── flow-go.md
 │   ├── flow-task.md
@@ -88,7 +92,7 @@ Flow fixes this by giving Claude Code a **memory system and execution framework*
 
 ## Project Structure
 
-Every Flow project gets this structure via `/flow:init`:
+Every Flow project gets this structure via `/flow:setup`:
 
 ```
 your-project/

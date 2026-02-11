@@ -13,7 +13,7 @@
 | — | Run `/flow:spec` to define phases | — |
 
 ## What Was Built (This Session)
-- Project initialized with `/flow:init`
+- Project initialized with `/flow:setup`
 - Created: CLAUDE.md, STATE.md, ROADMAP.md, tasks/lessons.md
 
 ## Key Decisions

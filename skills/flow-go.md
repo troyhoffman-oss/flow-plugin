@@ -32,7 +32,7 @@ Run these checks before executing. If any fail, stop and tell the user what to d
    - Verification commands
    - If missing: "PRD phase section is too vague. Add wave structure + file lists, or run `/flow:spec`."
 3. **Branch check:** Verify you're on the correct feature branch (from PRD header). If not, warn the user.
-4. **All phases done?** If no pending phases remain: "All phases complete! Run `/flow:done` to wrap up, or `/flow:init` for the next milestone."
+4. **All phases done?** If no pending phases remain: "All phases complete! Run `/flow:done` to wrap up, or `/flow:milestone` for the next milestone."
 
 ## Step 3 — Staleness Check
 
@@ -82,22 +82,54 @@ so agents have it in their context without needing to search.]
 
 - Use TeamCreate or Task tool to spawn all agents in the wave simultaneously
 - Each agent runs with `mode: "bypassPermissions"` for autonomous execution
-- Wait for all agents in the wave to complete before moving to the next wave
+- Print: **"Wave N: Spawned X agents — [agent-1-task], [agent-2-task], ..."**
+- As each agent completes, print: **"Wave N: agent-name completed (X/Y)"**
+- Set a reasonable timeout for each agent. If an agent hasn't completed after 10 minutes, check on it. If it's stuck, stop it and note the failure.
+- Wait for all agents in the wave to complete (or timeout) before moving to the next wave
 
-### 4c. Between Waves
+### 4c. Wave Failure Handling
 
-After each wave completes:
+After a wave completes, check results:
+
+**If ALL agents in a wave failed:**
+- Print: **"Wave N failed — all X agents errored."**
+- Show error summaries from each agent
+- Use AskUserQuestion: "Wave N failed completely. How to proceed?"
+  - "Retry this wave"
+  - "Skip to next wave"
+  - "Abort phase"
+
+**If SOME agents failed but others succeeded:**
+- Print: **"Wave N: X/Y agents succeeded, Z failed."**
+- Show failed agent error summaries
+- Use AskUserQuestion: "Some agents failed. How to proceed?"
+  - "Retry failed agents"
+  - "Continue without them"
+  - "Abort phase"
+
+When a wave completes successfully (all agents or user chose to continue), print: **"Wave N complete. Proceeding to Wave N+1."**
+
+### 4d. Between Waves
+
+After each wave completes (and failure handling is resolved):
 1. Run verification commands from CLAUDE.md (e.g., `npx tsc --noEmit`, `npx biome check`)
 2. Check for integration issues between agents' output
 3. Fix any issues before proceeding to the next wave
 4. If verification fails and you can fix it quickly (< 2 minutes of work), fix it. Otherwise, stop and report.
 
-### 4d. Final Verification
+### 4e. Final Verification
 
 After ALL waves complete:
 1. Run full verification suite
 2. Check all acceptance criteria for this phase's user stories
-3. If anything fails, fix it or report to the user
+3. If verification fails, attempt to fix (max **3 attempts**):
+   - After attempt 1 fails: Print **"Verification failed. Attempting fix (1/3)..."**
+   - After attempt 2 fails: Print **"Verification failed. Attempting fix (2/3)..."**
+   - After attempt 3 fails: Print **"Verification failed after 3 attempts. STOP."** Print the errors and use AskUserQuestion:
+     - "Skip verification and continue"
+     - "Fix manually and retry"
+     - "Abort this phase"
+   - Do NOT loop further beyond 3 attempts.
 
 ## Step 5 — Commit
 

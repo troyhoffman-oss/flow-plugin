@@ -17,7 +17,7 @@ Read ALL of the following in parallel:
 - Count lessons in `tasks/lessons.md` (if exists)
 
 IF both STATE.md AND ROADMAP.md are missing:
-- Print: "No flow project found. Run `/flow:init` to set up, or `/flow:task` for a quick standalone fix."
+- Print: "No flow project found. Run `/flow:setup` to set up, or `/flow:task` for a quick standalone fix."
 - STOP here.
 
 IF only one file exists, continue with what's available.
@@ -47,7 +47,7 @@ Use this explicit decision tree:
 
 **IF all phases are complete:**
 → Primary: `/flow:done` to finalize this milestone
-→ Then: `/flow:init` to start the next milestone
+→ Then: `/flow:milestone` to start the next milestone
 → Alt: `/flow:task` for quick fixes or cleanup (no PRD needed)
 
 **IF no phases exist in ROADMAP (milestone defined but not planned):**
@@ -65,7 +65,7 @@ Lessons: [N] rules
 [routing recommendations from Step 3]
 ```
 
-Adapt the block based on available information. If STATE.md is missing, omit "Last session". If ROADMAP.md is missing, omit phase counts and say "Run /flow:init to set up tracking."
+Adapt the block based on available information. If STATE.md is missing, omit "Last session". If ROADMAP.md is missing, omit phase counts and say "Run /flow:setup to set up tracking."
 
 ## Step 5 — No File Writes
 

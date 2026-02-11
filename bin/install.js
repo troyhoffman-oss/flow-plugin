@@ -321,14 +321,15 @@ try {
 Flow v${version} installed successfully!
 
 Commands available:
-  /flow:intro   \u2014 Learn the Flow workflow
-  /flow:init    \u2014 Start a new project or milestone
-  /flow:spec    \u2014 Spec interview \u2192 executable PRD
-  /flow:go      \u2014 Execute next phase with agent teams
-  /flow:done    \u2014 Session-end documentation
-  /flow:status  \u2014 Quick orientation
-  /flow:task    \u2014 Lightweight task execution
-  /flow:update  \u2014 Update Flow to latest version
+  /flow:intro      \u2014 Learn the Flow workflow
+  /flow:setup      \u2014 Set up a new project
+  /flow:milestone  \u2014 Start a new milestone
+  /flow:spec       \u2014 Spec interview \u2192 executable PRD
+  /flow:go         \u2014 Execute next phase with agent teams
+  /flow:done       \u2014 Session-end documentation
+  /flow:status     \u2014 Quick orientation
+  /flow:task       \u2014 Lightweight task execution
+  /flow:update     \u2014 Update Flow to latest version
 
 Get started: run /flow:intro in any Claude Code session.
 `);

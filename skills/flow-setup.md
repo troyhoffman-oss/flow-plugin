@@ -1,24 +1,22 @@
 ---
-name: flow:init
-description: Initialize a new project or start a new milestone with planning scaffolding
+name: flow:setup
+description: Set up a new project with Flow planning scaffolding
 user_invocable: true
 ---
 
-# /flow:init — Initialize Project or Milestone
+# /flow:setup — Set Up New Project
 
-You are executing the `/flow:init` skill. This sets up the planning scaffolding for a new project or a new milestone within an existing project.
+You are executing the `/flow:setup` skill. This sets up the planning scaffolding for a new project.
 
-## Mode Detection
+## Guard: Already Initialized
 
-Check if `.planning/STATE.md` exists:
-- **If it does NOT exist** → New Project Mode
-- **If it exists** → New Milestone Mode
+Check if `.planning/STATE.md` already exists:
+- **If it exists** → Print: "This project is already set up. Run `/flow:milestone` to start a new milestone, or `/flow:spec` to spec the current one." and **STOP. Do not overwrite.**
+- **If it does NOT exist** → Continue with setup below.
 
 ---
 
-## New Project Mode
-
-### Step 1: Ask Setup Questions
+## Step 1: Ask Setup Questions
 
 Use AskUserQuestion to gather project info. Ask these questions (you may combine into 2-3 AskUserQuestion calls):
 
@@ -47,7 +45,7 @@ Use AskUserQuestion to gather project info. Ask these questions (you may combine
   - "Yes — scan and catalog existing code"
   - "No — greenfield project"
 
-### Step 2: Brownfield Scan (if requested)
+## Step 2: Brownfield Scan (if requested)
 
 If the user said yes to scanning:
 1. Use Glob to find key directories: `src/`, `app/`, `lib/`, `components/`, `api/`, `pages/`, `utils/`, `types/`
@@ -55,7 +53,7 @@ If the user said yes to scanning:
 3. Build a brief catalog of what exists (key components, patterns, data layer)
 4. Include this in the CLAUDE.md Quick Context section
 
-### Step 3: Create Project Files
+## Step 3: Create Project Files
 
 Create these 5 files (create directories as needed):
 
@@ -76,7 +74,7 @@ Create these 5 files (create directories as needed):
 | — | Run `/flow:spec` to define phases | — |
 
 ## What Was Built (This Session)
-- Project initialized with `/flow:init`
+- Project initialized with `/flow:setup`
 - Created: CLAUDE.md, STATE.md, ROADMAP.md, tasks/lessons.md
 
 ## Key Decisions
@@ -159,7 +157,7 @@ Format: PATTERN → CAUSE → FIX → RULE
 
 **`.planning/archive/`** — Create this empty directory (use `mkdir -p` via Bash).
 
-### Step 4: Print Completion Message
+## Step 4: Print Completion Message
 
 ```
 Project initialized:
@@ -170,49 +168,4 @@ Project initialized:
 - .planning/archive/ — for completed milestones
 
 Run `/flow:spec` to plan your first milestone.
-```
-
----
-
-## New Milestone Mode
-
-### Step 1: Read Context
-
-Read `.planning/STATE.md` and `.planning/ROADMAP.md` to understand:
-- What milestone just completed (or is completing)
-- What version number to use next
-- Current state of the project
-
-### Step 2: Ask Milestone Question
-
-Use AskUserQuestion:
-- "What's the goal of this new milestone?" (free text)
-- "What should it be called?" (free text, or suggest a name based on context)
-
-### Step 3: Archive Completed Milestone
-
-1. Read current ROADMAP.md phase details for the completed milestone
-2. Write them to `.planning/archive/milestones-vX.md` (where X is the completed version)
-3. If `PRD.md` exists, move it to `.planning/archive/PRD-vX.md` (read it, write to archive, delete original)
-4. In ROADMAP.md, replace the completed milestone's phase details with just the summary row (mark as "Complete")
-
-### Step 4: Update Planning Docs
-
-**ROADMAP.md:**
-- Add new milestone row to the table
-- Add new milestone section with goal and "Run `/flow:spec` to define phases"
-
-**STATE.md:**
-- Replace with fresh state for the new milestone
-- Reset phase progress table
-- Note the milestone transition in "What Was Built"
-
-### Step 5: Print Completion Message
-
-```
-Milestone [name] (v[X]) initialized.
-- Archived: previous milestone details + PRD
-- Updated: ROADMAP.md, STATE.md
-
-Run `/flow:spec` to build the PRD for this milestone.
 ```

@@ -11,7 +11,7 @@ You are executing the `/flow:task` skill. This is for small, focused work — bu
 RULES:
 - NO AGENT TEAMS. NO PRD. Single execution context.
 - Exception: ONE Task agent for an isolated subtask to prevent context bloat.
-- This skill MUST work without `/flow:init`. Missing planning files are fine.
+- This skill MUST work without `/flow:setup`. Missing planning files are fine.
 
 ## Step 1 — Context Load
 
