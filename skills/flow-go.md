@@ -1,5 +1,5 @@
 ---
-name: flow-go
+name: flow:go
 description: Execute the next phase from PRD using wave-based agent teams
 user_invocable: true
 ---

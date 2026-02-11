@@ -1,5 +1,5 @@
 ---
-name: flow-status
+name: flow:status
 description: Quick orientation — shows current milestone, phase progress, and next actions
 user_invocable: true
 ---

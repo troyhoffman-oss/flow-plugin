@@ -1,5 +1,5 @@
 ---
-name: flow-init
+name: flow:init
 description: Initialize a new project or start a new milestone with planning scaffolding
 user_invocable: true
 ---

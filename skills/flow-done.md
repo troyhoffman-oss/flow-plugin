@@ -1,5 +1,5 @@
 ---
-name: flow-done
+name: flow:done
 description: Session-end documentation — updates STATE.md, ROADMAP.md, lessons.md, generates handoff prompt
 user_invocable: true
 ---

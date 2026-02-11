@@ -1,5 +1,5 @@
 ---
-name: flow-spec
+name: flow:spec
 description: Spec interview that produces an executable PRD with wave-based phases and testable acceptance criteria
 user_invocable: true
 ---
