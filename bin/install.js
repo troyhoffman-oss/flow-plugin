@@ -29,6 +29,18 @@ const versionFile = path.join(pkgRoot, 'VERSION');
 
 const uninstall = process.argv.includes('--uninstall') || process.argv.includes('-u');
 const verify = process.argv.includes('--verify') || process.argv.includes('-v');
+const changelog = process.argv.includes('--changelog');
+
+// ---------- Changelog ----------
+if (changelog) {
+  const changelogPath = path.join(pkgRoot, 'CHANGELOG.md');
+  try {
+    console.log(fs.readFileSync(changelogPath, 'utf8'));
+  } catch (e) {
+    console.log('CHANGELOG not available');
+  }
+  process.exit(0);
+}
 
 // ---------- Verify ----------
 if (verify) {

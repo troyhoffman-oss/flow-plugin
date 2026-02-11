@@ -50,7 +50,7 @@ Flow is up to date (v<version>)
 
 Fetch the CHANGELOG.md from the Flow repo to show the user what changed:
 
-1. Run: `npx -y -p flow-cc@<latest> node -e "const fs=require('fs'),p=require('path');try{console.log(fs.readFileSync(p.join(require.resolve('flow-cc/package.json'),'..','CHANGELOG.md'),'utf8'))}catch(e){console.log('CHANGELOG not available')}"`
+1. Run: `npx -y flow-cc@<latest> --changelog`
 2. Parse the output and extract only the section for `v<latest>` (from the `## [<latest>]` heading to the next `## [` heading or end of file)
 3. Print:
 
