@@ -1,6 +1,6 @@
 ---
 name: flow:update
-description: Pull latest flow-plugin changes and re-install skills
+description: Update Flow plugin to the latest version from npm
 user_invocable: true
 ---
 
@@ -8,32 +8,72 @@ user_invocable: true
 
 You are executing the `/flow:update` skill. Follow these steps exactly:
 
-## Step 1: Find the repo
+## Step 1: Check current version
 
-Read `~/.claude/commands/flow/.source` to get the flow-plugin repo path.
-
-If the file does not exist, print this and stop:
+Read `~/.claude/commands/flow/VERSION` to get the installed version. Print it:
 
 ```
-Flow source location unknown — .source breadcrumb not found.
-Manual update: cd <flow-plugin-repo> && git pull && bash setup.sh (or .\setup.ps1 on Windows)
-Re-running setup will create the breadcrumb for next time.
+Flow v<installed> installed
 ```
 
-## Step 2: Pull latest
+If the VERSION file does not exist, print this and stop:
 
-Run `git pull` in the repo directory. Print the output so the user sees what changed.
+```
+Flow is not installed. Install with: npx flow-cc
+```
 
-If git pull fails (dirty working tree, network error, etc.), print the error and stop.
+## Step 2: Check latest version
 
-## Step 3: Re-install
+Run `npm view flow-cc version` to get the latest published version. Print it:
 
-Run the platform-appropriate setup script in the repo directory:
-- **Windows:** `.\setup.ps1` (use PowerShell)
-- **Mac/Linux:** `bash setup.sh`
+```
+Latest available: v<latest>
+```
 
-## Step 4: Confirm
+If the npm command fails (offline, package not found), print:
 
-Print a short summary:
-- What git pull reported (already up to date, or list of changed files)
-- Confirmation that skills were re-installed
+```
+Could not check for updates — are you online?
+```
+
+And stop.
+
+## Step 3: Compare versions
+
+If installed version equals latest version, print this and stop:
+
+```
+Flow is up to date (v<version>)
+```
+
+## Step 4: Confirm update
+
+Print the available update and ask the user to confirm:
+
+```
+Update available: v<installed> → v<latest>
+```
+
+Wait for user confirmation before proceeding.
+
+## Step 5: Run update
+
+Run `npx flow-cc` to re-install with the latest version. Show the output.
+
+## Step 6: Confirm success
+
+Read `~/.claude/commands/flow/VERSION` again to get the new version. Print:
+
+```
+Updated Flow: v<old> → v<new>
+```
+
+## Step 7: Clear update notification
+
+Delete `~/.claude/cache/flow-update-check.json` so the statusline notification disappears.
+
+Print:
+
+```
+Restart Claude Code to see changes.
+```

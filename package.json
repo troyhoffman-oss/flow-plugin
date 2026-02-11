@@ -1,0 +1,15 @@
+{
+  "name": "flow-cc",
+  "version": "0.1.0",
+  "description": "Flow workflow plugin for Claude Code",
+  "bin": {
+    "flow-cc": "bin/install.js"
+  },
+  "files": [
+    "bin",
+    "skills",
+    "hooks",
+    "templates",
+    "VERSION"
+  ]
+}
