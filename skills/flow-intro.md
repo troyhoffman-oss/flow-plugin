@@ -62,6 +62,10 @@ Flow is 5 commands that turn your specs into shipped code through agent teams. E
 **`/flow:status`** — Run anytime, read-only
 - Quick "where am I?" — milestone, phase progress, next step, lesson count
 
+**`/flow:update`** — Run anytime to update Flow
+- Pulls latest changes from the flow-plugin repo and re-installs all skills
+- No need to remember where you cloned the repo — it finds it automatically
+
 ### Typical Session
 
 ```

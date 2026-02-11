@@ -12,7 +12,7 @@ Troy has organically converged on a workflow where a single handoff prompt kicks
 
 **Distribution:** GitHub repo with setup script. Cross-platform (Mac + Windows). Shareable with coworkers.
 
-## Architecture: 5 Skills as Markdown Files
+## Architecture: Skills as Markdown Files
 
 ```
 ~/.claude/skills/
@@ -21,7 +21,8 @@ Troy has organically converged on a workflow where a single handoff prompt kicks
 ├── flow-task.md        # /flow:task -- Lightweight task execution (no PRD needed)
 ├── flow-go.md          # /flow:go -- Execute next phase from PRD
 ├── flow-done.md        # /flow:done -- Session-end docs + handoff
-└── flow-status.md      # /flow:status -- Quick orientation
+├── flow-status.md      # /flow:status -- Quick orientation
+└── flow-update.md      # /flow:update -- Pull latest + re-install
 ```
 
 Each skill is a single markdown file containing the prompt instructions. No code, no setup scripts beyond the initial copy. Instantly active once installed.

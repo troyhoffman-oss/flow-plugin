@@ -11,6 +11,7 @@
 - `/flow:go` -- Execute the next phase from the PRD using agent teams
 - `/flow:done` -- Session-end docs, lessons refinement, and handoff prompt generation
 - `/flow:status` -- Quick "where am I?" orientation
+- `/flow:update` -- Pull latest and re-install skills from any session
 
 ## Installation
 
@@ -22,7 +23,7 @@ git clone https://github.com/troyhoffman/flow-plugin.git && cd flow-plugin && ba
 git clone https://github.com/troyhoffman/flow-plugin.git; cd flow-plugin; .\setup.ps1
 ```
 
-**Update:** `git pull && bash setup.sh` (or `.\setup.ps1` on Windows)
+**Update:** Run `/flow:update` in any Claude Code session
 
 ## Getting Started
 
