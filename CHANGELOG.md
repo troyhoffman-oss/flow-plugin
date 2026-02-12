@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.2] - 2026-02-11
+
+### Fixed
+- `/flow:spec` Phase 1 codebase scan now delegates to 3 parallel Explore subagents instead of reading files into main context — saves 200-500 lines of context before the interview starts
+- Added plan mode warnings to `/flow:spec` and `/flow:go` — plan mode's read-only constraint breaks both skills
+- Added Plan Mode Compatibility section to DESIGN.md documenting the design philosophy
+
 ## [0.4.1] - 2026-02-11
 
 ### Fixed

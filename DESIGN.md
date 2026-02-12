@@ -66,3 +66,12 @@ project-root/
 - No JSON output format -- markdown only
 - No plugin infrastructure beyond setup scripts
 - No model profile switching
+
+## Plan Mode Compatibility
+
+Flow skills are NOT compatible with Claude Code's plan mode. The spec interview (`/flow:spec`) IS the planning phase — it produces a PRD that serves as the execution contract. Plan mode on top of Flow skills creates:
+- Double-planning overhead
+- Read-only conflicts (spec needs to write PRD.md iteratively)
+- Wasted context window
+
+If you want a planning gate, run `/flow:spec`. If you want execution, run `/flow:go`. Don't stack plan mode on either.

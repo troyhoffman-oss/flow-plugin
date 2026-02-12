@@ -10,6 +10,8 @@ You are executing the `/flow:go` skill. This reads the PRD, identifies the next 
 
 **Core principle:** The PRD is the execution contract. You execute what it specifies. Do not freelance.
 
+**Plan mode warning:** Do NOT use this skill with plan mode enabled. `/flow:go` is execution — plan mode's read-only constraint prevents it from creating files, running agents, and committing work. The PRD IS your plan; run `/flow:go` in normal mode.
+
 ## Step 1 — Orient
 
 Read these files (in parallel):

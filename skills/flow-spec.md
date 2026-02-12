@@ -10,18 +10,29 @@ You are executing the `/flow:spec` skill. This is the KEYSTONE skill of the flow
 
 **Interview mode:** Always thorough by default. The user can say "done", "finalize", "that's enough", or "move on" at ANY time to wrap up early. Respect their signal and finalize with whatever depth has been achieved.
 
+**Plan mode warning:** Do NOT use this skill with plan mode enabled. Plan mode's read-only constraint prevents PRD.md from being written during the interview. `/flow:spec` IS the planning phase — plan mode on top of it is redundant and breaks the workflow.
+
 ## Phase 1 — Context Gathering (automatic, no user input needed)
 
 1. Read `.planning/STATE.md` and `.planning/ROADMAP.md` — understand current milestone and what's done
 2. Read `CLAUDE.md` — understand project rules and tech stack
 3. Read `PRD.md` if it exists — check for existing spec to build on
-4. **Codebase scan** (brownfield projects):
-   - **Exclusions:** NEVER scan these directories/files: `node_modules/`, `.git/`, `dist/`, `build/`, `.next/`, `__pycache__/`, `*.min.js`, `*.map`, `*.lock`. Use Glob with patterns like `src/**/*`, `app/**/*`, `lib/**/*` — never use bare `**/*` which includes generated files.
-   - **Size check first:** Use Glob with `src/**/*`, `app/**/*`, `lib/**/*`, `components/**/*` (excluding the above) to estimate relevant file count. If > 500 files, switch to focused mode (see below).
-   - **Standard mode (≤ 500 files):** Use Glob to find components, pages/routes, API endpoints, types, utilities, config files, database models. Use Grep for export patterns, route definitions, key function signatures. **Cap at 50 files sampled** — prioritize entry points, config, and type definitions.
-   - **Focused mode (> 500 files):** Scan ONLY: package.json/config files, entry points (index.ts, main.ts, app.ts), route definitions, database schema/models, and type definition files. Skip component trees, test files, and generated code entirely.
-   - Build internal summary: "Here's what exists that we can reuse"
-5. Print a brief context summary to the user: "Here's what I found in the codebase: [key components, patterns, data layer]. Starting the spec interview."
+4. **Codebase scan** (brownfield projects) — spawn **3 parallel Explore subagents** via the Task tool to scan the codebase without consuming main context:
+
+   | Agent | Focus | Looks For |
+   |-------|-------|-----------|
+   | **Structure & Config** | Project skeleton, build tooling | `package.json`, `tsconfig`, config files, entry points, CI/CD, env setup |
+   | **UI, Pages & Routes** | Components, pages, routing | `components/`, `pages/`, `app/`, route definitions, layouts, navigation |
+   | **Data Layer & APIs** | Database, APIs, types | `api/`, `models/`, `types/`, `schemas/`, ORM definitions, query functions |
+
+   **Each subagent prompt MUST include:**
+   - **Exclusions:** NEVER scan `node_modules/`, `.git/`, `dist/`, `build/`, `.next/`, `__pycache__/`, `*.min.js`, `*.map`, `*.lock`
+   - **Size-adaptive scanning:** If the agent's domain has >200 files, switch to focused mode (entry points, config, and type definitions only)
+   - **20-file sample cap per agent** (60 total across all 3)
+   - **15-line summary max** — structured as: key files found, patterns observed, reusable code/components, notes
+   - **Explicit instruction:** Do NOT return raw file contents — return only structured summaries
+
+5. **Assemble summaries:** Collect the 3 agent summaries into a brief context block (~45 lines total). Print to user: "Here's what I found in the codebase: [key components, patterns, data layer]. Starting the spec interview."
 
 ## Phase 2 — Adaptive Interview
 
