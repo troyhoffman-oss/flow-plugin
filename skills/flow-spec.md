@@ -12,7 +12,7 @@ You are executing the `/flow:spec` skill. This is the KEYSTONE skill of the flow
 
 **Plan mode warning:** Do NOT use this skill with plan mode enabled. Plan mode's read-only constraint prevents the PRD from being written during the interview. `/flow:spec` IS the planning phase — plan mode on top of it is redundant and breaks the workflow.
 
-## Phase 1 — Context Gathering (automatic, no user input needed)
+## Phase 1 — Context Gathering
 
 1. Read `.planning/STATE.md` and `.planning/ROADMAP.md` — understand current milestone and what's done
 2. Read `CLAUDE.md` — understand project rules and tech stack
@@ -20,7 +20,24 @@ You are executing the `/flow:spec` skill. This is the KEYSTONE skill of the flow
    - List `.planning/prds/` directory (if it exists) for existing PRD files
    - Also check for legacy `PRD.md` at project root (backward compat)
    - If a PRD exists for the target milestone, note it for resume/extend flow
-4. **Codebase scan** (brownfield projects) — spawn **3 parallel Explore subagents** via the Task tool to scan the codebase without consuming main context:
+4. **Milestone Targeting** — determine which milestone this PRD targets before scanning the codebase:
+
+   1. **If the user passed an argument** (e.g., `/flow:spec v3: Payments`) — match against ROADMAP.md milestones. If no match, print available milestones and ask which one.
+
+   2. **If no argument** — read ROADMAP.md and list all incomplete milestones. Use AskUserQuestion to let the user pick which milestone to spec. Pre-select the next unspecced milestone as the first option. Always show the picker, even if only one milestone is listed — the user may want to confirm or choose "Other" to define a new milestone first.
+
+   3. **Derive the PRD slug:** Take the milestone's version prefix and name (e.g., "v3: Dashboard Analytics"), lowercase it, replace spaces and special characters with hyphens, collapse consecutive hyphens. Result: `v3-dashboard-analytics`. The PRD path is `.planning/prds/{slug}.md`.
+
+   4. **Check for existing PRD at that path:**
+      - **If PRD exists** → Use AskUserQuestion: "A PRD already exists for this milestone at `.planning/prds/{slug}.md`. What would you like to do?"
+        - "Resume editing" — load the existing PRD and continue the interview from where it left off
+        - "Start fresh" — delete the existing PRD and start a new interview
+        - "Pick a different milestone" — show available milestones
+      - **If no PRD exists** → Proceed with a fresh interview
+
+   5. **Future milestone detection:** If the target milestone is NOT the current milestone in STATE.md, note this — the PRD will be written but STATE.md's "Active PRD" field will NOT be updated (it stays pointing at the current milestone's PRD). Print: "Speccing future milestone [name]. STATE.md will not be updated — this PRD will be available when you reach this milestone."
+
+5. **Codebase scan** (brownfield projects) — spawn **3 parallel Explore subagents** via the Task tool to scan the codebase without consuming main context:
 
    | Agent | Focus | Looks For |
    |-------|-------|-----------|
@@ -35,26 +52,7 @@ You are executing the `/flow:spec` skill. This is the KEYSTONE skill of the flow
    - **15-line summary max** — structured as: key files found, patterns observed, reusable code/components, notes
    - **Explicit instruction:** Do NOT return raw file contents — return only structured summaries
 
-5. **Assemble summaries:** Collect the 3 agent summaries into a brief context block (~45 lines total). Print to user: "Here's what I found in the codebase: [key components, patterns, data layer]. Starting the spec interview."
-
-## Milestone Targeting
-
-Before starting the interview, determine which milestone this PRD targets:
-
-1. **If the user passed an argument** (e.g., `/flow:spec v3: Payments`) — match against ROADMAP.md milestones. If no match, print available milestones and ask which one.
-
-2. **If no argument** — read ROADMAP.md and list all incomplete milestones. Use AskUserQuestion to let the user pick which milestone to spec. Pre-select the next unspecced milestone as the first option. Always show the picker, even if only one milestone is listed — the user may want to confirm or choose "Other" to define a new milestone first.
-
-3. **Derive the PRD slug:** Take the milestone's version prefix and name (e.g., "v3: Dashboard Analytics"), lowercase it, replace spaces and special characters with hyphens, collapse consecutive hyphens. Result: `v3-dashboard-analytics`. The PRD path is `.planning/prds/{slug}.md`.
-
-4. **Check for existing PRD at that path:**
-   - **If PRD exists** → Use AskUserQuestion: "A PRD already exists for this milestone at `.planning/prds/{slug}.md`. What would you like to do?"
-     - "Resume editing" — load the existing PRD and continue the interview from where it left off
-     - "Start fresh" — delete the existing PRD and start a new interview
-     - "Pick a different milestone" — show available milestones
-   - **If no PRD exists** → Proceed with a fresh interview
-
-5. **Future milestone detection:** If the target milestone is NOT the current milestone in STATE.md, note this — the PRD will be written but STATE.md's "Active PRD" field will NOT be updated (it stays pointing at the current milestone's PRD). Print: "Speccing future milestone [name]. STATE.md will not be updated — this PRD will be available when you reach this milestone."
+6. **Assemble summaries:** Collect the 3 agent summaries into a brief context block (~45 lines total). Print to user: "Here's what I found in the codebase: [key components, patterns, data layer]. Starting the spec interview."
 
 ## Phase 2 — Adaptive Interview
 
