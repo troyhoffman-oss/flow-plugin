@@ -44,7 +44,7 @@ Use this explicit decision tree:
 → Alt: `/flow:task` for quick fixes or cleanup (no PRD needed)
 
 **IF pending phases exist in ROADMAP BUT no PRD exists for the current milestone:**
-→ Primary: `/flow:spec [next milestone name]` to create the execution plan
+→ Primary: `/flow:spec` to pick a milestone and create its execution plan
 → Alt: `/flow:task` for quick fixes or cleanup (no PRD needed)
 
 **IF all phases are complete AND a next milestone with status "Planned" exists in ROADMAP.md:**
@@ -57,10 +57,10 @@ Use this explicit decision tree:
 → Alt: `/flow:task` for quick fixes or cleanup (no PRD needed)
 
 **IF no phases exist in ROADMAP (milestone defined but not planned):**
-→ Primary: `/flow:spec [milestone name]` to plan this milestone
+→ Primary: `/flow:spec` to pick a milestone and create its execution plan
 → Alt: `/flow:task` for quick fixes or cleanup (no PRD needed)
 
-**When suggesting `/flow:spec`:** Always include the target milestone name in the suggestion (e.g., `→ /flow:spec v16.0: Conventional Leasing & Email Export`). This lets the user see which milestone will be specced before running the command, and passes the name as an argument so flow:spec can match it directly.
+**When suggesting `/flow:spec`:** Never include a specific milestone name. Always suggest the bare command `/flow:spec` — the milestone picker will handle selection. This avoids confusion when the user has multiple sessions or milestones in flight.
 
 ## Step 4 — Print Status Block
 
