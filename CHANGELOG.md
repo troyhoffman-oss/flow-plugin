@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-02-13
+
+### Added
+- Multi-PRD support — PRDs now live at `.planning/prds/{version-slug}.md` instead of a single root `PRD.md`
+- 5-step PRD resolution logic across all skills: user argument → STATE.md Active PRD → slug derivation → legacy fallback → not found
+- `**Milestone:**` header field in PRDs for ROADMAP correlation
+- `Active PRD` field in STATE.md tracking the current milestone's PRD path
+- Milestone Targeting in `/flow:spec` — pass a milestone name to pre-spec future milestones in parallel
+- PRD inventory display in `/flow:status` showing active/ready tags per PRD file
+- `/flow:setup` now creates `.planning/prds/` directory during project scaffolding
+
+### Changed
+- `/flow:spec` writes PRDs to `.planning/prds/{version-slug}.md` (was root `PRD.md`)
+- `/flow:go` resolves PRDs via 5-step resolution instead of hardcoded `PRD.md`
+- `/flow:done` archives PRDs from `.planning/prds/` to `.planning/archive/PRD-{slug}.md`
+- `/flow:status` lists all PRDs in `.planning/prds/` with active/ready status
+- `/flow:task` reads active PRD from `.planning/prds/` via STATE.md
+- All templates and docs updated to reflect new PRD paths
+- Legacy root `PRD.md` still consumed transparently — migration happens organically
+
 ## [0.4.3] - 2026-02-12
 
 ### Changed
