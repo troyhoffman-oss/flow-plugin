@@ -19,7 +19,7 @@ Read these files (in parallel where possible):
 - `.planning/ROADMAP.md` — milestone/phase progress
 - `tasks/lessons.md` — active lessons (max 10)
 - `CLAUDE.md` — project rules
-- `PRD.md` — current spec (if exists)
+- Active PRD from `.planning/prds/` (resolve via STATE.md "Active PRD" field, or fall back to legacy `PRD.md` at root)
 
 Also gather:
 - Run `git log --oneline -20` to see commits this session
@@ -38,6 +38,7 @@ Structure:
 - **Milestone:** [name] (vX)
 - **Phase:** [current phase status]
 - **Branch:** [current branch]
+- **Active PRD:** [path to active PRD, or "None" if milestone complete]
 - **Last Session:** [today's date]
 
 ## Milestone Progress
@@ -69,7 +70,8 @@ Structure:
   - Create `.planning/archive/` if it doesn't already exist (use `mkdir -p` or equivalent)
   - Move milestone phase details to `.planning/archive/milestones-vX.md`
   - Keep only the summary row in the ROADMAP milestone table
-  - Move `PRD.md` to `.planning/archive/PRD-vX.md`
+  - Archive the milestone's PRD: move `.planning/prds/{slug}.md` to `.planning/archive/PRD-{slug}.md`. If using legacy root `PRD.md`, move it to `.planning/archive/PRD-vX.md` instead.
+  - Clear STATE.md "Active PRD" field (set to "None")
   - Mark the milestone as "Complete" in the ROADMAP table
   - **Milestone transition:** Check ROADMAP.md for the NEXT milestone with status "Planned":
     - **If a next milestone exists:** Update its status from "Planned" to "Pending — needs `/flow:spec`". Update STATE.md current milestone to point to the new milestone.
@@ -104,7 +106,7 @@ Determine the next action and generate a copyable handoff prompt:
 
 - If next phase exists in PRD:
   ```
-  Phase [N]: [Name] — [short description]. Read STATE.md, ROADMAP.md, and PRD.md (US-X).
+  Phase [N]: [Name] — [short description]. Read STATE.md, ROADMAP.md, and .planning/prds/{slug}.md (US-X).
   [One sentence of context]. [One sentence of what NOT to do if relevant].
   ```
 - If milestone is complete AND a next milestone was transitioned to (from Step 3):

@@ -10,16 +10,28 @@ You are executing the `/flow:go` skill. This reads the PRD, identifies the next 
 
 **Core principle:** The PRD is the execution contract. You execute what it specifies. Do not freelance.
 
-**Plan mode warning:** Do NOT use this skill with plan mode enabled. `/flow:go` is execution — plan mode's read-only constraint prevents it from creating files, running agents, and committing work. The PRD IS your plan; run `/flow:go` in normal mode.
+**Plan mode warning:** Do NOT use this skill with plan mode enabled. `/flow:go` is execution — plan mode's read-only constraint prevents it from creating files, running agents, and committing work. The PRD is your plan; run `/flow:go` in normal mode.
 
 ## Step 1 — Orient
 
 Read these files (in parallel):
 - `.planning/STATE.md` — current position
 - `.planning/ROADMAP.md` — phase progress
-- `PRD.md` — the execution spec
+- The active PRD (see PRD Resolution below)
 - `tasks/lessons.md` — active lessons (max 10 one-liners)
 - `CLAUDE.md` — execution rules and verification commands
+
+### PRD Resolution
+
+Resolve the PRD file to use, in this order:
+
+1. **User argument:** If the user passed an argument to `/flow:go` (e.g., `/flow:go v3-payments`), match it against files in `.planning/prds/` (by slug or milestone name from the `**Milestone:**` header field).
+2. **STATE.md Active PRD:** Read the "Active PRD" field from STATE.md's Current Position section. If it points to a valid file, use it.
+3. **Slug derivation:** Derive a slug from STATE.md's current milestone name — version-prefix + lowercase name, spaces/special chars → hyphens, collapse consecutive hyphens (e.g., "v2: Dashboard Analytics" → `v2-dashboard-analytics`). Check `.planning/prds/{slug}.md`.
+4. **Legacy fallback:** If `.planning/prds/` is empty or missing but `PRD.md` exists at the project root, use it. Print: "Using legacy PRD.md at project root. Future specs will use `.planning/prds/`."
+5. **Not found:** "No PRD found for [current milestone name]. Available PRDs: [list files in `.planning/prds/`]. Run `/flow:spec` first."
+
+**Milestone match check:** After resolving the PRD, read its `**Milestone:**` header field. If it doesn't match STATE.md's current milestone, warn: "PRD milestone ([PRD milestone]) doesn't match current milestone ([STATE milestone]). Continuing, but verify you're executing the right spec."
 
 **Identify the next phase:** Find the first phase in ROADMAP.md with status "Pending" or the first unstarted phase in the PRD.
 
@@ -27,7 +39,7 @@ Read these files (in parallel):
 
 Run these checks before executing. If any fail, stop and tell the user what to do:
 
-1. **PRD exists?** If `PRD.md` is missing: "No PRD found. Run `/flow:spec` first."
+1. **PRD resolved?** If PRD Resolution (above) reached step 5 (not found): stop with the "No PRD found" message and available PRD list.
 2. **Phase detailed enough?** The phase section in the PRD must have:
    - Wave structure with agent assignments
    - Explicit file lists per agent
@@ -146,6 +158,7 @@ Create an atomic commit for this phase:
 - Files created/modified (count + key names)
 - Commit SHA
 - Phase completion note
+- Keep "Active PRD" field pointing to the resolved PRD path
 
 **ROADMAP.md:** Mark this phase as "Complete ([today's date])"
 

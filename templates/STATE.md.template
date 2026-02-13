@@ -4,6 +4,7 @@
 - **Milestone:** {{FIRST_MILESTONE}} (v1)
 - **Phase:** Not started — run `/flow:spec` to build PRD
 - **Branch:** main
+- **Active PRD:** None — run `/flow:spec` to create
 - **Last Session:** {{DATE}}
 
 ## Milestone Progress

@@ -26,7 +26,7 @@ Claude Code is powerful but unstructured. Without a system, you lose context bet
 Flow fixes this by giving Claude Code a **memory system and execution framework**:
 
 - **Spec interviews** extract decisions upfront so agents execute instead of guessing
-- **PRDs become execution contracts** that agent teams follow phase-by-phase
+- **PRDs become per-milestone execution contracts** in `.planning/prds/` — spec future milestones in parallel
 - **Session handoffs** preserve context across fresh sessions — no more "where was I?"
 - **Lessons compound** — mistakes get captured, refined, and promoted into permanent rules
 
@@ -42,7 +42,7 @@ Flow fixes this by giving Claude Code a **memory system and execution framework*
 ```
 
 1. **`/flow:setup`** — Scaffolds your project with planning docs and execution rules
-2. **`/flow:spec`** — Interviews you, then writes an executable PRD with phases, acceptance criteria, and agent-team structure
+2. **`/flow:spec`** — Interviews you, then writes an executable PRD to `.planning/prds/` with phases, acceptance criteria, and agent-team structure. Can pre-spec future milestones.
 3. **`/flow:go`** — Spawns parallel agent teams to build the next phase, verifies, commits
 4. **`/flow:done`** — Updates docs, captures lessons, generates a handoff prompt so the next session starts instantly
 
@@ -55,7 +55,7 @@ Run `/flow:go` repeatedly until all phases are done, then `/flow:done` to wrap u
 | Command | When to use |
 |---|---|
 | `/flow:setup` | Once per project — creates `.planning/`, CLAUDE.md, templates |
-| `/flow:spec` | Once per milestone — interview that produces the PRD |
+| `/flow:spec` | Once per milestone — interview that produces the PRD. Can pre-spec future milestones |
 | `/flow:go` | Once per phase — executes the next phase with agent teams |
 | `/flow:done` | End of session — updates docs, generates handoff prompt |
 
@@ -107,10 +107,10 @@ Every Flow project gets this structure via `/flow:setup`:
 ```
 your-project/
 ├── CLAUDE.md              # Project-specific execution rules
-├── PRD.md                 # Current milestone spec (created by /flow:spec)
 ├── .planning/
 │   ├── STATE.md           # Session GPS — current status, next actions
 │   ├── ROADMAP.md         # Milestone phases and progress
+│   ├── prds/              # Per-milestone PRD specs (one file per milestone)
 │   └── archive/           # Completed milestones and old PRDs
 └── tasks/
     └── lessons.md         # Active lessons (max 10 one-liners) → promoted to CLAUDE.md

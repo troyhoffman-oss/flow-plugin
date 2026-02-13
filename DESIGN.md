@@ -2,7 +2,7 @@
 
 ## Context
 
-Troy has organically converged on a workflow where a single handoff prompt kicks off full agent-team execution of multi-file phases. The system works because of 5 interlocking parts: PRD (execution contract), STATE.md (GPS), ROADMAP.md (phase status), lessons.md (immune system), and CLAUDE.md (execution rules).
+Troy has organically converged on a workflow where a single handoff prompt kicks off full agent-team execution of multi-file phases. The system works because of 5 interlocking parts: per-milestone PRDs in `.planning/prds/` (execution contracts), STATE.md (GPS), ROADMAP.md (phase status), lessons.md (immune system), and CLAUDE.md (execution rules).
 
 **Problem:** This system evolved through manual effort. Troy wants it formalized into reusable skills so any new project gets this workflow automatically.
 
@@ -37,10 +37,12 @@ Every `/flow:setup` project gets this:
 ```
 project-root/
 ├── CLAUDE.md                    # Project-specific execution rules
-├── PRD.md                       # Current milestone execution spec
 ├── .planning/
 │   ├── STATE.md                 # Session GPS (<80 lines, replaced each session)
 │   ├── ROADMAP.md               # Milestone table + current milestone phases
+│   ├── prds/                    # Per-milestone PRD specs
+│   │   ├── v1-user-auth.md      # e.g., v1 milestone PRD
+│   │   └── v2-dashboard.md      # e.g., v2 milestone PRD (can pre-spec)
 │   └── archive/                 # Completed milestone details, old PRDs
 ├── tasks/
 │   └── lessons.md               # Active lessons (max 10 one-liners)
@@ -65,9 +67,9 @@ project-root/
 
 ## Plan Mode Compatibility
 
-Flow skills are NOT compatible with Claude Code's plan mode. The spec interview (`/flow:spec`) IS the planning phase — it produces a PRD that serves as the execution contract. Plan mode on top of Flow skills creates:
+Flow skills are NOT compatible with Claude Code's plan mode. The spec interview (`/flow:spec`) IS the planning phase — it produces a PRD in `.planning/prds/` that serves as the execution contract. Plan mode on top of Flow skills creates:
 - Double-planning overhead
-- Read-only conflicts (spec needs to write PRD.md iteratively)
+- Read-only conflicts (spec needs to write PRD files iteratively)
 - Wasted context window
 
 If you want a planning gate, run `/flow:spec`. If you want execution, run `/flow:go`. Don't stack plan mode on either.

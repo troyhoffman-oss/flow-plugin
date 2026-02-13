@@ -20,7 +20,7 @@ Read ALL of the following in parallel. If any file is missing, skip it gracefull
 - `.planning/ROADMAP.md`
 - `CLAUDE.md`
 - `tasks/lessons.md`
-- `PRD.md`
+- Active PRD from `.planning/prds/` (if STATE.md "Active PRD" field exists, use that path; else check for legacy `PRD.md` at root)
 
 If no `.planning/` directory exists, print:
 > No `.planning/` directory found — running standalone. Task will still be executed, verified, and committed.
@@ -98,7 +98,7 @@ IF `.planning/STATE.md` exists:
 
 RULES:
 - DO NOT update ROADMAP.md — tasks are not milestone phases.
-- DO NOT update PRD.md — tasks are not part of the spec.
+- DO NOT update any PRD files in `.planning/prds/` — tasks are not part of the spec.
 - DO NOT create `.planning/` if it doesn't exist.
 
 Quick lessons prompt via AskUserQuestion:

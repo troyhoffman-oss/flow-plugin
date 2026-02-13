@@ -81,6 +81,7 @@ Create these 5 files (create directories as needed):
 - **Milestone:** [first milestone name] (v1)
 - **Phase:** Not started — run `/flow:spec` to build PRD
 - **Branch:** main
+- **Active PRD:** None — run `/flow:spec` to create
 - **Last Session:** [today's date]
 
 ## Milestone Progress
@@ -145,10 +146,10 @@ Note: The first milestone gets status "Pending — needs `/flow:spec`". All subs
 1. Read this file (CLAUDE.md)
 2. Read `.planning/STATE.md` for current status
 3. Read `.planning/ROADMAP.md` for milestone progress
-4. Read `PRD.md` for current execution spec (if one exists)
+4. Read active PRD from `.planning/prds/` for current milestone (if one exists)
 
 ## Execution Rules
-- **Plan before building.** For non-trivial work, read the PRD phase section before touching anything.
+- **Plan before building.** For non-trivial work, read the milestone's PRD in `.planning/prds/` before touching anything.
 - **Delegate immediately.** If a task touches 3+ files, spawn an agent team within your first 2 tool calls.
 - **Verify everything.** Run [verification commands from user] after agent work lands. Nothing is done until proven.
 
@@ -176,6 +177,8 @@ One-liner format: `- **[topic]** The rule`
 <!-- EXAMPLE: - **[agent context]** Always tell agents exactly which functions/lines to read — never "read file.ts", say "read file.ts lines 50-120" -->
 ```
 
+**`.planning/prds/`** — Create this empty directory (use `mkdir -p` via Bash). PRDs are stored here per-milestone.
+
 **`.planning/archive/`** — Create this empty directory (use `mkdir -p` via Bash).
 
 ## Step 4: Print Completion Message
@@ -186,6 +189,7 @@ Project initialized:
 - .planning/STATE.md — session GPS
 - .planning/ROADMAP.md — milestone tracker
 - tasks/lessons.md — active lessons (max 10)
+- .planning/prds/ — per-milestone PRD specs
 - .planning/archive/ — for completed milestones
 
 Run `/flow:spec` to plan your first milestone.

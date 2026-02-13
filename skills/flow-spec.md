@@ -10,13 +10,16 @@ You are executing the `/flow:spec` skill. This is the KEYSTONE skill of the flow
 
 **Interview mode:** Always thorough by default. The user can say "done", "finalize", "that's enough", or "move on" at ANY time to wrap up early. Respect their signal and finalize with whatever depth has been achieved.
 
-**Plan mode warning:** Do NOT use this skill with plan mode enabled. Plan mode's read-only constraint prevents PRD.md from being written during the interview. `/flow:spec` IS the planning phase — plan mode on top of it is redundant and breaks the workflow.
+**Plan mode warning:** Do NOT use this skill with plan mode enabled. Plan mode's read-only constraint prevents the PRD from being written during the interview. `/flow:spec` IS the planning phase — plan mode on top of it is redundant and breaks the workflow.
 
 ## Phase 1 — Context Gathering (automatic, no user input needed)
 
 1. Read `.planning/STATE.md` and `.planning/ROADMAP.md` — understand current milestone and what's done
 2. Read `CLAUDE.md` — understand project rules and tech stack
-3. Read `PRD.md` if it exists — check for existing spec to build on
+3. Check for existing PRD:
+   - List `.planning/prds/` directory (if it exists) for existing PRD files
+   - Also check for legacy `PRD.md` at project root (backward compat)
+   - If a PRD exists for the target milestone, note it for resume/extend flow
 4. **Codebase scan** (brownfield projects) — spawn **3 parallel Explore subagents** via the Task tool to scan the codebase without consuming main context:
 
    | Agent | Focus | Looks For |
@@ -34,6 +37,25 @@ You are executing the `/flow:spec` skill. This is the KEYSTONE skill of the flow
 
 5. **Assemble summaries:** Collect the 3 agent summaries into a brief context block (~45 lines total). Print to user: "Here's what I found in the codebase: [key components, patterns, data layer]. Starting the spec interview."
 
+## Milestone Targeting
+
+Before starting the interview, determine which milestone this PRD targets:
+
+1. **If the user passed an argument** (e.g., `/flow:spec v3: Payments`) — match against ROADMAP.md milestones. If no match, print available milestones and ask which one.
+
+2. **If no argument** — default to the current milestone from STATE.md "Milestone" field.
+
+3. **Derive the PRD slug:** Take the milestone's version prefix and name (e.g., "v3: Dashboard Analytics"), lowercase it, replace spaces and special characters with hyphens, collapse consecutive hyphens. Result: `v3-dashboard-analytics`. The PRD path is `.planning/prds/{slug}.md`.
+
+4. **Check for existing PRD at that path:**
+   - **If PRD exists** → Use AskUserQuestion: "A PRD already exists for this milestone at `.planning/prds/{slug}.md`. What would you like to do?"
+     - "Resume editing" — load the existing PRD and continue the interview from where it left off
+     - "Start fresh" — delete the existing PRD and start a new interview
+     - "Pick a different milestone" — show available milestones
+   - **If no PRD exists** → Proceed with a fresh interview
+
+5. **Future milestone detection:** If the target milestone is NOT the current milestone in STATE.md, note this — the PRD will be written but STATE.md's "Active PRD" field will NOT be updated (it stays pointing at the current milestone's PRD). Print: "Speccing future milestone [name]. STATE.md will not be updated — this PRD will be available when you reach this milestone."
+
 ## Phase 2 — Adaptive Interview
 
 ### CRITICAL RULES (follow these exactly)
@@ -50,7 +72,7 @@ You are executing the `/flow:spec` skill. This is the KEYSTONE skill of the flow
 
 3. **CONTINUE UNTIL THE USER SAYS STOP.** Do NOT stop after covering all 7 areas once. After each answer, immediately ask the next question. Keep going deeper until the user says "done", "finalize", "that's enough", "ship it", or similar. A thorough interview is 15-30 questions, not 5.
 
-4. **MAINTAIN A RUNNING DRAFT.** Every 2-3 questions, update PRD.md with what you've learned so far. Print: "Updated PRD draft — added [brief summary]." The user should see the spec taking shape in real-time, not all at the end.
+4. **MAINTAIN A RUNNING DRAFT.** Every 2-3 questions, update `.planning/prds/{slug}.md` with what you've learned so far (create `.planning/prds/` directory if it doesn't exist). Print: "Updated PRD draft — added [brief summary]." The user should see the spec taking shape in real-time, not all at the end.
 
 5. **BE ADAPTIVE.** Base your next question on the previous answer. If the user reveals something surprising, probe deeper on THAT — don't robotically move to the next category. The best specs come from following interesting threads.
 
@@ -140,11 +162,12 @@ If any check fails, print what's missing and use AskUserQuestion:
 
 ### Write PRD
 
-Write `PRD.md` to the project root with this EXACT structure:
+Write the PRD to `.planning/prds/{slug}.md` (create `.planning/prds/` directory first if it doesn't exist) with this EXACT structure:
 
 ```markdown
 # [Milestone Name] — Specification
 
+**Milestone:** [full milestone name, e.g., "v3: Dashboard Analytics"]
 **Status:** Ready for execution
 **Branch:** feat/[milestone-slug]
 **Created:** [today's date]
@@ -233,21 +256,25 @@ Write `PRD.md` to the project root with this EXACT structure:
 
 ## Phase 4 — Post-PRD Updates
 
-After writing PRD.md:
+After writing the PRD to `.planning/prds/{slug}.md`:
 
 1. **Update ROADMAP.md:** Add phase breakdown under the current milestone section. Each phase gets a row in the progress table with status "Pending".
 
-2. **Update STATE.md:** Set current phase to "Phase 1 — ready for `/flow:go`". Update "Next Actions" to reference the first phase.
+2. **Update STATE.md** (current milestone only):
+   - Set current phase to "Phase 1 — ready for `/flow:go`"
+   - Set "Active PRD" to `.planning/prds/{slug}.md`
+   - Update "Next Actions" to reference the first phase
+   - **Skip this step if speccing a future milestone** — STATE.md stays pointing at the current milestone. Print: "PRD written to `.planning/prds/{slug}.md`. STATE.md not updated (future milestone)."
 
 3. **Generate Phase 1 handoff prompt:**
    ```
-   Phase 1: [Name] — [short description]. Read STATE.md, ROADMAP.md, and PRD.md.
+   Phase 1: [Name] — [short description]. Read STATE.md, ROADMAP.md, and .planning/prds/{slug}.md.
    [One sentence of context about what Phase 1 builds].
    ```
 
 4. Print the handoff prompt in a fenced code block.
 
-5. Print: "PRD ready. Run `/flow:go` to execute Phase 1, or review PRD.md first."
+5. Print: "PRD ready at `.planning/prds/{slug}.md`. Run `/flow:go` to execute Phase 1, or review the PRD first."
 
 ## Quality Gates
 
@@ -256,6 +283,7 @@ Before finalizing, self-check the PRD:
 - [ ] Every user story has checkbox acceptance criteria that are testable
 - [ ] Every phase has verification commands
 - [ ] "Key Existing Code" section references actual files/functions found in the codebase scan
+- [ ] PRD is written to `.planning/prds/{slug}.md`, NOT to root `PRD.md`
 - [ ] No phase has more than 5 agents in a single wave (too many = coordination overhead)
 - [ ] Sacred code section is populated (even if empty with "None identified")
 

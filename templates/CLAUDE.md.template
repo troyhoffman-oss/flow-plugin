@@ -9,10 +9,10 @@
 1. Read this file (CLAUDE.md)
 2. Read `.planning/STATE.md` for current status
 3. Read `.planning/ROADMAP.md` for milestone progress
-4. Read `PRD.md` for current execution spec (if one exists)
+4. Read active PRD from `.planning/prds/` for current milestone (if one exists)
 
 ## Execution Rules
-- **Plan before building.** For non-trivial work, read the PRD phase section before touching anything.
+- **Plan before building.** For non-trivial work, read the milestone's PRD in `.planning/prds/` before touching anything.
 - **Delegate immediately.** If a task touches 3+ files, spawn an agent team within your first 2 tool calls.
 - **Verify everything.** Run {{VERIFY_COMMANDS}} after agent work lands. Nothing is done until proven.
 

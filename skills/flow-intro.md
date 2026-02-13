@@ -24,6 +24,8 @@ Flow is 6 commands that turn your specs into shipped code through agent teams. E
   full roadmap)  |     auto-transitions to          |
                  +---- next planned milestone ------+
 
+/flow:spec ← can pre-spec future milestones (each gets its own PRD in .planning/prds/)
+
 /flow:milestone ← add milestones to roadmap anytime
 /flow:task      ← standalone path for bug fixes, cleanup, small features (no PRD needed)
 ```
@@ -50,8 +52,9 @@ Flow is 6 commands that turn your specs into shipped code through agent teams. E
 **`/flow:spec`** — Run once per milestone
 - Interviews you about scope, user stories, technical design, trade-offs, and phasing
 - You can say "done" or "that's enough" anytime to cut the interview short
-- Produces `PRD.md` — the execution contract with wave-based phases, file lists, and acceptance criteria
-- Updates ROADMAP and STATE to reflect the plan
+- Produces `.planning/prds/{milestone}.md` — the execution contract with wave-based phases, file lists, and acceptance criteria
+- Can pre-spec future milestones in parallel terminal windows (each milestone gets its own PRD file)
+- Updates ROADMAP and STATE to reflect the plan (for the current milestone; future milestone specs skip STATE updates)
 
 **`/flow:go`** — Run once per phase (this is where the work happens)
 - Reads the PRD, finds the next pending phase
