@@ -19,16 +19,21 @@ npx flow-cc
 
 One command. Installs skills, hooks, templates, and configures your statusLine. Works on Mac, Linux, and Windows.
 
+---
+
 ## Why Flow?
 
 Claude Code is powerful but unstructured. Without a system, you lose context between sessions, repeat mistakes, and waste tokens re-explaining what you've already decided.
 
-Flow fixes this by giving Claude Code a **memory system and execution framework**:
+Flow gives Claude Code a **memory system and execution framework**:
 
 - **Spec interviews** extract decisions upfront so agents execute instead of guessing
-- **PRDs become per-milestone execution contracts** in `.planning/prds/` — spec future milestones in parallel
-- **Session handoffs** preserve context across fresh sessions — no more "where was I?"
+- **Per-milestone PRDs** in `.planning/prds/` become execution contracts — spec future milestones in parallel
+- **Wave-based agent teams** execute phases autonomously with built-in verification
+- **Session handoffs** preserve full context across fresh sessions — no more "where was I?"
 - **Lessons compound** — mistakes get captured, refined, and promoted into permanent rules
+
+---
 
 ## How It Works
 
@@ -42,44 +47,107 @@ Flow fixes this by giving Claude Code a **memory system and execution framework*
 ```
 
 1. **`/flow:setup`** — Scaffolds your project with planning docs and execution rules
-2. **`/flow:spec`** — Interviews you, then writes an executable PRD to `.planning/prds/` with phases, acceptance criteria, and agent-team structure. Can pre-spec future milestones.
+2. **`/flow:spec`** — Interviews you, then writes an executable PRD with phases, acceptance criteria, and agent-team structure
 3. **`/flow:go`** — Spawns parallel agent teams to build the next phase, verifies, commits
 4. **`/flow:done`** — Updates docs, captures lessons, generates a handoff prompt so the next session starts instantly
 
 Run `/flow:go` repeatedly until all phases are done, then `/flow:done` to wrap up. Next session, paste the handoff prompt and keep going.
 
+---
+
+## Multi-PRD: Parallel Milestone Planning
+
+<table>
+<tr>
+<td width="50%">
+
+**Before (single PRD)**
+```
+project/
+└── PRD.md          ← one at a time
+```
+Finish or archive the current milestone before speccing the next. Serial bottleneck on large roadmaps.
+
+</td>
+<td width="50%">
+
+**Now (per-milestone PRDs)**
+```
+.planning/prds/
+├── v1-user-auth.md       ← active
+├── v2-dashboard.md       ← pre-specced
+└── v3-payments.md        ← pre-specced
+```
+Spec any milestone at any time. Execute the current one while planning ahead.
+
+</td>
+</tr>
+</table>
+
+**How it works:**
+
+- `/flow:spec` writes PRDs to `.planning/prds/{version-slug}.md` — one file per milestone
+- `/flow:spec v3: Payments` targets a specific future milestone without changing your current position
+- STATE.md tracks the **Active PRD** field so `/flow:go` always knows which spec to execute
+- Smart resolution: user argument > STATE.md > slug derivation > legacy fallback
+- Existing `PRD.md` at root? Still works — legacy files are consumed transparently and migrated on archive
+
+---
+
 ## Commands
 
-**The build cycle:**
+### The Build Cycle
 
-| Command | When to use |
-|---|---|
-| `/flow:setup` | Once per project — creates `.planning/`, CLAUDE.md, templates |
-| `/flow:spec` | Once per milestone — interview that produces the PRD. Can pre-spec future milestones |
-| `/flow:go` | Once per phase — executes the next phase with agent teams |
-| `/flow:done` | End of session — updates docs, generates handoff prompt |
+| Command | When | What it does |
+|---|---|---|
+| `/flow:setup` | Once per project | Creates `.planning/`, CLAUDE.md, templates, full roadmap |
+| `/flow:spec` | Once per milestone | Interview that produces an executable PRD in `.planning/prds/` |
+| `/flow:go` | Once per phase | Executes the next phase with wave-based agent teams |
+| `/flow:done` | End of session | Updates docs, captures lessons, generates handoff prompt |
 
-**Standalone:**
+### Standalone
 
-| Command | When to use |
-|---|---|
-| `/flow:task` | Anytime — bug fixes, cleanup, small features (no PRD needed) |
-| `/flow:milestone` | Anytime — add new milestones to the roadmap |
+| Command | When | What it does |
+|---|---|---|
+| `/flow:task` | Anytime | Bug fixes, cleanup, small features — no PRD needed |
+| `/flow:milestone` | Anytime | Add new milestones to the roadmap |
 
-**Utility:**
+### Utility
 
-| Command | When to use |
-|---|---|
-| `/flow:intro` | First time — walkthrough of the system |
-| `/flow:status` | Anytime — where am I? What's next? |
-| `/flow:update` | Anytime — update Flow to the latest version |
+| Command | When | What it does |
+|---|---|---|
+| `/flow:intro` | First time | Walkthrough of the entire system |
+| `/flow:status` | Anytime | Where am I? What's next? Shows PRD inventory |
+| `/flow:update` | Anytime | Update Flow to the latest version |
+
+---
+
+## Project Structure
+
+Every Flow project gets this structure via `/flow:setup`:
+
+```
+your-project/
+├── CLAUDE.md                    # Execution rules + learned rules
+├── .planning/
+│   ├── STATE.md                 # Session GPS — current status, active PRD, next actions
+│   ├── ROADMAP.md               # Milestone phases and progress tracking
+│   ├── prds/                    # Per-milestone PRD specs
+│   │   ├── v1-user-auth.md      #   One file per milestone
+│   │   └── v2-dashboard.md      #   Pre-spec future milestones anytime
+│   └── archive/                 # Completed milestones and archived PRDs
+└── tasks/
+    └── lessons.md               # Active lessons (max 10) → promoted to CLAUDE.md
+```
+
+---
 
 ## What Gets Installed
 
 ```
 ~/.claude/
 ├── commands/flow/
-│   ├── flow-setup.md         # 9 skill files
+│   ├── flow-setup.md            # 9 skill files
 │   ├── flow-milestone.md
 │   ├── flow-spec.md
 │   ├── flow-go.md
@@ -89,32 +157,18 @@ Run `/flow:go` repeatedly until all phases are done, then `/flow:done` to wrap u
 │   ├── flow-intro.md
 │   ├── flow-update.md
 │   ├── VERSION
-│   └── templates/            # Project scaffolding templates
+│   └── templates/               # Project scaffolding templates
 │       ├── CLAUDE.md.template
 │       ├── STATE.md.template
 │       ├── ROADMAP.md.template
 │       └── lessons.md.template
 ├── hooks/
-│   ├── flow-check-update.js  # Notifies when updates are available
-│   └── flow-statusline.js    # Shows project context in statusLine
-└── settings.json             # statusLine configured automatically
+│   ├── flow-check-update.js     # Notifies when updates are available
+│   └── flow-statusline.js       # Shows project context in statusLine
+└── settings.json                # statusLine configured automatically
 ```
 
-## Project Structure
-
-Every Flow project gets this structure via `/flow:setup`:
-
-```
-your-project/
-├── CLAUDE.md              # Project-specific execution rules
-├── .planning/
-│   ├── STATE.md           # Session GPS — current status, next actions
-│   ├── ROADMAP.md         # Milestone phases and progress
-│   ├── prds/              # Per-milestone PRD specs (one file per milestone)
-│   └── archive/           # Completed milestones and old PRDs
-└── tasks/
-    └── lessons.md         # Active lessons (max 10 one-liners) → promoted to CLAUDE.md
-```
+---
 
 ## The Lessons System
 
@@ -125,9 +179,13 @@ Flow's knowledge compounding is what makes it get better over time:
 
 Hard caps prevent context bloat. Total worst-case: ~30 lines of lessons context per session.
 
+---
+
 ## Compatible With GSD
 
-Flow uses the same `.planning/` directory structure as [GSD](https://github.com/gsd-framework/gsd). You can use `/gsd:debug`, `/gsd:map-codebase`, and other GSD commands alongside Flow.
+Flow uses the same `.planning/` directory structure as [GSD](https://github.com/gsd-framework/gsd). You can use `/gsd:debug`, `/gsd:map-codebase`, and other GSD commands alongside Flow without conflict.
+
+---
 
 ## Requirements
 
