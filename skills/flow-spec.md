@@ -43,7 +43,7 @@ Before starting the interview, determine which milestone this PRD targets:
 
 1. **If the user passed an argument** (e.g., `/flow:spec v3: Payments`) — match against ROADMAP.md milestones. If no match, print available milestones and ask which one.
 
-2. **If no argument** — default to the current milestone from STATE.md "Milestone" field.
+2. **If no argument** — read ROADMAP.md and list all incomplete milestones. Use AskUserQuestion to let the user pick which milestone to spec. Pre-select the current milestone from STATE.md as the first option (marked as "current"). If only one incomplete milestone exists, skip the prompt and use it directly.
 
 3. **Derive the PRD slug:** Take the milestone's version prefix and name (e.g., "v3: Dashboard Analytics"), lowercase it, replace spaces and special characters with hyphens, collapse consecutive hyphens. Result: `v3-dashboard-analytics`. The PRD path is `.planning/prds/{slug}.md`.
 
