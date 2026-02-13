@@ -43,18 +43,14 @@ project-root/
 │   ├── ROADMAP.md               # Milestone table + current milestone phases
 │   └── archive/                 # Completed milestone details, old PRDs
 ├── tasks/
-│   └── lessons.md               # Anti-pattern catalog (PATTERN/CAUSE/FIX/RULE)
+│   └── lessons.md               # Active lessons (max 10 one-liners)
 ```
 
 ## Lessons Lifecycle
 
-**Stage 1 -- Capture:** Mistake happens, lesson written to `tasks/lessons.md`
+**Stage 1 -- Capture:** Mistake happens, one-liner written to `tasks/lessons.md` (max 10 active)
 
-**Stage 2 -- Refine:** Each `/flow:done` merges duplicates, sharpens, deletes obvious
-
-**Stage 3 -- Promote to Global:** Universal lessons go to `~/.claude/lessons.md`
-
-**Stage 4 -- Promote to CLAUDE.md:** Recurring patterns become permanent execution rules
+**Stage 2 -- Promote:** When lessons.md hits 10 items, most battle-tested lesson promotes to `CLAUDE.md ## Learned Rules` (max 15), freeing a slot for new lessons
 
 ## What NOT to Build
 

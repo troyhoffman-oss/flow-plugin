@@ -104,9 +104,10 @@ RULES:
 Quick lessons prompt via AskUserQuestion:
 - "Any lessons from this task worth capturing?"
   - Option 1: "No, nothing new" — Skip lessons.
-  - Option 2: "Yes, let me describe it" — Capture to `tasks/lessons.md` in PATTERN/CAUSE/FIX/RULE format.
+  - Option 2: "Yes, let me describe it" — Capture to `tasks/lessons.md` as a one-liner: `- **[topic]** The rule`
 
 If `tasks/lessons.md` doesn't exist, skip the lessons prompt.
+If lessons.md already has 10 items, promote the most battle-tested to `CLAUDE.md ## Learned Rules` before adding the new one.
 
 ## Step 9 — Summary
 

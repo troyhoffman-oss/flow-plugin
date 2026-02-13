@@ -1,22 +1,5 @@
-# {{PROJECT_NAME}} — Lessons Learned
+# {{PROJECT_NAME}} — Lessons (max 10 active)
 
-Format: PATTERN → CAUSE → FIX → RULE
+One-liner format: `- **[topic]** The rule`
 
-## Execution Patterns
-<!-- Lessons about workflow, delegation, verification -->
-
-<!-- EXAMPLE (replace with real lessons as you work):
-
-### Agent context overflow on large files
-- **PATTERN:** Spawned agent tried to read a 2000-line file and ran out of context before finishing its task
-- **CAUSE:** Agent prompt didn't specify which lines/functions to read — it read the whole file
-- **FIX:** Added explicit line ranges and function names to the agent prompt
-- **RULE:** Always tell agents exactly which functions/sections to read. Never say "read file.ts" — say "read file.ts lines 50-120 (the handleSubmit function)"
-
-END EXAMPLE -->
-
-## Domain Knowledge
-<!-- Lessons about business logic, data models, user behavior -->
-
-## Technical Patterns
-<!-- Lessons about the tech stack, libraries, deployment -->
+<!-- EXAMPLE: - **[agent context]** Always tell agents exactly which functions/lines to read — never "read file.ts", say "read file.ts lines 50-120" -->

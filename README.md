@@ -113,19 +113,17 @@ your-project/
 │   ├── ROADMAP.md         # Milestone phases and progress
 │   └── archive/           # Completed milestones and old PRDs
 └── tasks/
-    └── lessons.md         # Mistake catalog → refined into permanent rules
+    └── lessons.md         # Active lessons (max 10 one-liners) → promoted to CLAUDE.md
 ```
 
 ## The Lessons System
 
 Flow's knowledge compounding is what makes it get better over time:
 
-1. **Capture** — Mistake happens, lesson written to `tasks/lessons.md`
-2. **Refine** — Each `/flow:done` merges duplicates, sharpens rules, removes obvious ones
-3. **Promote** — Universal lessons move to `~/.claude/lessons.md` (all projects)
-4. **Permanence** — Recurring patterns become rules in `CLAUDE.md`
+1. **Capture** — Mistake happens, one-liner written to `tasks/lessons.md` (max 10 active)
+2. **Promote** — When full, most battle-tested lesson moves to `CLAUDE.md ## Learned Rules` (max 15 permanent)
 
-The goal: fewer, sharper lessons over time — not an ever-growing list.
+Hard caps prevent context bloat. Total worst-case: ~30 lines of lessons context per session.
 
 ## Compatible With GSD
 

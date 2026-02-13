@@ -18,7 +18,7 @@ Read these files (in parallel):
 - `.planning/STATE.md` — current position
 - `.planning/ROADMAP.md` — phase progress
 - `PRD.md` — the execution spec
-- `tasks/lessons.md` — anti-patterns to avoid
+- `tasks/lessons.md` — active lessons (max 10 one-liners)
 - `CLAUDE.md` — execution rules and verification commands
 
 **Identify the next phase:** Find the first phase in ROADMAP.md with status "Pending" or the first unstarted phase in the PRD.
@@ -76,7 +76,7 @@ so agents have it in their context without needing to search.]
 - Stage only your files when committing (never `git add .` or `git add -A`)
 - If you need output from another agent that isn't available yet, create a temporary stub and continue. Delete the stub before your final commit.
 
-## Anti-Patterns to Avoid
+## Lessons (Rules to Follow)
 [Relevant lessons from tasks/lessons.md — filter to lessons that apply to this agent's work]
 ```
 

@@ -23,8 +23,11 @@
 ## Session-End Docs (MANDATORY)
 1. `.planning/STATE.md` — replace session notes (don't append), keep <80 lines
 2. `.planning/ROADMAP.md` — update phase progress
-3. `tasks/lessons.md` — add new lessons, refine existing ones
+3. `tasks/lessons.md` — add new one-liner lessons, enforce max 10 cap (promote to Learned Rules when full)
 4. Commit doc updates to feature branch
+
+## Learned Rules
+<!-- Max 15 permanent one-liners promoted from tasks/lessons.md -->
 
 ## Critical Rules
 - No assumptions — ask if requirements unclear

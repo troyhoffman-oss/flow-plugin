@@ -222,7 +222,7 @@ Write `PRD.md` to the project root with this EXACT structure:
 2. Verify after every phase: [verification commands from CLAUDE.md]
 3. Atomic commits after each agent's work lands
 4. Never `git add .` — stage specific files only
-5. Read `tasks/lessons.md` before spawning agents — inject relevant anti-patterns
+5. Read `tasks/lessons.md` before spawning agents — inject relevant lessons into agent prompts
 
 ## Definition of Done
 - [ ] All user story acceptance criteria pass

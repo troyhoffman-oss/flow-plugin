@@ -17,7 +17,7 @@ You are executing the `/flow:done` skill. This finalizes the current session by 
 Read these files (in parallel where possible):
 - `.planning/STATE.md` — current state
 - `.planning/ROADMAP.md` — milestone/phase progress
-- `tasks/lessons.md` — existing lessons
+- `tasks/lessons.md` — active lessons (max 10)
 - `CLAUDE.md` — project rules
 - `PRD.md` — current spec (if exists)
 
@@ -83,9 +83,14 @@ Structure:
   - "No new lessons"
   - "Yes, let me add some" (user types them)
   - "Use your suggestions" (if you auto-suggested any)
-- Add new lessons in PATTERN/CAUSE/FIX/RULE format
-- **Refine existing lessons:** merge duplicates, sharpen vague rules, delete obvious ones
-- **Promote check:** For lessons that seem universal (not project-specific), ask: "This lesson seems universal. Promote to global lessons (~/.claude/lessons.md)?"
+- Add new lessons as one-liners: `- **[topic]** The rule`
+- **Hard cap enforcement (max 10 active):**
+  - If lessons.md already has 10 items and a new one needs to be added:
+    1. Identify the most battle-tested/internalized lesson
+    2. Promote it to `CLAUDE.md ## Learned Rules` section
+    3. Delete it from lessons.md
+    4. Add the new lesson
+  - If `CLAUDE.md ## Learned Rules` hits 15 items, delete the most obvious/internalized rule to make room
 
 ### 5. Commit Doc Updates
 
@@ -119,7 +124,7 @@ Print the handoff prompt in a fenced code block so the user can copy it.
 Session complete.
 - STATE.md: updated
 - ROADMAP.md: [N] phases marked complete
-- lessons.md: [N] lessons added, [N] refined
+- lessons.md: [N]/10 active, [N] promoted to CLAUDE.md
 - Committed: [SHA]
 
 Handoff prompt:

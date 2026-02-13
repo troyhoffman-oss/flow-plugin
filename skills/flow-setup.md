@@ -169,18 +169,11 @@ Note: The first milestone gets status "Pending — needs `/flow:spec`". All subs
 
 **`tasks/lessons.md`:**
 ```
-# [Project Name] — Lessons Learned
+# [Project Name] — Lessons (max 10 active)
 
-Format: PATTERN → CAUSE → FIX → RULE
+One-liner format: `- **[topic]** The rule`
 
-## Execution Patterns
-<!-- Lessons about workflow, delegation, verification -->
-
-## Domain Knowledge
-<!-- Lessons about business logic, data models, user behavior -->
-
-## Technical Patterns
-<!-- Lessons about the tech stack, libraries, deployment -->
+<!-- EXAMPLE: - **[agent context]** Always tell agents exactly which functions/lines to read — never "read file.ts", say "read file.ts lines 50-120" -->
 ```
 
 **`.planning/archive/`** — Create this empty directory (use `mkdir -p` via Bash).
@@ -192,7 +185,7 @@ Project initialized:
 - CLAUDE.md — project execution rules
 - .planning/STATE.md — session GPS
 - .planning/ROADMAP.md — milestone tracker
-- tasks/lessons.md — anti-pattern catalog
+- tasks/lessons.md — active lessons (max 10)
 - .planning/archive/ — for completed milestones
 
 Run `/flow:spec` to plan your first milestone.

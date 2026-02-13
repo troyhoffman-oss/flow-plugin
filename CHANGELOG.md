@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.3] - 2026-02-12
+
+### Changed
+- Lessons system refactored to 2-stage with hard caps — `tasks/lessons.md` max 10 active one-liners, `CLAUDE.md ## Learned Rules` max 15 permanent one-liners
+- Replaced verbose PATTERN/CAUSE/FIX/RULE format with compact one-liner format: `- **[topic]** The rule`
+- Removed 4-stage lifecycle (Capture → Refine → Promote Global → Promote CLAUDE.md), replaced with 2-stage (Capture → Promote to CLAUDE.md when full)
+- Removed all references to `~/.claude/lessons.md` global lessons file
+- `/flow:done` now enforces cap: promotes most battle-tested lesson to CLAUDE.md when lessons.md hits 10
+- `/flow:status` shows `[N]/10 active` instead of `[N] rules`
+- Agent prompts section renamed from "Anti-Patterns to Avoid" to "Lessons (Rules to Follow)"
+- CLAUDE.md template now includes `## Learned Rules` placeholder section
+- Updated DESIGN.md, README.md, and all skill files to reflect 2-stage system
+
 ## [0.4.2] - 2026-02-11
 
 ### Fixed

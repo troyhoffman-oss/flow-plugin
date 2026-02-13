@@ -64,7 +64,7 @@ Use this explicit decision tree:
 Milestone: [name] ([X/Y] phases complete)
 Last session: [date] — [what was built]
 Next: Phase [N] — [name] ([short description])
-Lessons: [N] rules
+Lessons: [N]/10 active
 
 [routing recommendations from Step 3]
 ```

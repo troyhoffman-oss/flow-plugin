@@ -64,7 +64,7 @@ Flow is 6 commands that turn your specs into shipped code through agent teams. E
 - Replaces STATE.md with current status
 - Updates ROADMAP.md with phase completions
 - Auto-transitions to the next planned milestone when the current one completes
-- Asks about lessons, refines existing ones
+- Captures lessons as one-liners, enforces 10-item cap (promotes to CLAUDE.md when full)
 - Commits doc updates
 - Generates a handoff prompt you copy-paste to start the next session
 
