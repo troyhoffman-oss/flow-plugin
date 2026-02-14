@@ -110,6 +110,7 @@ Spec any milestone at any time. Execute the current one while planning ahead.
 | Command | When | What it does |
 |---|---|---|
 | `/flow:task` | Anytime | Bug fixes, cleanup, small features — no PRD needed |
+| `/flow:triage` | Anytime | Brain dump → categorized Linear issues, ROADMAP entries, lessons |
 | `/flow:milestone` | Anytime | Add new milestones to the roadmap |
 
 ### Utility
@@ -129,8 +130,11 @@ Every Flow project gets this structure via `/flow:setup`:
 ```
 your-project/
 ├── CLAUDE.md                    # Execution rules + learned rules
+├── .claude/
+│   └── memory/
+│       └── session.md           # Per-developer session state (gitignored)
 ├── .planning/
-│   ├── STATE.md                 # Session GPS — current status, active PRD, next actions
+│   ├── STATE.md                 # Project-level GPS — shared across developers
 │   ├── ROADMAP.md               # Milestone phases and progress tracking
 │   ├── prds/                    # Per-milestone PRD specs
 │   │   ├── v1-user-auth.md      #   One file per milestone
@@ -147,7 +151,7 @@ your-project/
 ```
 ~/.claude/
 ├── commands/flow/
-│   ├── flow-setup.md            # 9 skill files
+│   ├── flow-setup.md            # 10 skill files
 │   ├── flow-milestone.md
 │   ├── flow-spec.md
 │   ├── flow-go.md
@@ -155,13 +159,15 @@ your-project/
 │   ├── flow-done.md
 │   ├── flow-status.md
 │   ├── flow-intro.md
+│   ├── flow-triage.md
 │   ├── flow-update.md
 │   ├── VERSION
 │   └── templates/               # Project scaffolding templates
 │       ├── CLAUDE.md.template
 │       ├── STATE.md.template
 │       ├── ROADMAP.md.template
-│       └── lessons.md.template
+│       ├── lessons.md.template
+│       └── session.md.template
 ├── hooks/
 │   ├── flow-check-update.js     # Notifies when updates are available
 │   └── flow-statusline.js       # Shows project context in statusLine
@@ -178,6 +184,31 @@ Flow's knowledge compounding is what makes it get better over time:
 2. **Promote** — When full, most battle-tested lesson moves to `CLAUDE.md ## Learned Rules` (max 15 permanent)
 
 Hard caps prevent context bloat. Total worst-case: ~30 lines of lessons context per session.
+
+---
+
+## Multi-Developer Support
+
+Flow supports multiple developers on the same repo without conflicts:
+
+- **`session.md`** — Per-developer session state, stored in `.claude/memory/session.md` (gitignored). Each developer has their own session GPS that never conflicts.
+- **`STATE.md`** — Shared project-level state in `.planning/STATE.md`. Updated at milestone boundaries only (not every session), so conflicts are rare.
+- **Developer identity** — `/flow:spec` and `/flow:go` track who is working on what. PRDs can be assigned to specific developers (advisory, not blocking).
+- **Template provided** — `session.md.template` scaffolds the per-developer file on first use.
+
+---
+
+## Linear Integration
+
+Flow optionally integrates with Linear via MCP for issue tracking:
+
+- **`/flow:spec`** can create Linear issues automatically from PRD phases
+- **`/flow:done`** can post progress comments to Linear issues
+- **`/flow:triage`** sorts unstructured brain dumps into categorized Linear issues, ROADMAP entries, and lessons
+- **Branch convention** `feat/msig-{issue#}-desc` auto-links PRs to Linear issues
+- **Auto-close** — `Closes MSIG-XX` in PR body triggers Linear status transition on merge
+
+Requires the [Linear MCP server](https://www.npmjs.com/package/@anthropic/linear-mcp-server) to be configured.
 
 ---
 

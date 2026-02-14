@@ -73,3 +73,24 @@ Flow skills are NOT compatible with Claude Code's plan mode. The spec interview 
 - Wasted context window
 
 If you want a planning gate, run `/flow:spec`. If you want execution, run `/flow:go`. Don't stack plan mode on either.
+
+## Multi-Developer Architecture
+
+### File Ownership Model
+
+Flow splits state into shared and per-developer files:
+
+| File | Scope | Git | Update Frequency |
+|------|-------|-----|-----------------|
+| `STATE.md` | Project-level | Committed | Milestone boundaries |
+| `ROADMAP.md` | Project-level | Committed | Milestone boundaries |
+| `session.md` | Per-developer | Gitignored | Every session |
+| `lessons.md` | Shared | Committed | Every session (append-only) |
+| `CLAUDE.md` | Shared | Committed | Rarely (promoted lessons) |
+
+### Design Decisions
+
+- **Linear is assignment authority, Flow is execution authority.** Linear tracks who owns what issue. Flow tracks execution state (which phase, which agent wave). Neither duplicates the other's data.
+- **session.md is gitignored** — eliminates merge conflicts from parallel developers. Each developer's session state is local-only. Project-level state lives in STATE.md (committed, updated rarely).
+- **PRD assignability is advisory** — PRDs can note which developer is assigned, but this is metadata for humans, not enforcement logic. Any developer can run `/flow:go` on any PRD.
+- **session.md lifecycle:** Created on first `/flow:done`, replaced (not appended) each session. Contains: where you left off, what's in flight, what's next. Max 40 lines.
