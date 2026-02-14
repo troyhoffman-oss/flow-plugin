@@ -163,18 +163,35 @@ Create an atomic commit for this phase:
 
 **ROADMAP.md:** Mark this phase as "Complete ([today's date])"
 
-## Step 7 — Route Next Action
+## Step 7 — Route Next Action (MANDATORY — FINAL STEP)
 
-Print phase summary:
+**STOP RULE:** This is the LAST thing you do. After printing the output below, STOP IMMEDIATELY. Do NOT:
+- Review or resolve code review comments
+- Create or update pull requests
+- Run additional cleanup or refactoring
+- Do any work beyond printing this summary
+
+Any post-phase work belongs in a SEPARATE `/flow:go` invocation or `/flow:task`.
+
+Print this EXACT structure (fill in values):
+
 ```
-Phase [N]: [Name] — Complete
+Phase [N]: [Name] — Complete ✓
 - [X] files created, [Y] modified
 - Commit: [SHA]
-- Verification: passed
+- Verification: [passed/failed]
 
-Next:
-- /flow:go for Phase [N+1]: [Next Phase Name]
-- /flow:done to end session
+Next flow command:
+→ /flow:go — execute Phase [N+1]: [Next Phase Name]
+→ /flow:done — end session, update docs, generate handoff prompt
 ```
 
-If this was the last phase: "All phases complete! Run `/flow:done` to finalize."
+If this was the last phase, replace the flow commands block with:
+
+```
+All phases complete — milestone done!
+
+→ /flow:done — finalize session (REQUIRED before ending)
+```
+
+**CRITICAL:** The `→ /flow:done` line MUST appear in EVERY phase completion output, whether or not more phases remain. This is non-negotiable. `/flow:done` is how session-end documentation happens.
