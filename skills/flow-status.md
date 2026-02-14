@@ -19,6 +19,8 @@ Read ALL of the following in parallel:
 - Also check for legacy `PRD.md` at project root (backward compat)
 - Read the active PRD (from STATE.md "Active PRD" field) to get phase details
 - Count lessons in `tasks/lessons.md` (if exists)
+- `.claude/memory/session.md` (if exists) — personal session state
+- Run `git config user.name` to get developer identity
 
 IF both STATE.md AND ROADMAP.md are missing:
 - Print: "No flow project found. Run `/flow:setup` to set up, or `/flow:task` for a quick standalone fix."
@@ -72,6 +74,8 @@ Do NOT append a milestone name, do NOT say "for v16" or "to plan v16" or any var
 
 ```
 Milestone: [name] ([X/Y] phases complete)
+Developer: [git config user.name]
+Session: [session.md "Working On" field if session.md exists, or "No active session"]
 Last session: [date] — [what was built]
 Next: Phase [N] — [name] ([short description])
 Lessons: [N]/10 active
@@ -87,6 +91,11 @@ PRDs:
 ```
 
 The PRDs section shows all PRD files found. Mark the one matching STATE.md's "Active PRD" as "(active — current milestone)". Mark others as "(ready — future milestone)". If a legacy root `PRD.md` exists, show it as "(legacy — at project root)". Omit the PRDs section entirely if no PRD files exist anywhere.
+
+When listing PRDs, if a PRD has `**Assigned To:**` fields in its phase sections, show assignment status in the PRD listing, e.g.:
+```
+  * {slug}.md (active — Phase 3 assigned to Matt, Phase 4 unassigned)
+```
 
 Adapt the block based on available information. If STATE.md is missing, omit "Last session". If ROADMAP.md is missing, omit phase counts and say "Run /flow:setup to set up tracking."
 

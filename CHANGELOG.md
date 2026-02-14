@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-02-14
+
+### New
+- `/flow:triage` — brain dump → categorized Linear issues, ROADMAP entries, and lessons
+- `session.md.template` — per-developer session state (gitignored)
+- Linear MCP integration — optional issue creation from /flow:spec, progress comments from /flow:done
+- Developer identity detection via `git config user.name`
+- PRD `Assigned To` field for phase-level developer assignment
+
+### Changed
+- `/flow:done` — writes session.md instead of replacing STATE.md every session. STATE.md updates only at milestone boundaries.
+- `/flow:go` — reads session.md, respects PRD assignment (advisory), updates session.md on phase completion
+- `/flow:spec` — adds assignability probing during interview, creates Linear issues for phases (optional)
+- `/flow:status` — shows developer identity and session state
+- `/flow:task` — writes to session.md, posts Linear comment (optional)
+
+### Design
+- Linear integration is optional — all skills degrade gracefully without Linear MCP
+- STATE.md becomes project-level (milestone boundaries only), session.md is per-developer (every session, gitignored)
+
 ## [0.5.8] - 2026-02-14
 
 ### Fixed
@@ -71,7 +91,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `/flow:setup` Question 4 changed from "first milestone" to full roadmap input
 - ROADMAP.md template supports multiple milestones with `{{ADDITIONAL_MILESTONES_TABLE}}` and `{{ADDITIONAL_MILESTONES_SECTIONS}}` placeholders
 - Updated lifecycle diagrams in README and `/flow:intro` to show pre-planned milestone flow
-- Updated command descriptions across intro, README, and install.js
 
 ## [0.3.0] - 2026-02-11
 

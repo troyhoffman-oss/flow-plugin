@@ -23,6 +23,9 @@ Read ALL of the following in parallel. If any file is missing, skip it gracefull
 - `CLAUDE.md`
 - `tasks/lessons.md`
 - Active PRD from `.planning/prds/` (if STATE.md "Active PRD" field exists, use that path; else check for legacy `PRD.md` at root)
+- `.claude/memory/session.md` (if exists) — personal session state
+
+Run `git config user.name` to get developer identity.
 
 If no `.planning/` directory exists, print:
 > No `.planning/` directory found — running standalone. Task will still be executed, verified, and committed.
@@ -103,6 +106,18 @@ RULES:
 - DO NOT update any PRD files in `.planning/prds/` — tasks are not part of the spec.
 - DO NOT create `.planning/` if it doesn't exist.
 
+**Session state:** Write `.claude/memory/session.md` (create `.claude/memory/` directory if needed):
+```
+# Session State
+**Date:** [today]
+**Developer:** [git config user.name]
+**Branch:** [current branch]
+**Working On:** /flow:task — [task description]
+**Status:** Task complete: [brief description]
+**Next:** [suggest next action]
+**Blockers:** None
+```
+
 Quick lessons prompt via AskUserQuestion:
 - "Any lessons from this task worth capturing?"
   - Option 1: "No, nothing new" — Skip lessons.
@@ -126,3 +141,10 @@ Next:
   → /flow:go to continue milestone phases
   → /flow:done to wrap up the session
 ```
+
+**Linear comment (if applicable):** Check if the current branch name contains a Linear issue identifier pattern (e.g., `msig-45` in `feat/msig-45-rate-modeling`). If found:
+- Try `mcp__linear__list_issues` with a query matching the identifier
+- If Linear MCP is available AND an issue is found: post a progress comment via `mcp__linear__create_comment` with the task summary from the completion block above
+- If Linear MCP is not available or no matching issue is found: skip silently
+
+If no Linear identifier is found in the branch name: skip silently.

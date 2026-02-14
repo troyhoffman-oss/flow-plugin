@@ -22,15 +22,19 @@ Read these files (in parallel where possible):
 - `tasks/lessons.md` — active lessons (max 10)
 - `CLAUDE.md` — project rules
 - Active PRD from `.planning/prds/` (resolve via STATE.md "Active PRD" field, or fall back to legacy `PRD.md` at root)
+- `.claude/memory/session.md` (if exists) — personal session state
 
 Also gather:
 - Run `git log --oneline -20` to see commits this session
 - Run `git diff --stat` to check for uncommitted changes
+- Run `git config user.name` to get developer identity
 - If uncommitted changes exist, warn the user before proceeding
 
-### 2. Update STATE.md
+### 2. Update STATE.md (Milestone Boundaries Only)
 
-**REPLACE the entire file** (do NOT append). Keep under 80 lines.
+**Determine if a milestone was completed this session** by checking ROADMAP.md progress and commits.
+
+**IF milestone completed this session** — REPLACE the entire file (do NOT append). Keep under 80 lines.
 
 Structure:
 ```
@@ -63,7 +67,31 @@ Structure:
 1. [Specific next step — usually "Run /flow:go for Phase N"]
 ```
 
-### 3. Update ROADMAP.md
+**IF normal session (no milestone completed)** — SKIP STATE.md entirely. Print: "Normal session — STATE.md skipped (milestone boundaries only)."
+
+### 2.5. Write session.md (Every Session)
+
+This step ALWAYS runs, regardless of whether a milestone was completed.
+
+Create `.claude/memory/` directory if it doesn't exist.
+
+Write `.claude/memory/session.md` with the following content:
+
+```
+# Session State
+
+**Date:** [today's date]
+**Developer:** [git config user.name result]
+**Branch:** [current git branch]
+**Working On:** [Linear issue ID + description if detectable from branch name, or PRD phase, or "standalone task"]
+**Status:** [what was accomplished this session — bullet list of key items]
+**Next:** [what to pick up next session]
+**Blockers:** [any blockers, or "None"]
+```
+
+### 3. Update ROADMAP.md (Milestone Boundaries Only)
+
+**IF milestone completed this session:**
 
 - Mark completed phases with completion date
 - Ensure pending phases have enough detail that the next session can start with a one-line prompt
@@ -78,6 +106,8 @@ Structure:
   - **Milestone transition:** Check ROADMAP.md for the NEXT milestone with status "Planned":
     - **If a next milestone exists:** Update its status from "Planned" to "Pending — needs `/flow:spec`". Update STATE.md current milestone to point to the new milestone.
     - **If no next milestone exists:** No transition needed — all planned milestones are done.
+
+**IF normal session (no milestone completed)** — SKIP ROADMAP.md entirely. Print: "Normal session — ROADMAP.md skipped (milestone boundaries only)."
 
 ### 4. Update lessons.md
 
@@ -98,26 +128,46 @@ Structure:
 
 ### 5. Commit Doc Updates
 
-- Stage only the planning docs: STATE.md, ROADMAP.md, lessons.md, and any archived files
+**Normal session (no milestone completed):**
+- Only stage `tasks/lessons.md` if it changed
+- Skip STATE.md and ROADMAP.md (they were not modified)
+- Do NOT stage `.claude/memory/session.md` (it is gitignored)
+- If nothing needs staging (no changes to shared docs), skip the commit. Print: "No shared doc changes to commit."
+- Otherwise commit with message: `docs: session-end updates — [brief summary]`
+
+**Milestone boundary session:**
+- Stage STATE.md, ROADMAP.md, lessons.md, and any archived files
+- Do NOT stage `.claude/memory/session.md` (it is gitignored)
 - Commit with message: `docs: session-end updates — [brief summary]`
+
 - Do NOT push unless the user asks
+
+### 5.5. Linear Progress Comment
+
+- Check if the current branch name contains a Linear issue identifier pattern (e.g., `msig-45` in `feat/msig-45-rate-modeling`)
+- Extract the identifier (the `msig-45` part)
+- If found:
+  - Attempt to call `mcp__linear__list_issues` with `query` matching the identifier
+  - If Linear MCP is available AND an issue is found: post a progress comment with `mcp__linear__create_comment` summarizing: developer name (from Step 1), what was done, what's next, any blockers
+  - If Linear MCP is not available OR no issue found: skip silently (no error, no output)
+- If no identifier in branch name: skip silently
 
 ### 6. Generate Handoff Prompt
 
-Determine the next action and generate a copyable handoff prompt:
+Determine the next action and generate a copyable handoff prompt. Include the developer name in the prompt.
 
 - If next phase exists in PRD:
   ```
-  Phase [N]: [Name] — [short description]. Read STATE.md, ROADMAP.md, and .planning/prds/{slug}.md (US-X).
+  [Developer Name] — Phase [N]: [Name] — [short description]. Read STATE.md, ROADMAP.md, and .planning/prds/{slug}.md (US-X).
   [One sentence of context]. [One sentence of what NOT to do if relevant].
   ```
 - If milestone is complete AND a next milestone was transitioned to (from Step 3):
   ```
-  Milestone [name] complete. Next: v[X] [next milestone name]. Run /flow:spec to plan it.
+  [Developer Name] — Milestone [name] complete. Next: v[X] [next milestone name]. Run /flow:spec to plan it.
   ```
 - If milestone is complete AND no next milestone exists:
   ```
-  All milestones complete! Run /flow:milestone to plan what's next, or enjoy the win.
+  [Developer Name] — All milestones complete! Run /flow:milestone to plan what's next, or enjoy the win.
   ```
 
 Print the handoff prompt in a fenced code block so the user can copy it.
@@ -126,10 +176,11 @@ Print the handoff prompt in a fenced code block so the user can copy it.
 
 ```
 Session complete.
-- STATE.md: updated
-- ROADMAP.md: [N] phases marked complete
+- STATE.md: [updated | skipped (normal session)]
+- ROADMAP.md: [N phases marked complete | skipped (normal session)]
+- session.md: updated
 - lessons.md: [N]/10 active, [N] promoted to CLAUDE.md
-- Committed: [SHA]
+- Committed: [SHA | nothing to commit]
 
 Handoff prompt:
 [the prompt in a code block]

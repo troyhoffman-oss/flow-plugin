@@ -136,6 +136,10 @@ Cover these areas thoroughly. There are no "rounds" — move fluidly between are
 - What's the critical path — what must be built first?
 - What's the minimum viable first phase? (what gives us something testable fastest?)
 - Any phases that could be cut if time runs short?
+- **Assignability check:** After defining phases, probe which are independent enough for a different developer:
+  - "Which of these phases could a second developer work on independently?"
+  - Evaluate each phase for: dependency chains (does it need output from another phase?), domain independence (is it a separate concern?), context requirements (does it need deep codebase familiarity?), onboarding suitability (could a newer dev handle it?)
+  - Add assignability notes to each phase, e.g., "Phase 3 is independent — good for either dev" or "Phase 2 depends on Phase 1 — same dev"
 
 **7. Verification & Feedback Loops**
 - What commands verify the build works? (`tsc`, `biome`, test suite)
@@ -171,6 +175,7 @@ Write the PRD to `.planning/prds/{slug}.md` (create `.planning/prds/` directory 
 **Status:** Ready for execution
 **Branch:** feat/[milestone-slug]
 **Created:** [today's date]
+**Assigned To:** [developer name or "unassigned"]
 
 ## Overview
 [One paragraph summary of the milestone]
@@ -221,6 +226,7 @@ Write the PRD to `.planning/prds/{slug}.md` (create `.planning/prds/` directory 
 ## Implementation Phases
 
 ### Phase 1: [Name]
+**Assigned To:** [developer name or "unassigned"]
 **Goal:** [One sentence]
 
 **Wave 1 — [Theme] (N agents parallel):**
@@ -238,6 +244,7 @@ Write the PRD to `.planning/prds/{slug}.md` (create `.planning/prds/` directory 
 **Acceptance:** US-1 criteria [list which], US-2 criteria [list which]
 
 ### Phase 2: [Name]
+**Assigned To:** [developer name or "unassigned"]
 ...
 
 ## Execution Rules
@@ -272,9 +279,17 @@ After writing the PRD to `.planning/prds/{slug}.md`:
    [One sentence of context about what Phase 1 builds].
    ```
 
-4. Print the handoff prompt in a fenced code block.
+4. **Linear Issue Creation (optional):**
+   - Check if Linear MCP tools are available (try `mcp__linear__list_teams`)
+   - If available: search for a Linear project matching the milestone name (`mcp__linear__list_projects` with query)
+     - If found: create one Linear issue per phase under that project using `mcp__linear__create_issue`, with title "Phase N: [Name]" and description from PRD phase section. Set team to "Monument Square".
+     - If not found: use AskUserQuestion to ask user to pick a project or skip Linear integration
+   - If Linear MCP not available: skip silently (no error message)
+   - Print count: "[N] Linear issues created under project [name]" (or "Linear integration skipped" if not available)
 
-5. Print: "PRD ready at `.planning/prds/{slug}.md`. Run `/flow:go` to execute Phase 1, or review the PRD first."
+5. Print the handoff prompt in a fenced code block.
+
+6. Print: "PRD ready at `.planning/prds/{slug}.md`. Run `/flow:go` to execute Phase 1, or review the PRD first."
 
 ## Quality Gates
 

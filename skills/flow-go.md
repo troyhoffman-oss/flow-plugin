@@ -21,6 +21,9 @@ Read these files (in parallel):
 - `.planning/ROADMAP.md` — phase progress
 - `tasks/lessons.md` — active lessons (max 10 one-liners)
 - `CLAUDE.md` — execution rules and verification commands
+- `.claude/memory/session.md` (if exists) — personal session state
+
+Run `git config user.name` to get developer identity.
 
 ### PRD Selection
 
@@ -33,6 +36,8 @@ The user must always select which PRD to execute. No silent auto-resolution.
 3. **No PRDs found** — "No PRDs found in `.planning/prds/`. Run `/flow:spec` first." Stop here.
 
 **After selection:** Read the chosen PRD. If its `**Milestone:**` doesn't match STATE.md's current milestone, warn: "PRD milestone ([PRD milestone]) doesn't match current milestone ([STATE milestone]). Continuing, but verify you're executing the right spec."
+
+**Assignment check:** After reading the PRD, check the current phase section for an `**Assigned To:**` field. If present, compare against the developer identity from `git config user.name`. If assigned to a different developer, print: "⚠ This phase is assigned to [other dev]. Proceeding anyway — override if intentional." Do NOT block execution — this is advisory only.
 
 **Identify the next phase:** Find the first phase in ROADMAP.md with status "Pending" or the first unstarted phase in the PRD.
 
@@ -155,13 +160,27 @@ Create an atomic commit for this phase:
 
 ## Step 6 — Update Docs
 
-**STATE.md:** Update "What Was Built" section with:
+**Session state (ALWAYS):** Write `.claude/memory/session.md` (create `.claude/memory/` directory if needed):
+```
+# Session State
+**Date:** [today]
+**Developer:** [git config user.name]
+**Branch:** [current branch]
+**Working On:** Phase [N]: [Name] from [PRD name]
+**Status:** Phase [N] complete. [brief description of what was built]
+**Next:** [Phase N+1 name, or "/flow:done to finalize milestone"]
+**Blockers:** [any, or "None"]
+```
+
+**ROADMAP.md (ALWAYS):** Mark this phase as "Complete ([today's date])"
+
+**STATE.md (LAST PHASE ONLY):** Update STATE.md only if this was the LAST phase in the PRD (milestone complete). Update "What Was Built" section with:
 - Files created/modified (count + key names)
 - Commit SHA
 - Phase completion note
 - Keep "Active PRD" field pointing to the resolved PRD path
 
-**ROADMAP.md:** Mark this phase as "Complete ([today's date])"
+For non-final phases, skip STATE.md updates.
 
 ## Step 7 — Route Next Action (MANDATORY — FINAL STEP)
 

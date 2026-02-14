@@ -1,0 +1,9 @@
+# Session State
+
+**Date:** {{DATE}}
+**Developer:** (auto-detected from git config)
+**Branch:** (auto-detected)
+**Working On:** (set by /flow:go or /flow:task)
+**Status:** Session initialized
+**Next:** Check Linear for assignments or run /flow:status
+**Blockers:** None
