@@ -10,6 +10,8 @@ You are executing the `/flow:done` skill. This finalizes the current session by 
 
 **This is the most important skill for sustainability.** Without proper session-end docs, the next session starts blind.
 
+**Skill boundary:** You are inside the `/flow:*` workflow. NEVER invoke, suggest, or reference skills from other workflow systems (`/lisa:*`, `/gsd:*`, `/superpowers:*`, etc.). Only suggest `/flow:*` commands as next steps. Do NOT use the Skill tool to call any non-flow skill.
+
 ## Steps
 
 ### 1. Gather Context

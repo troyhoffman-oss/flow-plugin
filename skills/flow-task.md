@@ -8,6 +8,8 @@ user_invocable: true
 
 You are executing the `/flow:task` skill. This is for small, focused work — bug fixes, cleanup, one-off features — that doesn't warrant a full PRD. Understand the task, execute it, verify it works, commit it, and document it.
 
+**Skill boundary:** You are inside the `/flow:*` workflow. NEVER invoke, suggest, or reference skills from other workflow systems (`/lisa:*`, `/gsd:*`, `/superpowers:*`, etc.). Only suggest `/flow:*` commands as next steps. Do NOT use the Skill tool to call any non-flow skill.
+
 RULES:
 - NO AGENT TEAMS. NO PRD. Single execution context.
 - Exception: ONE Task agent for an isolated subtask to prevent context bloat.

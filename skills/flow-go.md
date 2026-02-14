@@ -12,26 +12,27 @@ You are executing the `/flow:go` skill. This reads the PRD, identifies the next 
 
 **Plan mode warning:** Do NOT use this skill with plan mode enabled. `/flow:go` is execution — plan mode's read-only constraint prevents it from creating files, running agents, and committing work. The PRD is your plan; run `/flow:go` in normal mode.
 
+**Skill boundary:** You are inside the `/flow:*` workflow. NEVER invoke, suggest, or reference skills from other workflow systems (`/lisa:*`, `/gsd:*`, `/superpowers:*`, etc.). Only suggest `/flow:*` commands as next steps. Do NOT use the Skill tool to call any non-flow skill. If the user needs a different workflow, they will invoke it themselves.
+
 ## Step 1 — Orient
 
 Read these files (in parallel):
 - `.planning/STATE.md` — current position
 - `.planning/ROADMAP.md` — phase progress
-- The active PRD (see PRD Resolution below)
 - `tasks/lessons.md` — active lessons (max 10 one-liners)
 - `CLAUDE.md` — execution rules and verification commands
 
-### PRD Resolution
+### PRD Selection
 
-Resolve the PRD file to use, in this order:
+The user must always select which PRD to execute. No silent auto-resolution.
 
-1. **User argument:** If the user passed an argument to `/flow:go` (e.g., `/flow:go v3-payments`), match it against files in `.planning/prds/` (by slug or milestone name from the `**Milestone:**` header field).
-2. **STATE.md Active PRD:** Read the "Active PRD" field from STATE.md's Current Position section. If it points to a valid file, use it.
-3. **Slug derivation:** Derive a slug from STATE.md's current milestone name — version-prefix + lowercase name, spaces/special chars → hyphens, collapse consecutive hyphens (e.g., "v2: Dashboard Analytics" → `v2-dashboard-analytics`). Check `.planning/prds/{slug}.md`.
-4. **Legacy fallback:** If `.planning/prds/` is empty or missing but `PRD.md` exists at the project root, use it. Print: "Using legacy PRD.md at project root. Future specs will use `.planning/prds/`."
-5. **Not found:** "No PRD found for [current milestone name]. Available PRDs: [list files in `.planning/prds/`]. Run `/flow:spec` first."
+1. **If the user passed an argument** (e.g., `/flow:go v3-payments`) — match it against files in `.planning/prds/` by slug or by the `**Milestone:**` header field. If an exact match is found, use it directly. If no match, show available PRDs and ask.
 
-**Milestone match check:** After resolving the PRD, read its `**Milestone:**` header field. If it doesn't match STATE.md's current milestone, warn: "PRD milestone ([PRD milestone]) doesn't match current milestone ([STATE milestone]). Continuing, but verify you're executing the right spec."
+2. **If no argument** — list all PRD files in `.planning/prds/`. For each PRD, read its `**Status:**` and `**Milestone:**` header fields. Use AskUserQuestion to let the user pick which PRD to execute. Pre-select the first PRD with status "Ready for execution" as the first option. Always show the picker, even if only one PRD exists — the user may want to confirm or run `/flow:spec` instead. Also check for legacy `PRD.md` at root (backward compat) and include it in the list if found.
+
+3. **No PRDs found** — "No PRDs found in `.planning/prds/`. Run `/flow:spec` first." Stop here.
+
+**After selection:** Read the chosen PRD. If its `**Milestone:**` doesn't match STATE.md's current milestone, warn: "PRD milestone ([PRD milestone]) doesn't match current milestone ([STATE milestone]). Continuing, but verify you're executing the right spec."
 
 **Identify the next phase:** Find the first phase in ROADMAP.md with status "Pending" or the first unstarted phase in the PRD.
 
@@ -39,7 +40,7 @@ Resolve the PRD file to use, in this order:
 
 Run these checks before executing. If any fail, stop and tell the user what to do:
 
-1. **PRD resolved?** If PRD Resolution (above) reached step 5 (not found): stop with the "No PRD found" message and available PRD list.
+1. **PRD selected?** If PRD Selection (above) reached step 3 (no PRDs found): stop with the "No PRDs found" message.
 2. **Phase detailed enough?** The phase section in the PRD must have:
    - Wave structure with agent assignments
    - Explicit file lists per agent

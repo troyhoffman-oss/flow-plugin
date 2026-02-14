@@ -12,6 +12,8 @@ You are executing the `/flow:spec` skill. This is the KEYSTONE skill of the flow
 
 **Plan mode warning:** Do NOT use this skill with plan mode enabled. Plan mode's read-only constraint prevents the PRD from being written during the interview. `/flow:spec` IS the planning phase — plan mode on top of it is redundant and breaks the workflow.
 
+**Skill boundary:** You are inside the `/flow:*` workflow. NEVER invoke, suggest, or reference skills from other workflow systems (`/lisa:*`, `/gsd:*`, `/superpowers:*`, etc.). Only suggest `/flow:*` commands as next steps. Do NOT use the Skill tool to call any non-flow skill. If the user needs a different workflow, they will invoke it themselves.
+
 ## Phase 1 — Context Gathering
 
 1. Read `.planning/STATE.md` and `.planning/ROADMAP.md` — understand current milestone and what's done

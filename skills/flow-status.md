@@ -8,6 +8,8 @@ user_invocable: true
 
 You are executing the `/flow:status` skill. This is a READ-ONLY operation. Do NOT modify any files.
 
+**Skill boundary:** You are inside the `/flow:*` workflow. NEVER invoke, suggest, or reference skills from other workflow systems (`/lisa:*`, `/gsd:*`, `/superpowers:*`, etc.). Only suggest `/flow:*` commands as next steps. Do NOT use the Skill tool to call any non-flow skill.
+
 ## Step 1 — Read Context Files
 
 Read ALL of the following in parallel:
