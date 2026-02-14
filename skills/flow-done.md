@@ -1,6 +1,6 @@
 ---
 name: flow:done
-description: Session-end documentation — updates STATE.md, ROADMAP.md, lessons.md, generates handoff prompt
+description: Session-end documentation — updates STATE.md, ROADMAP.md, lessons.md, generates handoff prompt. Handles project-complete PR creation and Linear status management.
 user_invocable: true
 ---
 
@@ -18,7 +18,7 @@ You are executing the `/flow:done` skill. This finalizes the current session by 
 
 Read these files (in parallel where possible):
 - `.planning/STATE.md` — current state
-- `.planning/ROADMAP.md` — milestone/phase progress
+- `.planning/ROADMAP.md` — project/milestone progress
 - `tasks/lessons.md` — active lessons (max 10)
 - `CLAUDE.md` — project rules
 - Active PRD from `.planning/prds/` (resolve via STATE.md "Active PRD" field, or fall back to legacy `PRD.md` at root)
@@ -30,27 +30,27 @@ Also gather:
 - Run `git config user.name` to get developer identity
 - If uncommitted changes exist, warn the user before proceeding
 
-### 2. Update STATE.md (Milestone Boundaries Only)
+### 2. Update STATE.md (Project Boundaries Only)
 
-**Determine if a milestone was completed this session** by checking ROADMAP.md progress and commits.
+**Determine if a project was completed this session** by checking ROADMAP.md progress and commits.
 
-**IF milestone completed this session** — REPLACE the entire file (do NOT append). Keep under 80 lines.
+**IF project completed this session** — REPLACE the entire file (do NOT append). Keep under 80 lines.
 
 Structure:
 ```
 # [Project Name] — Project State
 
 ## Current Position
-- **Milestone:** [name]
-- **Phase:** [current phase status]
+- **Project:** [name]
+- **Milestone:** [current milestone status]
 - **Branch:** [current branch]
-- **Active PRD:** [path to active PRD, or "None" if milestone complete]
+- **Active PRD:** [path to active PRD, or "None" if project complete]
 - **Last Session:** [today's date]
 
 ## Milestone Progress
 
-| Phase | Name | Status |
-|-------|------|--------|
+| Milestone | Name | Status |
+|-----------|------|--------|
 | 1 | [name] | Complete (date) |
 | 2 | [name] | Complete (date) |
 | 3 | [name] | In Progress |
@@ -64,14 +64,14 @@ Structure:
 - [Any architectural or design decisions made]
 
 ## Next Actions
-1. [Specific next step — usually "Run /flow:go for Phase N"]
+1. [Specific next step — usually "Run /flow:go for Milestone N"]
 ```
 
-**IF normal session (no milestone completed)** — SKIP STATE.md entirely. Print: "Normal session — STATE.md skipped (milestone boundaries only)."
+**IF normal session (no project completed)** — SKIP STATE.md entirely. Print: "Normal session — STATE.md skipped (project boundaries only)."
 
 ### 2.5. Write session.md (Every Session)
 
-This step ALWAYS runs, regardless of whether a milestone was completed.
+This step ALWAYS runs, regardless of whether a project was completed.
 
 Create `.claude/memory/` directory if it doesn't exist.
 
@@ -83,31 +83,31 @@ Write `.claude/memory/session.md` with the following content:
 **Date:** [today's date]
 **Developer:** [git config user.name result]
 **Branch:** [current git branch]
-**Working On:** [Linear issue ID + description if detectable from branch name, or PRD phase, or "standalone task"]
+**Working On:** [Linear issue ID + description if detectable from branch name, or PRD milestone, or "standalone task"]
 **Status:** [what was accomplished this session — bullet list of key items]
 **Next:** [what to pick up next session]
 **Blockers:** [any blockers, or "None"]
 ```
 
-### 3. Update ROADMAP.md (Milestone Boundaries Only)
+### 3. Update ROADMAP.md (Project Boundaries Only)
 
-**IF milestone completed this session:**
+**IF project completed this session:**
 
-- Mark completed phases with completion date
-- Ensure pending phases have enough detail that the next session can start with a one-line prompt
-- **Archive check:** If the current milestone is fully complete:
+- Mark completed milestones with completion date
+- Ensure pending milestones have enough detail that the next session can start with a one-line prompt
+- **Archive check:** If the current project is fully complete:
   - If `.planning/` does not exist, skip archiving entirely — there's nothing to archive
   - Create `.planning/archive/` if it doesn't already exist (use `mkdir -p` or equivalent)
-  - Move milestone phase details to `.planning/archive/milestones-{slug}.md`
-  - Keep only the summary row in the ROADMAP milestone table
-  - Archive the milestone's PRD: move `.planning/prds/{slug}.md` to `.planning/archive/PRD-{slug}.md`. If using legacy root `PRD.md`, move it to `.planning/archive/PRD-{slug}.md` instead.
+  - Move project milestone details to `.planning/archive/project-{slug}.md`
+  - Keep only the summary row in the ROADMAP project table
+  - Archive the project's PRD: move `.planning/prds/{slug}.md` to `.planning/archive/PRD-{slug}.md`. If using legacy root `PRD.md`, move it to `.planning/archive/PRD-{slug}.md` instead.
   - Clear STATE.md "Active PRD" field (set to "None")
-  - Mark the milestone as "Complete" in the ROADMAP table
-  - **Milestone transition:** Check ROADMAP.md for the NEXT milestone with status "Planned":
-    - **If a next milestone exists:** Update its status from "Planned" to "Pending — needs `/flow:spec`". Update STATE.md current milestone to point to the new milestone.
-    - **If no next milestone exists:** No transition needed — all planned milestones are done.
+  - Mark the project as "Complete" in the ROADMAP table
+  - **Project transition:** Check ROADMAP.md for the NEXT project with status "Planned":
+    - **If a next project exists:** Update its status from "Planned" to "Pending — needs `/flow:spec`". Update STATE.md current project to point to the new project.
+    - **If no next project exists:** No transition needed — all planned projects are done.
 
-**IF normal session (no milestone completed)** — SKIP ROADMAP.md entirely. Print: "Normal session — ROADMAP.md skipped (milestone boundaries only)."
+**IF normal session (no project completed)** — SKIP ROADMAP.md entirely. Print: "Normal session — ROADMAP.md skipped (project boundaries only)."
 
 ### 4. Update lessons.md
 
@@ -128,46 +128,80 @@ Write `.claude/memory/session.md` with the following content:
 
 ### 5. Commit Doc Updates
 
-**Normal session (no milestone completed):**
+**Normal session (no project completed):**
 - Only stage `tasks/lessons.md` if it changed
 - Skip STATE.md and ROADMAP.md (they were not modified)
 - Do NOT stage `.claude/memory/session.md` (it is gitignored)
 - If nothing needs staging (no changes to shared docs), skip the commit. Print: "No shared doc changes to commit."
 - Otherwise commit with message: `docs: session-end updates — [brief summary]`
 
-**Milestone boundary session:**
+**Project boundary session:**
 - Stage STATE.md, ROADMAP.md, lessons.md, and any archived files
 - Do NOT stage `.claude/memory/session.md` (it is gitignored)
 - Commit with message: `docs: session-end updates — [brief summary]`
 
 - Do NOT push unless the user asks
 
-### 5.5. Linear Progress Comment
+### 5.25. Auto-Create PR (Project Complete Only)
 
-- Check if the current branch name contains a Linear issue identifier pattern (e.g., `msig-45` in `feat/msig-45-rate-modeling`)
-- Extract the identifier (the `msig-45` part)
-- If found:
-  - Attempt to call `mcp__linear__list_issues` with `query` matching the identifier
-  - If Linear MCP is available AND an issue is found: post a progress comment with `mcp__linear__create_comment` summarizing: developer name (from Step 1), what was done, what's next, any blockers
-  - If Linear MCP is not available OR no issue found: skip silently (no error, no output)
-- If no identifier in branch name: skip silently
+- Check if ALL milestones in the PRD are marked "Complete" in ROADMAP.md
+- If all complete AND no PR exists for this branch (`gh pr list --head [branch] --state open` returns empty):
+  - Parse the PRD for all Linear issue IDs (e.g., MSIG-34, MSIG-35, ...)
+  - Push the branch: `git push -u origin [branch]`
+  - Auto-generate PR body:
+    ```
+    ## Summary
+    [Project name] — [one-line description from PRD overview]
+
+    ## Milestones Completed
+    - Milestone 1: [Name] (completed [date])
+    - Milestone 2: [Name] (completed [date])
+    ...
+
+    ## Linear Issues
+    Closes MSIG-34, Closes MSIG-35, Closes MSIG-36, ...
+    [one "Closes MSIG-XX" per issue found in PRD]
+
+    ## Verification
+    - `npx tsc --noEmit` — passed
+    - `npx biome check` — passed
+    ```
+  - Create PR: `gh pr create --title "[project name]" --body "[auto-generated body]"`
+  - Print: "PR created: [PR URL]"
+  - Print: "Linear: [N] issues will auto-close on merge"
+- If milestones remain OR PR already exists: skip silently
+
+### 5.5. Linear Status Update + Progress Comment
+
+- Check if Linear MCP tools are available
+- If available:
+  - Parse the active PRD for `**Linear Project:**` field
+  - If found:
+    - Check for open PR: `gh pr list --head [branch] --state open`
+    - If PR exists:
+      - Find all issues in the Linear project that are "In Progress"
+      - Move them to "In Review": `mcp__linear__update_issue` with `state: "In Review"`
+      - Print: "Linear: [N] issues → In Review (PR open)"
+    - If no PR: issues stay In Progress (normal mid-project session end)
+  - Post progress comment on any branch-linked Linear issue (existing behavior)
+- If not available: skip silently
 
 ### 6. Generate Handoff Prompt
 
 Determine the next action and generate a copyable handoff prompt. Include the developer name in the prompt.
 
-- If next phase exists in PRD:
+- If next milestone exists in PRD:
   ```
-  [Developer Name] — Phase [N]: [Name] — [short description]. Read STATE.md, ROADMAP.md, and .planning/prds/{slug}.md (US-X).
+  [Developer Name] — Milestone [N]: [Name] — [short description]. Read STATE.md, ROADMAP.md, and .planning/prds/{slug}.md (US-X).
   [One sentence of context]. [One sentence of what NOT to do if relevant].
   ```
-- If milestone is complete AND a next milestone was transitioned to (from Step 3):
+- If project is complete AND a next project was transitioned to (from Step 3):
   ```
-  [Developer Name] — Milestone [name] complete. Next: [next milestone name]. Run /flow:spec to plan it.
+  [Developer Name] — Project [name] complete. Next: [next project name]. Run /flow:spec to plan it.
   ```
-- If milestone is complete AND no next milestone exists:
+- If project is complete AND no next project exists:
   ```
-  [Developer Name] — All milestones complete! Run /flow:triage to plan what's next, or enjoy the win.
+  [Developer Name] — All projects complete! Run /flow:triage to plan what's next, or enjoy the win.
   ```
 
 Print the handoff prompt in a fenced code block so the user can copy it.
@@ -177,7 +211,7 @@ Print the handoff prompt in a fenced code block so the user can copy it.
 ```
 Session complete.
 - STATE.md: [updated | skipped (normal session)]
-- ROADMAP.md: [N phases marked complete | skipped (normal session)]
+- ROADMAP.md: [N milestones marked complete | skipped (normal session)]
 - session.md: updated
 - lessons.md: [N]/10 active, [N] promoted to CLAUDE.md
 - Committed: [SHA | nothing to commit]

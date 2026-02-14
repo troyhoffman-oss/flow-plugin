@@ -11,7 +11,7 @@ You are executing the `/flow:setup` skill. This sets up the planning scaffolding
 ## Guard: Already Initialized
 
 Check if `.planning/STATE.md` already exists:
-- **If it exists** → Print: "This project is already set up. Run `/flow:triage` to add milestones, or `/flow:spec` to spec the current one." and **STOP. Do not overwrite.**
+- **If it exists** → Print: "This project is already set up. Run `/flow:triage` to add projects, or `/flow:spec` to spec the current one." and **STOP. Do not overwrite.**
 - **If it does NOT exist** → Continue with setup below.
 
 ---
@@ -38,22 +38,22 @@ Use AskUserQuestion to gather project info. Ask these questions (you may combine
   - (Other — user types custom)
 
 **Question 4 — Roadmap:**
-- "Do you already have a roadmap or list of milestones?" with options:
+- "Do you already have a roadmap or list of projects?" with options:
   - "Yes — I'll paste or describe them"
   - "No — let's figure it out together"
 
 **If user selects "Yes":**
 - Accept free text (bullet list, paragraph, pasted doc — any format)
-- Parse into milestones, each with a name + brief goal
+- Parse into projects, each with a name + brief goal
 - Print back: "Here's what I got:" followed by the parsed list (e.g., "Auth — user registration and login", "Dashboard — analytics and settings")
 - Use AskUserQuestion to confirm: "Does this look right?" with options:
   - "Yes — looks good"
   - "Let me adjust" (user re-enters)
 
 **If user selects "No" (guided):**
-- Ask: "What's the first milestone?" (name + one-sentence goal)
-- Then: "Any more milestones you can see right now? List them, or skip to add them later with `/flow:triage`." with options:
-  - "I have more to add" (user enters additional milestones)
+- Ask: "What's the first project?" (name + one-sentence goal)
+- Then: "Any more projects you can see right now? List them, or skip to add them later with `/flow:triage`." with options:
+  - "I have more to add" (user enters additional projects)
   - "That's it for now"
 
 **Question 5 — Brownfield scan:**
@@ -78,17 +78,17 @@ Create these 5 files (create directories as needed):
 # [Project Name] — Project State
 
 ## Current Position
-- **Milestone:** [first milestone name]
-- **Phase:** Not started — run `/flow:spec` to build PRD
+- **Project:** [first project name]
+- **Milestone:** Not started — run `/flow:spec` to build PRD
 - **Branch:** main
 - **Active PRD:** None — run `/flow:spec` to create
 - **Last Session:** [today's date]
 
 ## Milestone Progress
 
-| Phase | Name | Status |
-|-------|------|--------|
-| — | Run `/flow:spec` to define phases | — |
+| Milestone | Name | Status |
+|-----------|------|--------|
+| — | Run `/flow:spec` to define milestones | — |
 
 ## What Was Built (This Session)
 - Project initialized with `/flow:setup`
@@ -98,39 +98,39 @@ Create these 5 files (create directories as needed):
 - (none yet)
 
 ## Next Actions
-1. Run `/flow:spec` to interview and generate PRD for [first milestone]
+1. Run `/flow:spec` to interview and generate PRD for [first project]
 ```
 
 **`.planning/ROADMAP.md`:**
 ```
 # [Project Name] — Roadmap
 
-## Milestones
+## Projects
 
-| Milestone | Status | Phases |
-|-----------|--------|--------|
-| [first milestone] | Pending — needs `/flow:spec` | TBD |
-[For each additional milestone:]
-| [milestone name] | Planned | TBD |
+| Project | Status | Milestones |
+|---------|--------|------------|
+| [first project] | Pending — needs `/flow:spec` | TBD |
+[For each additional project:]
+| [project name] | Planned | TBD |
 
 ---
 
-## [first milestone]
+## [first project]
 
-**Goal:** [milestone goal from user]
+**Goal:** [project goal from user]
 
-**Phases:** Run `/flow:spec` to define implementation phases.
+**Milestones:** Run `/flow:spec` to define implementation milestones.
 
-[For each additional milestone:]
+[For each additional project:]
 
-## [milestone name]
+## [project name]
 
-**Goal:** [milestone goal]
+**Goal:** [project goal]
 
-**Phases:** Run `/flow:spec` when this milestone is active.
+**Milestones:** Run `/flow:spec` when this project is active.
 ```
 
-Note: The first milestone gets status "Pending — needs `/flow:spec`". All subsequent milestones get status "Planned". Each milestone gets its own section with its goal.
+Note: The first project gets status "Pending — needs `/flow:spec`". All subsequent projects get status "Planned". Each project gets its own section with its goal.
 
 **`CLAUDE.md`:**
 ```
@@ -145,11 +145,11 @@ Note: The first milestone gets status "Pending — needs `/flow:spec`". All subs
 ### START (Every Session)
 1. Read this file (CLAUDE.md)
 2. Read `.planning/STATE.md` for current status
-3. Read `.planning/ROADMAP.md` for milestone progress
-4. Read active PRD from `.planning/prds/` for current milestone (if one exists)
+3. Read `.planning/ROADMAP.md` for project progress
+4. Read active PRD from `.planning/prds/` for current project (if one exists)
 
 ## Execution Rules
-- **Plan before building.** For non-trivial work, read the milestone's PRD in `.planning/prds/` before touching anything.
+- **Plan before building.** For non-trivial work, read the project's PRD in `.planning/prds/` before touching anything.
 - **Delegate immediately.** If a task touches 3+ files, spawn an agent team within your first 2 tool calls.
 - **Verify everything.** Run [verification commands from user] after agent work lands. Nothing is done until proven.
 
@@ -159,7 +159,7 @@ Note: The first milestone gets status "Pending — needs `/flow:spec`". All subs
 
 ## Session-End Docs (MANDATORY)
 1. `.planning/STATE.md` — replace session notes (don't append), keep <80 lines
-2. `.planning/ROADMAP.md` — update phase progress
+2. `.planning/ROADMAP.md` — update milestone progress
 3. `tasks/lessons.md` — add new lessons, refine existing ones
 4. Commit doc updates to feature branch
 
@@ -177,7 +177,7 @@ One-liner format: `- **[topic]** The rule`
 <!-- EXAMPLE: - **[agent context]** Always tell agents exactly which functions/lines to read — never "read file.ts", say "read file.ts lines 50-120" -->
 ```
 
-**`.planning/prds/`** — Create this empty directory (use `mkdir -p` via Bash). PRDs are stored here per-milestone.
+**`.planning/prds/`** — Create this empty directory (use `mkdir -p` via Bash). PRDs are stored here per-project.
 
 **`.planning/archive/`** — Create this empty directory (use `mkdir -p` via Bash).
 
@@ -187,10 +187,10 @@ One-liner format: `- **[topic]** The rule`
 Project initialized:
 - CLAUDE.md — project execution rules
 - .planning/STATE.md — session GPS
-- .planning/ROADMAP.md — milestone tracker
+- .planning/ROADMAP.md — project tracker
 - tasks/lessons.md — active lessons (max 10)
-- .planning/prds/ — per-milestone PRD specs
-- .planning/archive/ — for completed milestones
+- .planning/prds/ — per-project PRD specs
+- .planning/archive/ — for completed projects
 
-Run `/flow:spec` to plan your first milestone.
+Run `/flow:spec` to plan your first project.
 ```

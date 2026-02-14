@@ -1,9 +1,9 @@
 # {{PROJECT_NAME}} — Roadmap
 
-## Milestones
+## Projects
 
-| Milestone | Status | Phases |
-|-----------|--------|--------|
+| Project | Status | Milestones |
+|---------|--------|------------|
 | {{FIRST_MILESTONE}} | Pending — needs `/flow:spec` | TBD |
 {{ADDITIONAL_MILESTONES_TABLE}}
 
@@ -13,6 +13,6 @@
 
 **Goal:** {{MILESTONE_GOAL}}
 
-**Phases:** Run `/flow:spec` to define implementation phases.
+**Milestones:** Run `/flow:spec` to define implementation milestones.
 
 {{ADDITIONAL_MILESTONES_SECTIONS}}

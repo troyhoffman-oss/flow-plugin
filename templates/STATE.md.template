@@ -1,17 +1,17 @@
 # {{PROJECT_NAME}} — Project State
 
 ## Current Position
-- **Milestone:** {{FIRST_MILESTONE}}
-- **Phase:** Not started — run `/flow:spec` to build PRD
+- **Project:** {{FIRST_MILESTONE}}
+- **Milestone:** Not started — run `/flow:spec` to build PRD
 - **Branch:** main
 - **Active PRD:** None — run `/flow:spec` to create
 - **Last Session:** {{DATE}}
 
-## Milestone Progress
+## Project Progress
 
-| Phase | Name | Status |
-|-------|------|--------|
-| — | Run `/flow:spec` to define phases | — |
+| Milestone | Name | Status |
+|-----------|------|--------|
+| — | Run `/flow:spec` to define milestones | — |
 
 ## What Was Built (This Session)
 - Project initialized with `/flow:setup`

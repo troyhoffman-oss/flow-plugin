@@ -102,7 +102,7 @@ IF `.planning/STATE.md` exists:
   ```
 
 RULES:
-- DO NOT update ROADMAP.md — tasks are not milestone phases.
+- DO NOT update ROADMAP.md — tasks are not project milestones.
 - DO NOT update any PRD files in `.planning/prds/` — tasks are not part of the spec.
 - DO NOT create `.planning/` if it doesn't exist.
 
@@ -138,7 +138,7 @@ Print a compact completion block:
 
 Next:
   → /flow:task [description] for another quick fix
-  → /flow:go to continue milestone phases
+  → /flow:go to continue project milestones
   → /flow:done to wrap up the session
 ```
 

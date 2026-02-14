@@ -8,11 +8,11 @@
 ### START (Every Session)
 1. Read this file (CLAUDE.md)
 2. Read `.planning/STATE.md` for current status
-3. Read `.planning/ROADMAP.md` for milestone progress
-4. Read active PRD from `.planning/prds/` for current milestone (if one exists)
+3. Read `.planning/ROADMAP.md` for project progress
+4. Read active PRD from `.planning/prds/` for current project (if one exists)
 
 ## Execution Rules
-- **Plan before building.** For non-trivial work, read the milestone's PRD in `.planning/prds/` before touching anything.
+- **Plan before building.** For non-trivial work, read the project's PRD in `.planning/prds/` before touching anything.
 - **Delegate immediately.** If a task touches 3+ files, spawn an agent team within your first 2 tool calls.
 - **Verify everything.** Run {{VERIFY_COMMANDS}} after agent work lands. Nothing is done until proven.
 
@@ -22,7 +22,7 @@
 
 ## Session-End Docs (MANDATORY)
 1. `.planning/STATE.md` — replace session notes (don't append), keep <80 lines
-2. `.planning/ROADMAP.md` — update phase progress
+2. `.planning/ROADMAP.md` — update milestone progress
 3. `tasks/lessons.md` — add new one-liner lessons, enforce max 10 cap (promote to Learned Rules when full)
 4. Commit doc updates to feature branch
 

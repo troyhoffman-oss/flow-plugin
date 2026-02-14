@@ -1,12 +1,12 @@
 ---
 name: flow:spec
-description: Spec interview that produces an executable PRD with wave-based phases and testable acceptance criteria
+description: Spec interview that produces an executable PRD with wave-based milestones and testable acceptance criteria
 user_invocable: true
 ---
 
 # /flow:spec — Spec Interview → Executable PRD
 
-You are executing the `/flow:spec` skill. This is the KEYSTONE skill of the flow system. You will interview the user about their milestone, then produce a detailed PRD that agents can execute without ambiguity.
+You are executing the `/flow:spec` skill. This is the KEYSTONE skill of the flow system. You will interview the user about their project, then produce a detailed PRD that agents can execute without ambiguity.
 
 **Interview mode:** Always thorough by default. The user can say "done", "finalize", "that's enough", or "move on" at ANY time to wrap up early. Respect their signal and finalize with whatever depth has been achieved.
 
@@ -16,28 +16,28 @@ You are executing the `/flow:spec` skill. This is the KEYSTONE skill of the flow
 
 ## Phase 1 — Context Gathering
 
-1. Read `.planning/STATE.md` and `.planning/ROADMAP.md` — understand current milestone and what's done
+1. Read `.planning/STATE.md` and `.planning/ROADMAP.md` — understand current project and what's done
 2. Read `CLAUDE.md` — understand project rules and tech stack
 3. Check for existing PRD:
    - List `.planning/prds/` directory (if it exists) for existing PRD files
    - Also check for legacy `PRD.md` at project root (backward compat)
-   - If a PRD exists for the target milestone, note it for resume/extend flow
-4. **Milestone Targeting** — determine which milestone this PRD targets before scanning the codebase:
+   - If a PRD exists for the target project, note it for resume/extend flow
+4. **Project Targeting** — determine which project this PRD targets before scanning the codebase:
 
-   1. **If the user passed an argument** (e.g., `/flow:spec v3: Payments`) — match against ROADMAP.md milestones. If no match, print available milestones and ask which one.
+   1. **If the user passed an argument** (e.g., `/flow:spec v3: Payments`) — match against ROADMAP.md projects. If no match, print available projects and ask which one.
 
-   2. **If no argument** — read ROADMAP.md and list all incomplete milestones. Use AskUserQuestion to let the user pick which milestone to spec. Pre-select the next unspecced milestone as the first option. Always show the picker, even if only one milestone is listed — the user may want to confirm or choose "Other" to define a new milestone first.
+   2. **If no argument** — read ROADMAP.md and list all incomplete projects. Use AskUserQuestion to let the user pick which project to spec. Pre-select the next unspecced project as the first option. Always show the picker, even if only one project is listed — the user may want to confirm or choose "Other" to define a new project first.
 
-   3. **Derive the PRD slug:** Take the milestone name (e.g., "Dashboard Analytics"), lowercase it, replace spaces and special characters with hyphens, collapse consecutive hyphens. Result: `dashboard-analytics`. The PRD path is `.planning/prds/{slug}.md`.
+   3. **Derive the PRD slug:** Take the project name (e.g., "Dashboard Analytics"), lowercase it, replace spaces and special characters with hyphens, collapse consecutive hyphens. Result: `dashboard-analytics`. The PRD path is `.planning/prds/{slug}.md`.
 
    4. **Check for existing PRD at that path:**
-      - **If PRD exists** → Use AskUserQuestion: "A PRD already exists for this milestone at `.planning/prds/{slug}.md`. What would you like to do?"
+      - **If PRD exists** → Use AskUserQuestion: "A PRD already exists for this project at `.planning/prds/{slug}.md`. What would you like to do?"
         - "Resume editing" — load the existing PRD and continue the interview from where it left off
         - "Start fresh" — delete the existing PRD and start a new interview
-        - "Pick a different milestone" — show available milestones
+        - "Pick a different project" — show available projects
       - **If no PRD exists** → Proceed with a fresh interview
 
-   5. **Future milestone detection:** If the target milestone is NOT the current milestone in STATE.md, note this — the PRD will be written but STATE.md's "Active PRD" field will NOT be updated (it stays pointing at the current milestone's PRD). Print: "Speccing future milestone [name]. STATE.md will not be updated — this PRD will be available when you reach this milestone."
+   5. **Future project detection:** If the target project is NOT the current project in STATE.md, note this — the PRD will be written but STATE.md's "Active PRD" field will NOT be updated (it stays pointing at the current project's PRD). Print: "Speccing future project [name]. STATE.md will not be updated — this PRD will be available when you reach this project."
 
 5. **Codebase scan** (brownfield projects) — spawn **3 parallel Explore subagents** via the Task tool to scan the codebase without consuming main context:
 
@@ -92,8 +92,8 @@ Then proceed to the coverage areas below.
 Cover these areas thoroughly. There are no "rounds" — move fluidly between areas based on the conversation. Circle back to earlier areas when later answers reveal new information.
 
 **1. Scope Definition**
-- What features are IN scope for this milestone? What's the MVP vs. the full vision?
-- What is explicitly OUT of scope / deferred to a future milestone?
+- What features are IN scope for this project? What's the MVP vs. the full vision?
+- What is explicitly OUT of scope / deferred to a future project?
 - Is there any code that is sacred (must NOT be touched)? Why?
 - What existing code/features should we ignore entirely (not break, not improve, not touch)?
 
@@ -130,22 +130,22 @@ Cover these areas thoroughly. There are no "rounds" — move fluidly between are
 - What technical debt is acceptable for now vs. must be done right?
 - Any browser/device support requirements?
 
-**6. Implementation Phases**
-- How should this break into sequential phases?
-- What can be parallelized within each phase? (wave-based agent structure)
+**6. Implementation Milestones**
+- How should this break into sequential milestones?
+- What can be parallelized within each milestone? (wave-based agent structure)
 - What's the critical path — what must be built first?
-- What's the minimum viable first phase? (what gives us something testable fastest?)
-- Any phases that could be cut if time runs short?
-- **Assignability check:** After defining phases, probe which are independent enough for a different developer:
-  - "Which of these phases could a second developer work on independently?"
-  - Evaluate each phase for: dependency chains (does it need output from another phase?), domain independence (is it a separate concern?), context requirements (does it need deep codebase familiarity?), onboarding suitability (could a newer dev handle it?)
-  - Add assignability notes to each phase, e.g., "Phase 3 is independent — good for either dev" or "Phase 2 depends on Phase 1 — same dev"
+- What's the minimum viable first milestone? (what gives us something testable fastest?)
+- Any milestones that could be cut if time runs short?
+- **Assignability check:** After defining milestones, probe which are independent enough for a different developer:
+  - "Which of these milestones could a second developer work on independently?"
+  - Evaluate each milestone for: dependency chains (does it need output from another milestone?), domain independence (is it a separate concern?), context requirements (does it need deep codebase familiarity?), onboarding suitability (could a newer dev handle it?)
+  - Add assignability notes to each milestone, e.g., "Milestone 3 is independent — good for either dev" or "Milestone 2 depends on Milestone 1 — same dev"
 
 **7. Verification & Feedback Loops**
 - What commands verify the build works? (`tsc`, `biome`, test suite)
-- What does "done" look like for each phase? How do we know it worked?
+- What does "done" look like for each milestone? How do we know it worked?
 - Are there integration points that need end-to-end testing?
-- What should we check after each phase before moving to the next?
+- What should we check after each milestone before moving to the next?
 - Any monitoring or logging needed to confirm production behavior?
 
 **User signals done:** If the user says "done", "finalize", "that's enough", "ship it", or similar — immediately stop interviewing and go to Phase 3. Finalize the PRD with whatever depth has been achieved.
@@ -156,7 +156,7 @@ Cover these areas thoroughly. There are no "rounds" — move fluidly between are
 
 Before generating the final PRD, validate:
 - At least **3 user stories** with acceptance criteria have been discussed
-- At least **1 implementation phase** has been defined
+- At least **1 implementation milestone** has been defined
 - At least **1 verification command** has been specified
 
 If any check fails, print what's missing and use AskUserQuestion:
@@ -169,16 +169,16 @@ If any check fails, print what's missing and use AskUserQuestion:
 Write the PRD to `.planning/prds/{slug}.md` (create `.planning/prds/` directory first if it doesn't exist) with this EXACT structure:
 
 ```markdown
-# [Milestone Name] — Specification
+# [Project Name] — Specification
 
-**Milestone:** [full milestone name, e.g., "Dashboard Analytics"]
+**Project:** [full project name, e.g., "Dashboard Analytics"]
 **Status:** Ready for execution
-**Branch:** feat/{milestone-slug}
+**Branch:** feat/{project-slug}
 **Created:** [today's date]
 **Assigned To:** [developer name or "unassigned"]
 
 ## Overview
-[One paragraph summary of the milestone]
+[One paragraph summary of the project]
 
 ## Problem Statement
 [Why this work exists — what problem does it solve?]
@@ -186,7 +186,7 @@ Write the PRD to `.planning/prds/{slug}.md` (create `.planning/prds/` directory 
 ## Scope
 
 ### In Scope
-- [Bullet list of what ships in this milestone]
+- [Bullet list of what ships in this project]
 
 ### Out of Scope
 - [Explicitly deferred items]
@@ -215,7 +215,7 @@ Write the PRD to `.planning/prds/{slug}.md` (create `.planning/prds/` directory 
 [Method + path + request/response shape for each]
 
 ### New Files to Create
-[Grouped by phase. Absolute paths with one-line descriptions]
+[Grouped by milestone. Absolute paths with one-line descriptions]
 
 ### Existing Files to Modify
 [Paths + what changes in each]
@@ -223,9 +223,9 @@ Write the PRD to `.planning/prds/{slug}.md` (create `.planning/prds/` directory 
 ### Key Existing Code (DO NOT recreate — use as-is)
 [Functions, utilities, DAL queries, components that agents should import/reuse]
 
-## Implementation Phases
+## Implementation Milestones
 
-### Phase 1: [Name]
+### Milestone 1: [Name]
 **Assigned To:** [developer name or "unassigned"]
 **Goal:** [One sentence]
 
@@ -243,20 +243,20 @@ Write the PRD to `.planning/prds/{slug}.md` (create `.planning/prds/` directory 
 **Verification:** [Exact commands to run]
 **Acceptance:** US-1 criteria [list which], US-2 criteria [list which]
 
-### Phase 2: [Name]
+### Milestone 2: [Name]
 **Assigned To:** [developer name or "unassigned"]
 ...
 
 ## Execution Rules
 1. DELEGATE EVERYTHING. Lead context is sacred — do not read implementation files into it.
-2. Verify after every phase: [verification commands from CLAUDE.md]
+2. Verify after every milestone: [verification commands from CLAUDE.md]
 3. Atomic commits after each agent's work lands
 4. Never `git add .` — stage specific files only
 5. Read `tasks/lessons.md` before spawning agents — inject relevant lessons into agent prompts
 
 ## Definition of Done
 - [ ] All user story acceptance criteria pass
-- [ ] All phases verified with [verification commands]
+- [ ] All milestones verified with [verification commands]
 - [ ] Branch pushed and PR opened
 - [ ] STATE.md and ROADMAP.md updated
 ```
@@ -265,41 +265,45 @@ Write the PRD to `.planning/prds/{slug}.md` (create `.planning/prds/` directory 
 
 After writing the PRD to `.planning/prds/{slug}.md`:
 
-1. **Update ROADMAP.md:** Add phase breakdown under the current milestone section. Each phase gets a row in the progress table with status "Pending".
+1. **Update ROADMAP.md:** Add milestone breakdown under the current project section. Each milestone gets a row in the progress table with status "Pending".
 
-2. **Update STATE.md** (current milestone only):
-   - Set current phase to "Phase 1 — ready for `/flow:go`"
+2. **Update STATE.md** (current project only):
+   - Set current milestone to "Milestone 1 — ready for `/flow:go`"
    - Set "Active PRD" to `.planning/prds/{slug}.md`
-   - Update "Next Actions" to reference the first phase
-   - **Skip this step if speccing a future milestone** — STATE.md stays pointing at the current milestone. Print: "PRD written to `.planning/prds/{slug}.md`. STATE.md not updated (future milestone)."
+   - Update "Next Actions" to reference the first milestone
+   - **Skip this step if speccing a future project** — STATE.md stays pointing at the current project. Print: "PRD written to `.planning/prds/{slug}.md`. STATE.md not updated (future project)."
 
-3. **Generate Phase 1 handoff prompt:**
+3. **Generate Milestone 1 handoff prompt:**
    ```
-   Phase 1: [Name] — [short description]. Read STATE.md, ROADMAP.md, and .planning/prds/{slug}.md.
-   [One sentence of context about what Phase 1 builds].
+   Milestone 1: [Name] — [short description]. Read STATE.md, ROADMAP.md, and .planning/prds/{slug}.md.
+   [One sentence of context about what Milestone 1 builds].
    ```
 
-4. **Linear Issue Creation (optional):**
+4. **Linear Integration (optional):**
    - Check if Linear MCP tools are available (try `mcp__linear__list_teams`)
-   - If available: search for a Linear project matching the milestone name (`mcp__linear__list_projects` with query)
-     - If found: create one Linear issue per phase under that project using `mcp__linear__create_issue`, with title "Phase N: [Name]" and description from PRD phase section. Set team to "Monument Square".
-     - If not found: use AskUserQuestion to ask user to pick a project or skip Linear integration
-   - If Linear MCP not available: skip silently (no error message)
-   - Print count: "[N] Linear issues created under project [name]" (or "Linear integration skipped" if not available)
+   - If available: search for a Linear project matching the project name (`mcp__linear__list_projects` with query)
+     - If found:
+       - Create one **Linear milestone** per implementation milestone:
+         `mcp__linear__create_milestone` with project, name "Milestone N: [Name]"
+       - Create one **Linear issue** per user story or task (NOT per milestone):
+         `mcp__linear__create_issue` assigned to the appropriate milestone
+     - If not found: use AskUserQuestion to ask user to pick a project or skip
+   - If Linear MCP not available: skip silently
+   - Print: "[N] milestones + [M] issues created under project [name]"
 
 5. Print the handoff prompt in a fenced code block.
 
-6. Print: "PRD ready at `.planning/prds/{slug}.md`. Run `/flow:go` to execute Phase 1, or review the PRD first."
+6. Print: "PRD ready at `.planning/prds/{slug}.md`. Run `/flow:go` to execute Milestone 1, or review the PRD first."
 
 ## Quality Gates
 
 Before finalizing, self-check the PRD:
-- [ ] Every phase has wave-based agent assignments with explicit file lists
+- [ ] Every milestone has wave-based agent assignments with explicit file lists
 - [ ] Every user story has checkbox acceptance criteria that are testable
-- [ ] Every phase has verification commands
+- [ ] Every milestone has verification commands
 - [ ] "Key Existing Code" section references actual files/functions found in the codebase scan
 - [ ] PRD is written to `.planning/prds/{slug}.md`, NOT to root `PRD.md`
-- [ ] No phase has more than 5 agents in a single wave (too many = coordination overhead)
+- [ ] No milestone has more than 5 agents in a single wave (too many = coordination overhead)
 - [ ] Sacred code section is populated (even if empty with "None identified")
 
 If any gate fails, fix the PRD before presenting it.

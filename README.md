@@ -28,8 +28,8 @@ Claude Code is powerful but unstructured. Without a system, you lose context bet
 Flow gives Claude Code a **memory system and execution framework**:
 
 - **Spec interviews** extract decisions upfront so agents execute instead of guessing
-- **Per-milestone PRDs** in `.planning/prds/` become execution contracts — spec future milestones in parallel
-- **Wave-based agent teams** execute phases autonomously with built-in verification
+- **Per-project PRDs** in `.planning/prds/` become execution contracts — spec future projects in parallel
+- **Wave-based agent teams** execute milestones autonomously with built-in verification
 - **Session handoffs** preserve full context across fresh sessions — no more "where was I?"
 - **Lessons compound** — mistakes get captured, refined, and promoted into permanent rules
 
@@ -45,15 +45,15 @@ Flow gives Claude Code a **memory system and execution framework**:
 ```
 
 1. **`/flow:setup`** — Scaffolds your project with planning docs and execution rules
-2. **`/flow:spec`** — Interviews you, then writes an executable PRD with phases, acceptance criteria, and agent-team structure
-3. **`/flow:go`** — Spawns parallel agent teams to build the next phase, verifies, commits
+2. **`/flow:spec`** — Interviews you, then writes an executable PRD with milestones, acceptance criteria, and agent-team structure
+3. **`/flow:go`** — Spawns parallel agent teams to build the next milestone, verifies, commits
 4. **`/flow:done`** — Updates docs, captures lessons, generates a handoff prompt so the next session starts instantly
 
-Run `/flow:go` repeatedly until all phases are done, then `/flow:done` to wrap up. Next session, paste the handoff prompt and keep going.
+Run `/flow:go` repeatedly until all milestones are done, then `/flow:done` to wrap up. Next session, paste the handoff prompt and keep going.
 
 ---
 
-## Multi-PRD: Parallel Milestone Planning
+## Multi-PRD: Parallel Project Planning
 
 <table>
 <tr>
@@ -64,19 +64,19 @@ Run `/flow:go` repeatedly until all phases are done, then `/flow:done` to wrap u
 project/
 └── PRD.md          ← one at a time
 ```
-Finish or archive the current milestone before speccing the next. Serial bottleneck on large roadmaps.
+Finish or archive the current project before speccing the next. Serial bottleneck on large roadmaps.
 
 </td>
 <td width="50%">
 
-**Now (per-milestone PRDs)**
+**Now (per-project PRDs)**
 ```
 .planning/prds/
 ├── user-auth.md          ← active
 ├── dashboard.md          ← pre-specced
 └── payments.md           ← pre-specced
 ```
-Spec any milestone at any time. Execute the current one while planning ahead.
+Spec any project at any time. Execute the current one while planning ahead.
 
 </td>
 </tr>
@@ -84,8 +84,8 @@ Spec any milestone at any time. Execute the current one while planning ahead.
 
 **How it works:**
 
-- `/flow:spec` writes PRDs to `.planning/prds/{slug}.md` — one file per milestone
-- `/flow:spec Payments` targets a specific future milestone without changing your current position
+- `/flow:spec` writes PRDs to `.planning/prds/{slug}.md` — one file per project
+- `/flow:spec Payments` targets a specific future project without changing your current position
 - STATE.md tracks the **Active PRD** field so `/flow:go` always knows which spec to execute
 - Smart resolution: user argument > STATE.md > slug derivation > legacy fallback
 - Existing `PRD.md` at root? Still works — legacy files are consumed transparently and migrated on archive
@@ -99,8 +99,8 @@ Spec any milestone at any time. Execute the current one while planning ahead.
 | Command | When | What it does |
 |---|---|---|
 | `/flow:setup` | Once per project | Creates `.planning/`, CLAUDE.md, templates, full roadmap |
-| `/flow:spec` | Once per milestone | Interview that produces an executable PRD in `.planning/prds/` |
-| `/flow:go` | Once per phase | Executes the next phase with wave-based agent teams |
+| `/flow:spec` | Once per project | Interview that produces an executable PRD in `.planning/prds/` |
+| `/flow:go` | Once per milestone | Executes the next milestone with wave-based agent teams |
 | `/flow:done` | End of session | Updates docs, captures lessons, generates handoff prompt |
 
 ### Standalone
@@ -132,11 +132,11 @@ your-project/
 │       └── session.md           # Per-developer session state (gitignored)
 ├── .planning/
 │   ├── STATE.md                 # Project-level GPS — shared across developers
-│   ├── ROADMAP.md               # Milestone phases and progress tracking
-│   ├── prds/                    # Per-milestone PRD specs
-│   │   ├── user-auth.md         #   One file per milestone
-│   │   └── dashboard.md         #   Pre-spec future milestones anytime
-│   └── archive/                 # Completed milestones and archived PRDs
+│   ├── ROADMAP.md               # Project milestones and progress tracking
+│   ├── prds/                    # Per-project PRD specs
+│   │   ├── user-auth.md         #   One file per project
+│   │   └── dashboard.md         #   Pre-spec future projects anytime
+│   └── archive/                 # Completed projects and archived PRDs
 └── tasks/
     └── lessons.md               # Active lessons (max 10) → promoted to CLAUDE.md
 ```
@@ -188,7 +188,7 @@ Hard caps prevent context bloat. Total worst-case: ~30 lines of lessons context 
 Flow supports multiple developers on the same repo without conflicts:
 
 - **`session.md`** — Per-developer session state, stored in `.claude/memory/session.md` (gitignored). Each developer has their own session GPS that never conflicts.
-- **`STATE.md`** — Shared project-level state in `.planning/STATE.md`. Updated at milestone boundaries only (not every session), so conflicts are rare.
+- **`STATE.md`** — Shared project-level state in `.planning/STATE.md`. Updated at project boundaries only (not every session), so conflicts are rare.
 - **Developer identity** — `/flow:spec` and `/flow:go` track who is working on what. PRDs can be assigned to specific developers (advisory, not blocking).
 - **Template provided** — `session.md.template` scaffolds the per-developer file on first use.
 
@@ -198,7 +198,7 @@ Flow supports multiple developers on the same repo without conflicts:
 
 Flow optionally integrates with Linear via MCP for issue tracking:
 
-- **`/flow:spec`** can create Linear issues automatically from PRD phases
+- **`/flow:spec`** can create Linear issues automatically from PRD milestones
 - **`/flow:done`** can post progress comments to Linear issues
 - **`/flow:triage`** sorts unstructured brain dumps into categorized Linear issues, ROADMAP entries, and lessons
 - **Branch convention** `feat/msig-{issue#}-desc` auto-links PRs to Linear issues

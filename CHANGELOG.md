@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2026-02-14
+
+### Changed
+- **BREAKING:** Terminology aligned with Linear hierarchy — "Milestone" → "Project", "Phase" → "Milestone" across all skills, templates, and docs
+- `/flow:go` adds Step 2.5: automatically moves Linear issues to "In Progress" when starting a milestone
+- `/flow:go` Step 7: detects final milestone and routes to `/flow:done` for PR creation
+- `/flow:done` adds Step 5.25: auto-creates PR with `Closes MSIG-XX` body when project is complete
+- `/flow:done` Step 5.5: moves completed issues to "In Review" when PR is detected
+- `/flow:spec` creates Linear **milestones** (not issues) for implementation stages, issues for tasks
+- All templates updated: STATE.md uses "Project:", ROADMAP.md uses "Projects" table
+- DESIGN.md and README.md updated to reflect new terminology
+
 ## [0.7.1] - 2026-02-14
 
 ### Fixed

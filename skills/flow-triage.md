@@ -20,7 +20,7 @@ IF no argument: use AskUserQuestion: "Paste your brain dump — bullet list, str
 ## Step 2 — Context Load
 
 Read in parallel (skip gracefully if missing):
-- `.planning/ROADMAP.md` — to understand existing milestones and avoid duplicates
+- `.planning/ROADMAP.md` — to understand existing projects and avoid duplicates
 - `tasks/lessons.md` — to check for existing lessons and enforce cap
 - `CLAUDE.md` — project context
 
@@ -30,9 +30,9 @@ Run `git config user.name` to identify the developer.
 
 For each distinct item in the brain dump, classify into one of:
 - **Linear Issue** — actionable task, bug, or feature → will become a Linear issue
-- **ROADMAP Entry** — future milestone or phase idea → append to ROADMAP.md Future section
+- **ROADMAP Entry** — future project or milestone idea → append to ROADMAP.md Future section
 - **Lesson** — learning, pattern, or rule → append to tasks/lessons.md
-- **Milestone** — milestone-sized work item → add to ROADMAP.md as a planned milestone
+- **Project** — project-sized work item → add to ROADMAP.md as a planned project
 - **Discard** — not actionable, already done, duplicate, or too vague to action
 
 ## Step 4 — Present Plan
@@ -46,7 +46,7 @@ Show the full categorization in a table:
 | 2 | "Never use git add ." | Lesson | "Always stage specific files" |
 | 3 | "Maybe add dark mode" | ROADMAP | Future/Unscheduled |
 | 4 | "Had a thought about..." | Discard | Too vague to action |
-| 5 | "Student leasing rate modeling" | Milestone | Add to ROADMAP as planned milestone |
+| 5 | "Student leasing rate modeling" | Project | Add to ROADMAP as planned project |
 ```
 
 Use AskUserQuestion: "Here's how I'd categorize your brain dump. Review and approve, or tell me what to change."
@@ -73,12 +73,12 @@ For approved items:
 - If that section doesn't exist, create it at the bottom of the file
 - Format: `| [name] | Unscheduled | — |`
 
-**Milestones:**
-- Add to `.planning/ROADMAP.md` main milestone table with status "Planned"
-- Add a section with the milestone goal: `## [Milestone Name]\n\n**Goal:** [goal]\n\n**Phases:** Run /flow:spec when this milestone is active.`
-- If no active milestone exists (all existing milestones are "Complete" or none exist):
-  - Set the first new milestone's status to "Pending — needs `/flow:spec`"
-  - Update STATE.md to point to the new milestone as current
+**Projects:**
+- Add to `.planning/ROADMAP.md` main project table with status "Planned"
+- Add a section with the project goal: `## [Project Name]\n\n**Goal:** [goal]\n\n**Milestones:** Run /flow:spec when this project is active.`
+- If no active project exists (all existing projects are "Complete" or none exist):
+  - Set the first new project's status to "Pending — needs `/flow:spec`"
+  - Update STATE.md to point to the new project as current
 - Optionally create a Linear project (if Linear MCP tools available via `mcp__linear__list_teams`)
 
 **Lessons:**
@@ -96,7 +96,7 @@ Print a compact completion block:
 Triage complete:
 - [N] Linear issues created (in [project names])
 - [N] ROADMAP entries added
-- [N] milestones added to ROADMAP
+- [N] projects added to ROADMAP
 - [N] lessons captured
 - [N] items discarded
 ```
@@ -105,6 +105,6 @@ Then suggest next actions:
 ```
 Next:
   → /flow:triage for another brain dump
-  → /flow:spec to plan a milestone from triaged items
+  → /flow:spec to plan a project from triaged items
   → /flow:status to see current state
 ```
