@@ -335,7 +335,7 @@ Flow v${version} installed successfully!
 Commands available:
   /flow:intro      \u2014 Learn the Flow workflow
   /flow:setup      \u2014 Set up a new project with full roadmap
-  /flow:milestone  \u2014 Add new milestones to the roadmap
+  /flow:triage     \u2014 Sort brain dump into issues, milestones, lessons
   /flow:spec       \u2014 Spec interview \u2192 executable PRD
   /flow:go         \u2014 Execute next phase with agent teams
   /flow:done       \u2014 Session-end documentation

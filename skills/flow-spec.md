@@ -28,7 +28,7 @@ You are executing the `/flow:spec` skill. This is the KEYSTONE skill of the flow
 
    2. **If no argument** — read ROADMAP.md and list all incomplete milestones. Use AskUserQuestion to let the user pick which milestone to spec. Pre-select the next unspecced milestone as the first option. Always show the picker, even if only one milestone is listed — the user may want to confirm or choose "Other" to define a new milestone first.
 
-   3. **Derive the PRD slug:** Take the milestone's version prefix and name (e.g., "v3: Dashboard Analytics"), lowercase it, replace spaces and special characters with hyphens, collapse consecutive hyphens. Result: `v3-dashboard-analytics`. The PRD path is `.planning/prds/{slug}.md`.
+   3. **Derive the PRD slug:** Take the milestone name (e.g., "Dashboard Analytics"), lowercase it, replace spaces and special characters with hyphens, collapse consecutive hyphens. Result: `dashboard-analytics`. The PRD path is `.planning/prds/{slug}.md`.
 
    4. **Check for existing PRD at that path:**
       - **If PRD exists** → Use AskUserQuestion: "A PRD already exists for this milestone at `.planning/prds/{slug}.md`. What would you like to do?"
@@ -171,9 +171,9 @@ Write the PRD to `.planning/prds/{slug}.md` (create `.planning/prds/` directory 
 ```markdown
 # [Milestone Name] — Specification
 
-**Milestone:** [full milestone name, e.g., "v3: Dashboard Analytics"]
+**Milestone:** [full milestone name, e.g., "Dashboard Analytics"]
 **Status:** Ready for execution
-**Branch:** feat/[milestone-slug]
+**Branch:** feat/{milestone-slug}
 **Created:** [today's date]
 **Assigned To:** [developer name or "unassigned"]
 

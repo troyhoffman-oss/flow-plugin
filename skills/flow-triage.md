@@ -32,6 +32,7 @@ For each distinct item in the brain dump, classify into one of:
 - **Linear Issue** — actionable task, bug, or feature → will become a Linear issue
 - **ROADMAP Entry** — future milestone or phase idea → append to ROADMAP.md Future section
 - **Lesson** — learning, pattern, or rule → append to tasks/lessons.md
+- **Milestone** — milestone-sized work item → add to ROADMAP.md as a planned milestone
 - **Discard** — not actionable, already done, duplicate, or too vague to action
 
 ## Step 4 — Present Plan
@@ -45,6 +46,7 @@ Show the full categorization in a table:
 | 2 | "Never use git add ." | Lesson | "Always stage specific files" |
 | 3 | "Maybe add dark mode" | ROADMAP | Future/Unscheduled |
 | 4 | "Had a thought about..." | Discard | Too vague to action |
+| 5 | "Student leasing rate modeling" | Milestone | Add to ROADMAP as planned milestone |
 ```
 
 Use AskUserQuestion: "Here's how I'd categorize your brain dump. Review and approve, or tell me what to change."
@@ -71,6 +73,14 @@ For approved items:
 - If that section doesn't exist, create it at the bottom of the file
 - Format: `| [name] | Unscheduled | — |`
 
+**Milestones:**
+- Add to `.planning/ROADMAP.md` main milestone table with status "Planned"
+- Add a section with the milestone goal: `## [Milestone Name]\n\n**Goal:** [goal]\n\n**Phases:** Run /flow:spec when this milestone is active.`
+- If no active milestone exists (all existing milestones are "Complete" or none exist):
+  - Set the first new milestone's status to "Pending — needs `/flow:spec`"
+  - Update STATE.md to point to the new milestone as current
+- Optionally create a Linear project (if Linear MCP tools available via `mcp__linear__list_teams`)
+
 **Lessons:**
 - Append to `tasks/lessons.md` as one-liners: `- **[topic]** The rule`
 - Enforce max 10 cap (promote most battle-tested to `CLAUDE.md ## Learned Rules` if full)
@@ -86,6 +96,7 @@ Print a compact completion block:
 Triage complete:
 - [N] Linear issues created (in [project names])
 - [N] ROADMAP entries added
+- [N] milestones added to ROADMAP
 - [N] lessons captured
 - [N] items discarded
 ```

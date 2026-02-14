@@ -41,7 +41,7 @@ Structure:
 # [Project Name] — Project State
 
 ## Current Position
-- **Milestone:** [name] (vX)
+- **Milestone:** [name]
 - **Phase:** [current phase status]
 - **Branch:** [current branch]
 - **Active PRD:** [path to active PRD, or "None" if milestone complete]
@@ -98,9 +98,9 @@ Write `.claude/memory/session.md` with the following content:
 - **Archive check:** If the current milestone is fully complete:
   - If `.planning/` does not exist, skip archiving entirely — there's nothing to archive
   - Create `.planning/archive/` if it doesn't already exist (use `mkdir -p` or equivalent)
-  - Move milestone phase details to `.planning/archive/milestones-vX.md`
+  - Move milestone phase details to `.planning/archive/milestones-{slug}.md`
   - Keep only the summary row in the ROADMAP milestone table
-  - Archive the milestone's PRD: move `.planning/prds/{slug}.md` to `.planning/archive/PRD-{slug}.md`. If using legacy root `PRD.md`, move it to `.planning/archive/PRD-vX.md` instead.
+  - Archive the milestone's PRD: move `.planning/prds/{slug}.md` to `.planning/archive/PRD-{slug}.md`. If using legacy root `PRD.md`, move it to `.planning/archive/PRD-{slug}.md` instead.
   - Clear STATE.md "Active PRD" field (set to "None")
   - Mark the milestone as "Complete" in the ROADMAP table
   - **Milestone transition:** Check ROADMAP.md for the NEXT milestone with status "Planned":
@@ -163,11 +163,11 @@ Determine the next action and generate a copyable handoff prompt. Include the de
   ```
 - If milestone is complete AND a next milestone was transitioned to (from Step 3):
   ```
-  [Developer Name] — Milestone [name] complete. Next: v[X] [next milestone name]. Run /flow:spec to plan it.
+  [Developer Name] — Milestone [name] complete. Next: [next milestone name]. Run /flow:spec to plan it.
   ```
 - If milestone is complete AND no next milestone exists:
   ```
-  [Developer Name] — All milestones complete! Run /flow:milestone to plan what's next, or enjoy the win.
+  [Developer Name] — All milestones complete! Run /flow:triage to plan what's next, or enjoy the win.
   ```
 
 Print the handoff prompt in a fenced code block so the user can copy it.

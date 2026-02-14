@@ -2,14 +2,14 @@
 
 ## Milestones
 
-| Version | Milestone | Status | Phases |
-|---------|-----------|--------|--------|
-| v1 | {{FIRST_MILESTONE}} | Pending — needs `/flow:spec` | TBD |
+| Milestone | Status | Phases |
+|-----------|--------|--------|
+| {{FIRST_MILESTONE}} | Pending — needs `/flow:spec` | TBD |
 {{ADDITIONAL_MILESTONES_TABLE}}
 
 ---
 
-## v1: {{FIRST_MILESTONE}}
+## {{FIRST_MILESTONE}}
 
 **Goal:** {{MILESTONE_GOAL}}
 

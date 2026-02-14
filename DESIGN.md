@@ -17,7 +17,6 @@ Troy has organically converged on a workflow where a single handoff prompt kicks
 ```
 ~/.claude/skills/
 ├── flow-setup.md       # /flow:setup -- New project scaffolding
-├── flow-milestone.md   # /flow:milestone -- Archive milestone + start new one
 ├── flow-spec.md        # /flow:spec -- Spec interview -> executable PRD
 ├── flow-task.md        # /flow:task -- Lightweight task execution (no PRD needed)
 ├── flow-go.md          # /flow:go -- Execute next phase from PRD
@@ -41,8 +40,8 @@ project-root/
 │   ├── STATE.md                 # Session GPS (<80 lines, replaced each session)
 │   ├── ROADMAP.md               # Milestone table + current milestone phases
 │   ├── prds/                    # Per-milestone PRD specs
-│   │   ├── v1-user-auth.md      # e.g., v1 milestone PRD
-│   │   └── v2-dashboard.md      # e.g., v2 milestone PRD (can pre-spec)
+│   │   ├── user-auth.md          # e.g., milestone PRD
+│   │   └── dashboard.md          # e.g., milestone PRD (can pre-spec)
 │   └── archive/                 # Completed milestone details, old PRDs
 ├── tasks/
 │   └── lessons.md               # Active lessons (max 10 one-liners)

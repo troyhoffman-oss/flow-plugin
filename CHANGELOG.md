@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-02-14
+
+### Changed
+- **BREAKING:** Removed `/flow:milestone` — its behavior is now part of `/flow:triage`
+- `/flow:triage` gains "Milestone" category — brain dump items that are milestone-sized get added to ROADMAP.md with status "Planned", with optional Linear project creation
+- Dropped version number convention from new milestones — milestones use descriptive names only (e.g., "Student Leasing & Rate Modeling" instead of "v18.0")
+- `/flow:setup` ROADMAP template drops "Version" column, STATE template drops `(v1)` prefix
+- `/flow:spec` PRD slug derivation no longer expects version prefixes
+- `/flow:done` archive paths use milestone slug instead of version number, "all milestones complete" routes to `/flow:triage`
+- `/flow:status` routes to `/flow:triage` (not `/flow:milestone`) when no next milestone exists
+- `/flow:intro` updated lifecycle: `triage → spec → go → done`
+- Simplified mental model: 4 core commands (triage, spec, go, done) + 4 utility (setup, task, status, update)
+
+### Removed
+- `flow-milestone.md` skill file — deleted entirely
+
 ## [0.6.1] - 2026-02-14
 
 ### Fixed

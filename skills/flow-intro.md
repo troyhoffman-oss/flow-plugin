@@ -14,20 +14,20 @@ Print this:
 
 ## Flow — Your Workflow System
 
-Flow is 6 commands that turn your specs into shipped code through agent teams. Each command feeds the next.
+Flow is a structured workflow for Claude Code. Four core commands that turn your specs into shipped code through agent teams.
 
 ### The Lifecycle
 
 ```
-/flow:setup → /flow:spec → /flow:go (repeat) → /flow:done
-  (captures      ↑                                  |
-  full roadmap)  |     auto-transitions to          |
-                 +---- next planned milestone ------+
+/flow:triage → /flow:spec → /flow:go (repeat) → /flow:done
+  (intake)       (plan)       (build)              (wrap)
+                    ↑                                 |
+                    |     auto-transitions to          |
+                    +---- next planned milestone ------+
 
 /flow:spec ← can pre-spec future milestones (each gets its own PRD in .planning/prds/)
 
-/flow:milestone ← add milestones to roadmap anytime
-/flow:task      ← standalone path for bug fixes, cleanup, small features (no PRD needed)
+/flow:task ← standalone path for bug fixes, cleanup, small features (no PRD needed)
 ```
 
 ### Command by Command
@@ -36,12 +36,14 @@ Flow is 6 commands that turn your specs into shipped code through agent teams. E
 - Asks you 4-5 questions (what is it, tech stack, verify commands, roadmap/milestones)
 - Captures your full roadmap upfront (paste a list or build one milestone at a time)
 - Creates the scaffolding: `CLAUDE.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, `tasks/lessons.md`
-- If project already set up, tells you to use `/flow:milestone` or `/flow:spec` instead
+- If project already set up, tells you to use `/flow:triage` or `/flow:spec` instead
 
-**`/flow:milestone`** — Add milestones to the roadmap
-- Adds new milestones to the project roadmap (paste a list or one at a time)
-- Shows current roadmap status before adding
-- If no milestone is active, activates the first new one
+**`/flow:triage`** — Sort a brain dump into action
+- Takes unstructured text (bullets, stream of consciousness, whatever)
+- Categorizes each item: Linear Issue, ROADMAP Entry, Milestone, Lesson, or Discard
+- Milestones get added to ROADMAP.md with status "Planned"
+- Linear issues created automatically (if Linear MCP available)
+- This is the single intake command — use it to add milestones, capture ideas, or file bugs
 
 **`/flow:task`** — Run anytime for small work
 - Bug fixes, cleanup, one-off features — anything that doesn't need a full PRD

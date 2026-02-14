@@ -57,7 +57,7 @@ Use this explicit decision tree:
 
 **IF all phases are complete AND no next milestone exists:**
 → Primary: `/flow:done` to finalize this milestone
-→ Then: `/flow:milestone` to add the next milestone
+→ Then: `/flow:triage` to add the next milestone
 → Alt: `/flow:task` for quick fixes or cleanup (no PRD needed)
 
 **IF no phases exist in ROADMAP (milestone defined but not planned):**

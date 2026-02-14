@@ -11,7 +11,7 @@ You are executing the `/flow:setup` skill. This sets up the planning scaffolding
 ## Guard: Already Initialized
 
 Check if `.planning/STATE.md` already exists:
-- **If it exists** → Print: "This project is already set up. Run `/flow:milestone` to start a new milestone, or `/flow:spec` to spec the current one." and **STOP. Do not overwrite.**
+- **If it exists** → Print: "This project is already set up. Run `/flow:triage` to add milestones, or `/flow:spec` to spec the current one." and **STOP. Do not overwrite.**
 - **If it does NOT exist** → Continue with setup below.
 
 ---
@@ -45,14 +45,14 @@ Use AskUserQuestion to gather project info. Ask these questions (you may combine
 **If user selects "Yes":**
 - Accept free text (bullet list, paragraph, pasted doc — any format)
 - Parse into milestones, each with a name + brief goal
-- Print back: "Here's what I got:" followed by the parsed list (e.g., "v1: Auth — user registration and login", "v2: Dashboard — analytics and settings")
+- Print back: "Here's what I got:" followed by the parsed list (e.g., "Auth — user registration and login", "Dashboard — analytics and settings")
 - Use AskUserQuestion to confirm: "Does this look right?" with options:
   - "Yes — looks good"
   - "Let me adjust" (user re-enters)
 
 **If user selects "No" (guided):**
 - Ask: "What's the first milestone?" (name + one-sentence goal)
-- Then: "Any more milestones you can see right now? List them, or skip to add them later with `/flow:milestone`." with options:
+- Then: "Any more milestones you can see right now? List them, or skip to add them later with `/flow:triage`." with options:
   - "I have more to add" (user enters additional milestones)
   - "That's it for now"
 
@@ -78,7 +78,7 @@ Create these 5 files (create directories as needed):
 # [Project Name] — Project State
 
 ## Current Position
-- **Milestone:** [first milestone name] (v1)
+- **Milestone:** [first milestone name]
 - **Phase:** Not started — run `/flow:spec` to build PRD
 - **Branch:** main
 - **Active PRD:** None — run `/flow:spec` to create
@@ -107,15 +107,15 @@ Create these 5 files (create directories as needed):
 
 ## Milestones
 
-| Version | Milestone | Status | Phases |
-|---------|-----------|--------|--------|
-| v1 | [first milestone] | Pending — needs `/flow:spec` | TBD |
+| Milestone | Status | Phases |
+|-----------|--------|--------|
+| [first milestone] | Pending — needs `/flow:spec` | TBD |
 [For each additional milestone:]
-| v[N] | [milestone name] | Planned | TBD |
+| [milestone name] | Planned | TBD |
 
 ---
 
-## v1: [first milestone]
+## [first milestone]
 
 **Goal:** [milestone goal from user]
 
@@ -123,7 +123,7 @@ Create these 5 files (create directories as needed):
 
 [For each additional milestone:]
 
-## v[N]: [milestone name]
+## [milestone name]
 
 **Goal:** [milestone goal]
 

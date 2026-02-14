@@ -1,7 +1,7 @@
 # {{PROJECT_NAME}} — Project State
 
 ## Current Position
-- **Milestone:** {{FIRST_MILESTONE}} (v1)
+- **Milestone:** {{FIRST_MILESTONE}}
 - **Phase:** Not started — run `/flow:spec` to build PRD
 - **Branch:** main
 - **Active PRD:** None — run `/flow:spec` to create

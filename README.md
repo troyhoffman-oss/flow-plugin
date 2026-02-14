@@ -40,10 +40,8 @@ Flow gives Claude Code a **memory system and execution framework**:
 **One-time setup**, then a repeating build cycle:
 
 ```
-/flow:setup  →  /flow:spec  →  /flow:go  →  /flow:done
-  (once,          (once per      (once per     (end of session,
-  captures        milestone)      phase)        auto-transitions
-  full roadmap)                                 between milestones)
+/flow:setup  →  /flow:triage  →  /flow:spec  →  /flow:go  →  /flow:done
+  (once)          (intake)         (plan)         (build)       (wrap)
 ```
 
 1. **`/flow:setup`** — Scaffolds your project with planning docs and execution rules
@@ -74,9 +72,9 @@ Finish or archive the current milestone before speccing the next. Serial bottlen
 **Now (per-milestone PRDs)**
 ```
 .planning/prds/
-├── v1-user-auth.md       ← active
-├── v2-dashboard.md       ← pre-specced
-└── v3-payments.md        ← pre-specced
+├── user-auth.md          ← active
+├── dashboard.md          ← pre-specced
+└── payments.md           ← pre-specced
 ```
 Spec any milestone at any time. Execute the current one while planning ahead.
 
@@ -86,8 +84,8 @@ Spec any milestone at any time. Execute the current one while planning ahead.
 
 **How it works:**
 
-- `/flow:spec` writes PRDs to `.planning/prds/{version-slug}.md` — one file per milestone
-- `/flow:spec v3: Payments` targets a specific future milestone without changing your current position
+- `/flow:spec` writes PRDs to `.planning/prds/{slug}.md` — one file per milestone
+- `/flow:spec Payments` targets a specific future milestone without changing your current position
 - STATE.md tracks the **Active PRD** field so `/flow:go` always knows which spec to execute
 - Smart resolution: user argument > STATE.md > slug derivation > legacy fallback
 - Existing `PRD.md` at root? Still works — legacy files are consumed transparently and migrated on archive
@@ -110,8 +108,7 @@ Spec any milestone at any time. Execute the current one while planning ahead.
 | Command | When | What it does |
 |---|---|---|
 | `/flow:task` | Anytime | Bug fixes, cleanup, small features — no PRD needed |
-| `/flow:triage` | Anytime | Brain dump → categorized Linear issues, ROADMAP entries, lessons |
-| `/flow:milestone` | Anytime | Add new milestones to the roadmap |
+| `/flow:triage` | Anytime | Brain dump → categorized Linear issues, milestones, ROADMAP entries, lessons |
 
 ### Utility
 
@@ -137,8 +134,8 @@ your-project/
 │   ├── STATE.md                 # Project-level GPS — shared across developers
 │   ├── ROADMAP.md               # Milestone phases and progress tracking
 │   ├── prds/                    # Per-milestone PRD specs
-│   │   ├── v1-user-auth.md      #   One file per milestone
-│   │   └── v2-dashboard.md      #   Pre-spec future milestones anytime
+│   │   ├── user-auth.md         #   One file per milestone
+│   │   └── dashboard.md         #   Pre-spec future milestones anytime
 │   └── archive/                 # Completed milestones and archived PRDs
 └── tasks/
     └── lessons.md               # Active lessons (max 10) → promoted to CLAUDE.md
@@ -151,8 +148,7 @@ your-project/
 ```
 ~/.claude/
 ├── commands/flow/
-│   ├── flow-setup.md            # 10 skill files
-│   ├── flow-milestone.md
+│   ├── flow-setup.md            # 9 skill files
 │   ├── flow-spec.md
 │   ├── flow-go.md
 │   ├── flow-task.md
