@@ -227,7 +227,18 @@ try {
   }
 
   // 2. Copy skills: skills/flow-*.md -> commands/flow/*.md (strip "flow-" prefix)
+  //    Clean stale skill files first (from previous versions that removed skills)
   const skillFiles = fs.readdirSync(skillsDir).filter(f => f.startsWith('flow-') && f.endsWith('.md'));
+  const expectedSkills = new Set(skillFiles.map(f => f.replace(/^flow-/, '')));
+  if (fs.existsSync(commandsDir)) {
+    const existing = fs.readdirSync(commandsDir).filter(f => f.endsWith('.md'));
+    for (const file of existing) {
+      if (!expectedSkills.has(file)) {
+        fs.unlinkSync(path.join(commandsDir, file));
+        console.log(`  Removed stale skill: ${file}`);
+      }
+    }
+  }
   for (const file of skillFiles) {
     const dest = file.replace(/^flow-/, '');
     const destPath = path.join(commandsDir, dest);
