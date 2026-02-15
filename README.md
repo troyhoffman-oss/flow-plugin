@@ -86,7 +86,7 @@ Spec any project at any time. Execute the current one while planning ahead.
 
 - `/flow:spec` writes PRDs to `.planning/prds/{slug}.md` — one file per project
 - `/flow:spec Payments` targets a specific future project without changing your current position
-- STATE.md tracks the **Active PRD** field so `/flow:go` always knows which spec to execute
+- PRD resolution matches the current git branch against each PRD's `**Branch:**` header — STATE.md "Active PRD" is fallback
 - Smart resolution: user argument > STATE.md > slug derivation > legacy fallback
 - Existing `PRD.md` at root? Still works — legacy files are consumed transparently and migrated on archive
 
@@ -129,7 +129,7 @@ your-project/
 ├── CLAUDE.md                    # Execution rules + learned rules
 ├── .claude/
 │   └── memory/
-│       └── session.md           # Per-developer session state (gitignored)
+│       └── session-{branch}.md  # Per-branch session state (gitignored)
 ├── .planning/
 │   ├── STATE.md                 # Project-level GPS — shared across developers
 │   ├── ROADMAP.md               # Project milestones and progress tracking
@@ -187,10 +187,10 @@ Hard caps prevent context bloat. Total worst-case: ~30 lines of lessons context 
 
 Flow supports multiple developers on the same repo without conflicts:
 
-- **`session.md`** — Per-developer session state, stored in `.claude/memory/session.md` (gitignored). Each developer has their own session GPS that never conflicts.
+- **Branch-scoped sessions** — Each branch gets its own session file at `.claude/memory/session-{branch-slug}.md` (gitignored). Multiple terminals on different branches never conflict. Same-branch conflicts are prevented by Linear assignment (one dev per issue/branch).
+- **Branch-based PRD resolution** — Skills match the current git branch against each PRD's `**Branch:**` header to find the active PRD. STATE.md "Active PRD" is fallback.
+- **Cross-developer awareness** — `/flow:status` shows all active sessions across branches. `/flow:go` warns if another developer was recently active on the same branch.
 - **`STATE.md`** — Shared project-level state in `.planning/STATE.md`. Updated at project boundaries only (not every session), so conflicts are rare.
-- **Developer identity** — `/flow:spec` and `/flow:go` track who is working on what. PRDs can be assigned to specific developers (advisory, not blocking).
-- **Template provided** — `session.md.template` scaffolds the per-developer file on first use.
 
 ---
 

@@ -145,6 +145,8 @@ Subsections: New Database Tables, New API Endpoints, New Files to Create (groupe
 (Continue Milestone 2, etc.)
 ```
 
+> The `**Branch:**` field is the primary key for PRD resolution. Downstream skills match the current git branch against this field to find the active PRD.
+
 ## Phase 4 — Post-PRD Updates
 
 After writing the PRD:

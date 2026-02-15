@@ -18,8 +18,8 @@ You are executing the `/flow:done` skill. This finalizes the current session by 
 
 Read in parallel:
 - `.planning/STATE.md`, `.planning/ROADMAP.md`, `tasks/lessons.md`, `CLAUDE.md`
-- Active PRD from `.planning/prds/` (resolve via STATE.md "Active PRD" field, or legacy root `PRD.md`)
-- `.claude/memory/session.md` (if exists)
+- Active PRD: (1) `git branch --show-current` (2) read first 10 lines of each `.planning/prds/*.md` for `**Branch:**` header (3) match current branch → active PRD (4) no match: fall back to STATE.md "Active PRD" (5) still none: check legacy root `PRD.md` (6) nothing: no active PRD
+- `.claude/memory/session-{branch-slug}.md` (if exists). Branch slug: `git branch --show-current`, replace `/` with `-`, lowercase. Detached HEAD fallback: `session.md`.
 
 Also run:
 - `git log --oneline -20` — commits this session
@@ -62,7 +62,7 @@ Check ROADMAP.md progress and commits to determine if a project completed this s
 
 ### 2.5. Write session.md (Every Session)
 
-Always runs. Create `.claude/memory/` if needed. Write `.claude/memory/session.md`:
+Always runs. Create `.claude/memory/` if needed. Branch slug: `git branch --show-current`, replace `/` with `-`, lowercase. Detached HEAD fallback: `session.md`. Write `.claude/memory/session-{branch-slug}.md`:
 
 ```
 # Session State
@@ -103,9 +103,9 @@ Always runs. Create `.claude/memory/` if needed. Write `.claude/memory/session.m
 
 ### 5. Commit Doc Updates
 
-**Normal session:** Only stage `tasks/lessons.md` if changed. Skip STATE.md/ROADMAP.md. Never stage `.claude/memory/session.md` (gitignored). If no shared doc changes, print "No shared doc changes to commit." Otherwise: `docs: session-end updates — [brief summary]`
+**Normal session:** Only stage `tasks/lessons.md` if changed. Skip STATE.md/ROADMAP.md. Never stage files in `.claude/memory/` (all gitignored). If no shared doc changes, print "No shared doc changes to commit." Otherwise: `docs: session-end updates — [brief summary]`
 
-**Project boundary session:** Stage STATE.md, ROADMAP.md, lessons.md, archived files. Never stage session.md. Commit: `docs: session-end updates — [brief summary]`
+**Project boundary session:** Stage STATE.md, ROADMAP.md, lessons.md, archived files. Never stage files in `.claude/memory/` (all gitignored). Commit: `docs: session-end updates — [brief summary]`
 
 Do NOT push unless user asks.
 

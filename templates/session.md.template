@@ -1,3 +1,4 @@
+<!-- Filename: session-{branch-slug}.md — branch slug derived from git branch, / replaced with -, lowercased -->
 # Session State
 
 **Date:** {{DATE}}

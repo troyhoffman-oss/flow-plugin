@@ -14,7 +14,7 @@ You are executing the `/flow:go` skill. This reads the PRD, identifies the next 
 
 ## Step 1 — Orient
 
-Read in parallel: `.planning/STATE.md`, `.planning/ROADMAP.md`, `tasks/lessons.md`, `CLAUDE.md`, `.claude/memory/session.md` (if exists).
+Read in parallel: `.planning/STATE.md`, `.planning/ROADMAP.md`, `tasks/lessons.md`, `CLAUDE.md`, `.claude/memory/session-{branch-slug}.md` (if exists). Branch slug: `git branch --show-current`, replace `/` with `-`, lowercase. Detached HEAD fallback: `session.md`.
 
 Run `git config user.name` to get developer identity.
 
@@ -28,7 +28,7 @@ The user must always select which PRD to execute.
 
 3. **No PRDs found** — "No PRDs found in `.planning/prds/`. Run `/flow:spec` first." Stop.
 
-**After selection:** Read chosen PRD. If its project doesn't match STATE.md current project, warn: "PRD project doesn't match current project. Verify you're executing the right spec."
+**After selection:** Read the chosen PRD fully.
 
 **Assignment check:** Check milestone's `**Assigned To:**` against `git config user.name`. If different, print advisory warning. Do NOT block execution.
 
@@ -41,7 +41,8 @@ If any fail, stop and tell the user:
 1. **PRD selected?** If no PRDs found, stop.
 2. **Milestone detailed enough?** Must have wave structure, file lists, verification commands. If missing: "PRD milestone too vague. Add wave structure + file lists, or run `/flow:spec`."
 3. **Branch check:** Verify correct feature branch (from PRD header). Warn if wrong.
-4. **All done?** If no pending milestones: "All milestones complete! Run `/flow:done` to wrap up."
+4. **Session overlap check:** If `session-{branch-slug}.md` exists, read its `**Developer:**` field. If it names a different developer than `git config user.name`, print advisory: "[Developer] was last active on this branch ([date]). Check Linear assignment before proceeding." Non-blocking — do not stop execution.
+5. **All done?** If no pending milestones: "All milestones complete! Run `/flow:done` to wrap up."
 
 ## Step 2.5 — Linear Status: In Progress
 
@@ -132,7 +133,7 @@ Atomic commit for this milestone. Stage only files from this milestone's agents.
 
 ## Step 6 — Update Docs
 
-**Session state (ALWAYS):** Write `.claude/memory/session.md` (create dir if needed):
+**Session state (ALWAYS):** Write `.claude/memory/session-{branch-slug}.md` (create dir if needed). Branch slug: `git branch --show-current`, replace `/` with `-`, lowercase. Detached HEAD fallback: `session.md`.
 `Date | Developer | Branch | Working On: Milestone N: [Name] from [PRD] | Status: complete — [what was built] | Next: [Milestone N+1 or /flow:done] | Blockers: [any or None]`
 
 **ROADMAP.md (ALWAYS):** Mark milestone as "Complete ([date])"

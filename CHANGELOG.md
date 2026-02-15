@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2026-02-15
+
+### Changed
+- Session files are now branch-scoped: `.claude/memory/session-{branch}.md` — multiple terminals no longer overwrite each other
+- PRD resolution now matches current git branch against PRD `**Branch:**` headers (STATE.md "Active PRD" is fallback)
+- `/flow:status` shows all active sessions across branches when multiple exist
+- Removed STATE.md project mismatch warning from `/flow:go` — PRD picker is authoritative
+
+### Fixed
+- Two terminals on different branches no longer corrupt each other's session state
+- PRD resolution no longer depends on STATE.md singleton — correct PRD found per-branch
+- `/flow:go` no longer warns falsely when STATE.md was updated by another terminal
+
 ## [0.8.3] - 2026-02-15
 
 ### Fixed

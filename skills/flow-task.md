@@ -19,8 +19,8 @@ RULES:
 
 Read ALL in parallel (skip missing files gracefully):
 - `.planning/STATE.md`, `.planning/ROADMAP.md`, `CLAUDE.md`, `tasks/lessons.md`
-- Active PRD from `.planning/prds/` via STATE.md "Active PRD" field (or legacy root `PRD.md`)
-- `.claude/memory/session.md` (if exists)
+- Active PRD: (1) `git branch --show-current` (2) read first 10 lines of each `.planning/prds/*.md` for `**Branch:**` header (3) match current branch → active PRD (4) no match: fall back to STATE.md "Active PRD" (5) still none: check legacy root `PRD.md` (6) nothing: no active PRD
+- `.claude/memory/session-{branch-slug}.md` (if exists). Branch slug: `git branch --show-current`, replace `/` with `-`, lowercase. Detached HEAD fallback: `session.md`.
 
 Run `git config user.name` for developer identity.
 
@@ -83,7 +83,7 @@ IF `.planning/STATE.md` exists, append to "What Was Built":
 
 RULES: Do NOT update ROADMAP.md, PRDs, or create `.planning/` if missing.
 
-**Session state:** Write `.claude/memory/session.md` (create dir if needed):
+**Session state:** Write `.claude/memory/session-{branch-slug}.md` (create dir if needed). Branch slug: `git branch --show-current`, replace `/` with `-`, lowercase. Detached HEAD fallback: `session.md`.
 `# Session State` with Date, Developer, Branch, Working On (`/flow:task — [desc]`), Status, Next, Blockers fields.
 
 Lessons prompt via AskUserQuestion: "Any lessons worth capturing?" — "No" / "Yes, let me describe it" → capture to `tasks/lessons.md` as one-liner. Skip if lessons.md doesn't exist. If at 10, promote most battle-tested to `CLAUDE.md ## Learned Rules` first.

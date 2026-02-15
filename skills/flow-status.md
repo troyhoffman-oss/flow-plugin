@@ -16,10 +16,11 @@ Read ALL in parallel:
 - `.planning/STATE.md`
 - `.planning/ROADMAP.md`
 - List `.planning/prds/` for all PRD files (or legacy root `PRD.md`)
-- Read the active PRD (from STATE.md "Active PRD" field) for milestone details
+- Active PRD: (1) `git branch --show-current` (2) read first 10 lines of each `.planning/prds/*.md` for `**Branch:**` header (3) match current branch → active PRD (4) no match: fall back to STATE.md "Active PRD" (5) still none: check legacy root `PRD.md` (6) nothing: no active PRD
 - Count lessons in `tasks/lessons.md` (if exists)
-- `.claude/memory/session.md` (if exists)
+- `.claude/memory/session-{branch-slug}.md` (if exists). Branch slug: `git branch --show-current`, replace `/` with `-`, lowercase. Detached HEAD fallback: `session.md`.
 - Run `git config user.name` for developer identity
+- List all `session-*.md` files in `.claude/memory/`. For each, read `**Date:**`, `**Developer:**`, `**Branch:**`, and `**Working On:**` fields.
 
 IF both STATE.md AND ROADMAP.md are missing:
 - Print: "No flow project found. Run `/flow:setup` to set up, or `/flow:task` for a quick standalone fix."
@@ -66,7 +67,7 @@ When suggesting /flow:spec, do NOT append a project name — the project picker 
 ```
 Project: [name] ([X/Y] milestones complete)
 Developer: [git config user.name]
-Session: [session.md "Working On" field if exists, or "No active session"]
+Session: [session-{branch-slug}.md "Working On" field if exists, or "No active session"]
 Last session: [date] — [what was built]
 Next: Milestone [N] — [name] ([short description])
 Lessons: [N]/10 active
@@ -76,10 +77,16 @@ PRDs:
   * {slug}.md (ready — future project)
   * PRD.md (legacy — at project root)
 
+Sessions:
+  {branch} — {Developer}: {Working On} ({date})
+  {branch} — {Developer}: {Working On} ({date}, stale — branch deleted)
+
 [routing recommendations from Step 3]
 ```
 
-The PRDs section shows all PRD files found. Mark the one matching STATE.md "Active PRD" as "(active — current project)". Mark others as "(ready — future project)". Legacy root `PRD.md` shows as "(legacy — at project root)". Omit PRDs section if no PRD files exist.
+Show Sessions section only if 2+ session files exist. Mark sessions as `stale` if their branch no longer exists locally (`git branch --list`).
+
+The PRDs section shows all PRD files found. Mark the one whose `**Branch:**` header matches the current git branch as "(active — current project)". If no branch match, fall back to STATE.md "Active PRD". Mark others as "(ready — future project)". Legacy root `PRD.md` shows as "(legacy — at project root)". Omit PRDs section if no PRD files exist.
 
 Adapt the block based on available information. If STATE.md is missing, omit "Last session". If ROADMAP.md is missing, omit milestone counts and say "Run /flow:setup to set up tracking."
 
