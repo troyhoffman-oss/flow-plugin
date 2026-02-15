@@ -51,7 +51,8 @@ If any fail, stop and tell the user:
   - Find project (`mcp__linear__get_project`), list milestones, match current milestone name
   - Find issues in that milestone: `mcp__linear__list_issues`
   - Move Backlog/Todo issues to In Progress: `mcp__linear__update_issue`
-  - Print: "Linear: [N] issues → In Progress ([milestone name])"
+  - Move project to Started (if not already): `mcp__linear__update_project` with `state: "started"`
+  - Print: "Linear: [N] issues → In Progress, project → Started ([milestone name])"
 - If no Linear Project or MCP unavailable: skip silently
 
 ## Step 3 — Staleness Check
