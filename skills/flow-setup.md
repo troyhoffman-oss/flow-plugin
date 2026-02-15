@@ -10,64 +10,37 @@ You are executing the `/flow:setup` skill. This sets up the planning scaffolding
 
 ## Guard: Already Initialized
 
-Check if `.planning/STATE.md` already exists:
-- **If it exists** → Print: "This project is already set up. Run `/flow:triage` to add projects, or `/flow:spec` to spec the current one." and **STOP. Do not overwrite.**
-- **If it does NOT exist** → Continue with setup below.
+Check if `.planning/STATE.md` exists:
+- **Exists** → Print: "Already set up. Run `/flow:triage` to add projects, or `/flow:spec` to spec the current one." **STOP.**
+- **Does not exist** → Continue.
 
 ---
 
 ## Step 1: Ask Setup Questions
 
-Use AskUserQuestion to gather project info. Ask these questions (you may combine into 2-3 AskUserQuestion calls):
+Use AskUserQuestion to gather project info (combine into 2-3 calls):
 
-**Question 1 — Project basics:**
-- "What is this project?" (one sentence description)
+**Q1 — Project basics:** "What is this project?" (one sentence)
 
-**Question 2 — Tech stack:**
-- "What's the tech stack?" with options like:
-  - "Next.js + TypeScript + PostgreSQL"
-  - "Python + FastAPI + PostgreSQL"
-  - "React + Node.js + MongoDB"
-  - (Other — user types custom)
+**Q2 — Tech stack:** Options: "Next.js + TypeScript + PostgreSQL" / "Python + FastAPI + PostgreSQL" / "React + Node.js + MongoDB" / Other
 
-**Question 3 — Verification commands:**
-- "What commands verify the build?" with options like:
-  - "npx tsc --noEmit && npx biome check"
-  - "pytest && mypy ."
-  - "cargo build && cargo test"
-  - (Other — user types custom)
+**Q3 — Verification commands:** Options: "npx tsc --noEmit && npx biome check" / "pytest && mypy ." / "cargo build && cargo test" / Other
 
-**Question 4 — Roadmap:**
-- "Do you already have a roadmap or list of projects?" with options:
-  - "Yes — I'll paste or describe them"
-  - "No — let's figure it out together"
+**Q4 — Roadmap:** "Do you already have a roadmap or list of projects?"
+- "Yes — I'll paste or describe them"
+- "No — let's figure it out together"
 
-**If user selects "Yes":**
-- Accept free text (bullet list, paragraph, pasted doc — any format)
-- Parse into projects, each with a name + brief goal
-- Print back: "Here's what I got:" followed by the parsed list (e.g., "Auth — user registration and login", "Dashboard — analytics and settings")
-- Use AskUserQuestion to confirm: "Does this look right?" with options:
-  - "Yes — looks good"
-  - "Let me adjust" (user re-enters)
+**If Yes:** Accept free text, parse into projects (name + goal), print back, confirm via AskUserQuestion ("Does this look right?" / "Let me adjust").
 
-**If user selects "No" (guided):**
-- Ask: "What's the first project?" (name + one-sentence goal)
-- Then: "Any more projects you can see right now? List them, or skip to add them later with `/flow:triage`." with options:
-  - "I have more to add" (user enters additional projects)
-  - "That's it for now"
+**If No:** Ask "What's the first project?" (name + goal). Then: "Any more projects? List them, or skip to add later with `/flow:triage`." Options: "I have more to add" / "That's it for now"
 
-**Question 5 — Brownfield scan:**
-- "Is this an existing codebase I should scan?" with options:
-  - "Yes — scan and catalog existing code"
-  - "No — greenfield project"
+**Q5 — Brownfield scan:** "Existing codebase to scan?" Options: "Yes — scan and catalog" / "No — greenfield"
 
 ## Step 2: Brownfield Scan (if requested)
 
-If the user said yes to scanning:
-1. Use Glob to find key directories: `src/`, `app/`, `lib/`, `components/`, `api/`, `pages/`, `utils/`, `types/`
-2. Use Grep to find patterns: exports, route definitions, database models, config files
-3. Build a brief catalog of what exists (key components, patterns, data layer)
-4. Include this in the CLAUDE.md Quick Context section
+1. Glob for key directories: `src/`, `app/`, `lib/`, `components/`, `api/`, `pages/`, `utils/`, `types/`
+2. Grep for patterns: exports, routes, DB models, config files
+3. Build brief catalog; include in CLAUDE.md Quick Context
 
 ## Step 3: Create Project Files
 
@@ -85,17 +58,12 @@ Create these 5 files (create directories as needed):
 - **Last Session:** [today's date]
 
 ## Milestone Progress
-
 | Milestone | Name | Status |
 |-----------|------|--------|
 | — | Run `/flow:spec` to define milestones | — |
 
 ## What Was Built (This Session)
 - Project initialized with `/flow:setup`
-- Created: CLAUDE.md, STATE.md, ROADMAP.md, tasks/lessons.md
-
-## Key Decisions
-- (none yet)
 
 ## Next Actions
 1. Run `/flow:spec` to interview and generate PRD for [first project]
@@ -106,61 +74,52 @@ Create these 5 files (create directories as needed):
 # [Project Name] — Roadmap
 
 ## Projects
-
 | Project | Status | Milestones |
 |---------|--------|------------|
 | [first project] | Pending — needs `/flow:spec` | TBD |
-[For each additional project:]
-| [project name] | Planned | TBD |
+| [additional projects] | Planned | TBD |
 
 ---
 
 ## [first project]
+**Goal:** [from user]
+**Milestones:** Run `/flow:spec` to define.
 
-**Goal:** [project goal from user]
-
-**Milestones:** Run `/flow:spec` to define implementation milestones.
-
-[For each additional project:]
-
-## [project name]
-
-**Goal:** [project goal]
-
-**Milestones:** Run `/flow:spec` when this project is active.
+## [additional projects]
+**Goal:** [from user]
+**Milestones:** Run `/flow:spec` when active.
 ```
 
-Note: The first project gets status "Pending — needs `/flow:spec`". All subsequent projects get status "Planned". Each project gets its own section with its goal.
+Note: First project = "Pending — needs `/flow:spec`". Subsequent = "Planned". Each gets its own section.
 
 **`CLAUDE.md`:**
 ```
 # [Project Name] — Claude Code Instructions
 
 ## Quick Context
-[Project description from user]
-
-**Tech Stack:** [tech stack from user]
-[If brownfield: brief catalog of existing code]
+[Project description]
+**Tech Stack:** [from user]
+[If brownfield: brief catalog]
 
 ### START (Every Session)
-1. Read this file (CLAUDE.md)
-2. Read `.planning/STATE.md` for current status
-3. Read `.planning/ROADMAP.md` for project progress
-4. Read active PRD from `.planning/prds/` for current project (if one exists)
+1. Read CLAUDE.md
+2. Read `.planning/STATE.md`
+3. Read `.planning/ROADMAP.md`
+4. Read active PRD from `.planning/prds/` (if exists)
 
 ## Execution Rules
-- **Plan before building.** For non-trivial work, read the project's PRD in `.planning/prds/` before touching anything.
-- **Delegate immediately.** If a task touches 3+ files, spawn an agent team within your first 2 tool calls.
-- **Verify everything.** Run [verification commands from user] after agent work lands. Nothing is done until proven.
+- **Plan before building.** Read the PRD in `.planning/prds/` before touching anything.
+- **Delegate immediately.** 3+ files → spawn agent team within first 2 tool calls.
+- **Verify everything.** Run [verification commands] after work lands.
 
 ## Git Workflow
 - All changes via PR. Never commit directly to main.
 - Branch naming: `fix/short-description` or `feat/short-description`
 
 ## Session-End Docs (MANDATORY)
-1. `.planning/STATE.md` — replace session notes (don't append), keep <80 lines
+1. `.planning/STATE.md` — replace (don't append), <80 lines
 2. `.planning/ROADMAP.md` — update milestone progress
-3. `tasks/lessons.md` — add new lessons, refine existing ones
+3. `tasks/lessons.md` — add/refine lessons
 4. Commit doc updates to feature branch
 
 ## Critical Rules
@@ -174,12 +133,11 @@ Note: The first project gets status "Pending — needs `/flow:spec`". All subseq
 
 One-liner format: `- **[topic]** The rule`
 
-<!-- EXAMPLE: - **[agent context]** Always tell agents exactly which functions/lines to read — never "read file.ts", say "read file.ts lines 50-120" -->
+<!-- EXAMPLE: - **[agent context]** Always tell agents exactly which functions/lines to read -->
 ```
 
-**`.planning/prds/`** — Create this empty directory (use `mkdir -p` via Bash). PRDs are stored here per-project.
-
-**`.planning/archive/`** — Create this empty directory (use `mkdir -p` via Bash).
+**`.planning/prds/`** — Create empty directory (`mkdir -p`).
+**`.planning/archive/`** — Create empty directory (`mkdir -p`).
 
 ## Step 4: Print Completion Message
 

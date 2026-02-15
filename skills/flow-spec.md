@@ -10,189 +10,107 @@ You are executing the `/flow:spec` skill. This is the KEYSTONE skill of the flow
 
 **Interview mode:** Always thorough by default. The user can say "done", "finalize", "that's enough", or "move on" at ANY time to wrap up early. Respect their signal and finalize with whatever depth has been achieved.
 
-**Plan mode warning:** Do NOT use this skill with plan mode enabled. Plan mode's read-only constraint prevents the PRD from being written during the interview. `/flow:spec` IS the planning phase — plan mode on top of it is redundant and breaks the workflow.
-
-**Skill boundary:** You are inside the `/flow:*` workflow. NEVER invoke, suggest, or reference skills from other workflow systems (`/lisa:*`, `/gsd:*`, `/superpowers:*`, etc.). Only suggest `/flow:*` commands as next steps. Do NOT use the Skill tool to call any non-flow skill. If the user needs a different workflow, they will invoke it themselves.
+**Constraints:** Do NOT use with plan mode (prevents file writes). Only use `/flow:*` commands — never invoke `/lisa:*`, `/gsd:*`, `/superpowers:*` or other skills.
 
 ## Phase 1 — Context Gathering
 
-1. Read `.planning/STATE.md` and `.planning/ROADMAP.md` — understand current project and what's done
-2. Read `CLAUDE.md` — understand project rules and tech stack
-3. Check for existing PRD:
-   - List `.planning/prds/` directory (if it exists) for existing PRD files
-   - Also check for legacy `PRD.md` at project root (backward compat)
-   - If a PRD exists for the target project, note it for resume/extend flow
-4. **Project Targeting** — determine which project this PRD targets before scanning the codebase:
+1. Read `.planning/STATE.md`, `.planning/ROADMAP.md`, `CLAUDE.md`
+2. Check for existing PRD in `.planning/prds/` (or legacy root `PRD.md`)
+3. **Project Targeting:**
 
-   1. **If the user passed an argument** (e.g., `/flow:spec v3: Payments`) — match against ROADMAP.md projects. If no match, print available projects and ask which one.
+   1. **If argument provided** (e.g., `/flow:spec v3: Payments`) — match against ROADMAP.md projects. If no match, print available projects and ask.
 
-   2. **If no argument** — read ROADMAP.md and list all incomplete projects. Use AskUserQuestion to let the user pick which project to spec. Pre-select the next unspecced project as the first option. Always show the picker, even if only one project is listed — the user may want to confirm or choose "Other" to define a new project first.
+   2. **If no argument** — list incomplete projects from ROADMAP.md. Use AskUserQuestion to let the user pick. Pre-select the next unspecced project. Always show the picker.
 
-   3. **Derive the PRD slug:** Take the project name (e.g., "Dashboard Analytics"), lowercase it, replace spaces and special characters with hyphens, collapse consecutive hyphens. Result: `dashboard-analytics`. The PRD path is `.planning/prds/{slug}.md`.
+   3. **Derive PRD slug:** Lowercase project name, replace spaces/special chars with hyphens, collapse consecutive hyphens. PRD path: `.planning/prds/{slug}.md`.
 
-   4. **Check for existing PRD at that path:**
-      - **If PRD exists** → Use AskUserQuestion: "A PRD already exists for this project at `.planning/prds/{slug}.md`. What would you like to do?"
-        - "Resume editing" — load the existing PRD and continue the interview from where it left off
-        - "Start fresh" — delete the existing PRD and start a new interview
-        - "Pick a different project" — show available projects
-      - **If no PRD exists** → Proceed with a fresh interview
+   4. **If PRD exists at that path** → AskUserQuestion: "A PRD already exists at `.planning/prds/{slug}.md`. What would you like to do?" Options: "Resume editing", "Start fresh", "Pick a different project".
+      **If no PRD** → fresh interview.
 
-   5. **Future project detection:** If the target project is NOT the current project in STATE.md, note this — the PRD will be written but STATE.md's "Active PRD" field will NOT be updated (it stays pointing at the current project's PRD). Print: "Speccing future project [name]. STATE.md will not be updated — this PRD will be available when you reach this project."
+   5. **Future project detection:** If target project != STATE.md current project, note it — STATE.md won't be updated. Print: "Speccing future project [name]. STATE.md will not be updated."
 
-5. **Codebase scan** (brownfield projects) — spawn **3 parallel Explore subagents** via the Task tool to scan the codebase without consuming main context:
+4. **Codebase scan** (brownfield) — spawn **3 parallel Explore subagents** via Task tool:
+   - **Structure & Config** — project skeleton, build tooling, entry points, CI/CD
+   - **UI, Pages & Routes** — components, pages, routing, layouts, navigation
+   - **Data Layer & APIs** — database, APIs, types, schemas, ORM, queries
 
-   | Agent | Focus | Looks For |
-   |-------|-------|-----------|
-   | **Structure & Config** | Project skeleton, build tooling | `package.json`, `tsconfig`, config files, entry points, CI/CD, env setup |
-   | **UI, Pages & Routes** | Components, pages, routing | `components/`, `pages/`, `app/`, route definitions, layouts, navigation |
-   | **Data Layer & APIs** | Database, APIs, types | `api/`, `models/`, `types/`, `schemas/`, ORM definitions, query functions |
+   All agents: exclude `node_modules/`, `.git/`, `dist/`, `build/`, `.next/`, `__pycache__/`, `*.min.js`, `*.map`, `*.lock`. If domain has >200 files, switch to focused mode (entry points, config, types only). 20-file cap per agent. Return 15-line structured summary only — no raw file contents.
 
-   **Each subagent prompt MUST include:**
-   - **Exclusions:** NEVER scan `node_modules/`, `.git/`, `dist/`, `build/`, `.next/`, `__pycache__/`, `*.min.js`, `*.map`, `*.lock`
-   - **Size-adaptive scanning:** If the agent's domain has >200 files, switch to focused mode (entry points, config, and type definitions only)
-   - **20-file sample cap per agent** (60 total across all 3)
-   - **15-line summary max** — structured as: key files found, patterns observed, reusable code/components, notes
-   - **Explicit instruction:** Do NOT return raw file contents — return only structured summaries
-
-6. **Assemble summaries:** Collect the 3 agent summaries into a brief context block (~45 lines total). Print to user: "Here's what I found in the codebase: [key components, patterns, data layer]. Starting the spec interview."
+5. **Assemble summaries:** Collect 3 agent summaries (~45 lines total). Print: "Here's what I found in the codebase: [key components, patterns, data layer]. Starting the spec interview."
 
 ## Phase 2 — Adaptive Interview
 
-### CRITICAL RULES (follow these exactly)
+### Critical Rules
 
-1. **USE AskUserQuestion FOR ALL QUESTIONS.** Never just print questions as text. Always use the AskUserQuestion tool so the user gets structured prompts with selectable options. Provide 2-4 concrete options per question based on what you learned in Phase 1.
-
-2. **ASK NON-OBVIOUS QUESTIONS.** Don't just ask "what features do you want?" — you already read the codebase. Ask questions that PROBE deeper:
-   - "I see you have [existing pattern]. Should we extend that or build a new approach?"
-   - "What happens when [edge case] occurs?"
-   - "You mentioned [X] — does that mean [Y] is also needed, or is that separate?"
-   - "What's the failure mode here? What does the user see when things go wrong?"
-   - "Who else touches this data/workflow? Any downstream effects?"
-   - "What's the minimum version of this that would be useful?"
-
-3. **CONTINUE UNTIL THE USER SAYS STOP.** Do NOT stop after covering all 7 areas once. After each answer, immediately ask the next question. Keep going deeper until the user says "done", "finalize", "that's enough", "ship it", or similar. A thorough interview is 15-30 questions, not 5.
-
-4. **MAINTAIN A RUNNING DRAFT.** Every 2-3 questions, update `.planning/prds/{slug}.md` with what you've learned so far (create `.planning/prds/` directory if it doesn't exist). Print: "Updated PRD draft — added [brief summary]." The user should see the spec taking shape in real-time, not all at the end.
-
-5. **BE ADAPTIVE.** Base your next question on the previous answer. If the user reveals something surprising, probe deeper on THAT — don't robotically move to the next category. The best specs come from following interesting threads.
+1. **USE AskUserQuestion FOR ALL QUESTIONS.** Provide 2-4 concrete options per question based on Phase 1 context.
+2. **ASK NON-OBVIOUS QUESTIONS.** Probe deeper — edge cases, failure modes, downstream effects, minimum viable versions. Don't ask what you can infer from the codebase.
+3. **CONTINUE UNTIL THE USER SAYS STOP.** A thorough interview is 15-30 questions. After each answer, immediately ask the next question.
+4. **MAINTAIN A RUNNING DRAFT.** Every 2-3 questions, update `.planning/prds/{slug}.md` with what you've learned (create dir if needed). Print: "Updated PRD draft — added [brief summary]."
+5. **BE ADAPTIVE.** Base next question on previous answer. Follow interesting threads rather than robotically moving through categories.
 
 ### First-Principles Mode (optional)
 
-If the user says "challenge this", "first principles", or "push back" — start with 3-5 challenge questions before detailed spec gathering:
-- "Why build this at all? What's the cost of NOT building it?"
-- "Is there a simpler way to achieve 80% of this value?"
-- "What assumptions are we making that might be wrong?"
-- "Who is this really for, and have they asked for it?"
-- "What would you cut if you had half the time?"
-
-Then proceed to the coverage areas below.
+Trigger: user says "challenge this", "first principles", or "push back". Ask 3-5 challenges first: Why build this? Simpler 80% alternative? What assumptions might be wrong? Then proceed to coverage areas.
 
 ### Coverage Areas
 
-Cover these areas thoroughly. There are no "rounds" — move fluidly between areas based on the conversation. Circle back to earlier areas when later answers reveal new information.
+Cover these fluidly — no rigid rounds. Circle back when later answers reveal new info.
 
-**1. Scope Definition**
-- What features are IN scope for this project? What's the MVP vs. the full vision?
-- What is explicitly OUT of scope / deferred to a future project?
-- Is there any code that is sacred (must NOT be touched)? Why?
-- What existing code/features should we ignore entirely (not break, not improve, not touch)?
+**1. Scope Definition** — What's in/out of scope? MVP vs full vision? Sacred code?
 
-**2. User Stories (CRITICAL — spend the most time here)**
-- What does the user actually DO? Walk through the key workflows step by step.
-- What should they see at each step? What feedback do they get?
-- Frame as: "As [role], I want [action], so that [outcome]"
-- **Story-splitting:** If a story has more than 3-4 acceptance criteria, split it into smaller stories. Each story should be independently deliverable.
-- **Anti-vagueness enforcement:**
-  - BAD acceptance criteria: "Works correctly", "Is fast", "Handles errors well", "Looks good"
-  - GOOD acceptance criteria: "Returns 200 with JSON body for valid input", "Shows error toast with message for invalid email format", "Page renders in < 200ms on 3G", "Matches Figma comp within 4px"
-  - If the user gives vague criteria, push back: "How would you specifically test that? What would you check?"
-- **Verification per story:** Each story must have at least one concrete verification step (a command to run, a page to visit, a state to check)
+**2. User Stories (CRITICAL — most time here)** — Walk through key workflows step by step.
+- **Story-splitting:** If a story has >3-4 acceptance criteria, split it. Each story independently deliverable.
+- **Anti-vagueness:** BAD: "Works correctly", "Is fast". GOOD: "Returns 200 with JSON body", "Page renders in <200ms on 3G". Push back on vague criteria: "How would you specifically test that?"
+- **Verification per story:** Each must have at least one concrete verification step.
 
-**3. Technical Design**
-- What database changes are needed? (new tables, columns, indexes, migrations)
-- What API endpoints? (method, path, request/response shape, auth requirements)
-- What new files need to be created? What existing files get modified?
-- What existing utilities/components/DAL queries should be reused (not rebuilt)?
-- What's the data flow? Where does data originate, transform, and render?
-- Any wave-parallelization opportunities? (independent agents building separate files)
+**3. Technical Design** — DB changes, API endpoints, new/modified files, reusable code, data flow, parallelization opportunities.
 
-**4. User Experience**
-- What are the key user flows? Walk through click-by-click.
-- What edge cases exist? (empty states, error states, loading states, partial data)
-- Accessibility requirements? (keyboard navigation, screen readers, ARIA labels)
-- Mobile/responsive behavior? (breakpoints, touch targets, layout shifts)
-- What does the user see while waiting? (loading spinners, skeletons, optimistic updates)
+**4. User Experience** — Key flows, edge cases (empty/error/loading states), accessibility, responsive behavior.
 
-**5. Trade-offs & Constraints**
-- Performance vs. simplicity? What's good enough for v1?
-- Any security considerations? (auth, data access, input validation)
-- Any third-party dependencies or integrations?
-- What technical debt is acceptable for now vs. must be done right?
-- Any browser/device support requirements?
+**5. Trade-offs & Constraints** — Performance vs simplicity, security, third-party deps, acceptable tech debt.
 
-**6. Implementation Milestones**
-- How should this break into sequential milestones?
-- What can be parallelized within each milestone? (wave-based agent structure)
-- What's the critical path — what must be built first?
-- What's the minimum viable first milestone? (what gives us something testable fastest?)
-- Any milestones that could be cut if time runs short?
-- **Assignability check:** After defining milestones, probe which are independent enough for a different developer:
-  - "Which of these milestones could a second developer work on independently?"
-  - Evaluate each milestone for: dependency chains (does it need output from another milestone?), domain independence (is it a separate concern?), context requirements (does it need deep codebase familiarity?), onboarding suitability (could a newer dev handle it?)
-  - Add assignability notes to each milestone, e.g., "Milestone 3 is independent — good for either dev" or "Milestone 2 depends on Milestone 1 — same dev"
+**6. Implementation Milestones** — Sequential breakdown, parallelization within milestones, critical path, cuttable milestones.
+- **Assignability check:** Probe which milestones could go to a second developer. Evaluate dependency chains, domain independence, context requirements. Add assignability notes per milestone.
 
-**7. Verification & Feedback Loops**
-- What commands verify the build works? (`tsc`, `biome`, test suite)
-- What does "done" look like for each milestone? How do we know it worked?
-- Are there integration points that need end-to-end testing?
-- What should we check after each milestone before moving to the next?
-- Any monitoring or logging needed to confirm production behavior?
+**7. Verification & Feedback Loops** — Build verification commands, per-milestone "done" criteria, integration testing, monitoring.
 
-**User signals done:** If the user says "done", "finalize", "that's enough", "ship it", or similar — immediately stop interviewing and go to Phase 3. Finalize the PRD with whatever depth has been achieved.
+**User signals done:** If user says "done"/"finalize"/"ship it" — immediately go to Phase 3.
 
 ## Phase 3 — PRD Generation
 
 ### Minimum Viable PRD Check
 
-Before generating the final PRD, validate:
-- At least **3 user stories** with acceptance criteria have been discussed
-- At least **1 implementation milestone** has been defined
-- At least **1 verification command** has been specified
-
-If any check fails, print what's missing and use AskUserQuestion:
-- "The PRD is thin — [missing items]. Want to continue the interview to flesh it out, or finalize as-is?"
-  - "Continue interview" — return to Phase 2 and probe the missing areas
-  - "Finalize as-is" — proceed with what we have
+Validate: at least **3 user stories** with acceptance criteria, **1 milestone**, **1 verification command**. If missing, AskUserQuestion: "Continue interview" or "Finalize as-is".
 
 ### Write PRD
 
-Write the PRD to `.planning/prds/{slug}.md` (create `.planning/prds/` directory first if it doesn't exist) with this EXACT structure:
+Write to `.planning/prds/{slug}.md` (create dir if needed) with this structure:
 
 ```markdown
 # [Project Name] — Specification
 
-**Project:** [full project name, e.g., "Dashboard Analytics"]
+**Project:** [name]
 **Status:** Ready for execution
 **Branch:** feat/{project-slug}
-**Created:** [today's date]
-**Assigned To:** [developer name or "unassigned"]
+**Created:** [date]
+**Assigned To:** [developer or "unassigned"]
 
 ## Overview
-[One paragraph summary of the project]
+[One paragraph summary]
 
 ## Problem Statement
-[Why this work exists — what problem does it solve?]
+[Why this work exists]
 
 ## Scope
 
 ### In Scope
-- [Bullet list of what ships in this project]
+- [items]
 
 ### Out of Scope
-- [Explicitly deferred items]
+- [deferred items]
 
 ### Sacred / Do NOT Touch
-- [Code paths that must not be modified, with reasons]
+- [protected code paths with reasons]
 
 ## User Stories
 
@@ -200,110 +118,67 @@ Write the PRD to `.planning/prds/{slug}.md` (create `.planning/prds/` directory 
 **Description:** As [role], I want [action], so that [outcome].
 **Acceptance Criteria:**
 - [ ] Specific, testable requirement (names actual functions/components)
-- [ ] Another requirement
 - [ ] [Verification command] passes
 
-### US-2: [Feature Name]
-...
+(Continue US-2, US-3, etc.)
 
 ## Technical Design
 
-### New Database Tables
-[SQL DDL or schema description, with indexes]
-
-### New API Endpoints
-[Method + path + request/response shape for each]
-
-### New Files to Create
-[Grouped by milestone. Absolute paths with one-line descriptions]
-
-### Existing Files to Modify
-[Paths + what changes in each]
-
-### Key Existing Code (DO NOT recreate — use as-is)
-[Functions, utilities, DAL queries, components that agents should import/reuse]
+Subsections: New Database Tables, New API Endpoints, New Files to Create (grouped by milestone), Existing Files to Modify, Key Existing Code (DO NOT recreate — use as-is).
 
 ## Implementation Milestones
 
 ### Milestone 1: [Name]
-**Assigned To:** [developer name or "unassigned"]
+**Assigned To:** [developer or "unassigned"]
 **Goal:** [One sentence]
 
 **Wave 1 — [Theme] (N agents parallel):**
-1. agent-name: Creates file1.ts, file2.ts — [what it does]
-2. agent-name: Modifies file3.ts — [what changes]
+1. agent-name: Creates/modifies files — [what it does]
+2. agent-name: Creates/modifies files — [what changes]
 
-**Wave 2 — [Theme] (N agents parallel):**
-3. agent-name: Creates file4.ts — [what it does]
-4. agent-name: Wires component into page — [specifics]
+(Continue waves as needed)
 
-**Wave 3 — Integration:**
-5. Integration check, responsive verification, cleanup
+**Verification:** [Exact commands]
+**Acceptance:** [Which US criteria this covers]
 
-**Verification:** [Exact commands to run]
-**Acceptance:** US-1 criteria [list which], US-2 criteria [list which]
-
-### Milestone 2: [Name]
-**Assigned To:** [developer name or "unassigned"]
-...
-
-## Execution Rules
-1. DELEGATE EVERYTHING. Lead context is sacred — do not read implementation files into it.
-2. Verify after every milestone: [verification commands from CLAUDE.md]
-3. Atomic commits after each agent's work lands
-4. Never `git add .` — stage specific files only
-5. Read `tasks/lessons.md` before spawning agents — inject relevant lessons into agent prompts
-
-## Definition of Done
-- [ ] All user story acceptance criteria pass
-- [ ] All milestones verified with [verification commands]
-- [ ] Branch pushed and PR opened
-- [ ] STATE.md and ROADMAP.md updated
+(Continue Milestone 2, etc.)
 ```
 
 ## Phase 4 — Post-PRD Updates
 
-After writing the PRD to `.planning/prds/{slug}.md`:
+After writing the PRD:
 
-1. **Update ROADMAP.md:** Add milestone breakdown under the current project section. Each milestone gets a row in the progress table with status "Pending".
+1. **Update ROADMAP.md:** Add milestone breakdown under the project section. Each milestone gets status "Pending".
 
-2. **Update STATE.md** (current project only):
-   - Set current milestone to "Milestone 1 — ready for `/flow:go`"
-   - Set "Active PRD" to `.planning/prds/{slug}.md`
-   - Update "Next Actions" to reference the first milestone
-   - **Skip this step if speccing a future project** — STATE.md stays pointing at the current project. Print: "PRD written to `.planning/prds/{slug}.md`. STATE.md not updated (future project)."
+2. **Update STATE.md** (current project only): Set milestone to "Milestone 1 — ready for `/flow:go`", set "Active PRD" path, update "Next Actions". **Skip if speccing a future project** — print: "PRD written. STATE.md not updated (future project)."
 
 3. **Generate Milestone 1 handoff prompt:**
    ```
-   Milestone 1: [Name] — [short description]. Read STATE.md, ROADMAP.md, and .planning/prds/{slug}.md.
-   [One sentence of context about what Milestone 1 builds].
+   Milestone 1: [Name] — [description]. Read STATE.md, ROADMAP.md, and .planning/prds/{slug}.md.
+   [One sentence of context].
    ```
 
 4. **Linear Integration (optional):**
-   - Check if Linear MCP tools are available (try `mcp__linear__list_teams`)
-   - If available: search for a Linear project matching the project name (`mcp__linear__list_projects` with query)
-     - If found:
-       - Create one **Linear milestone** per implementation milestone:
-         `mcp__linear__create_milestone` with project, name "Milestone N: [Name]"
-       - Create one **Linear issue** per user story or task (NOT per milestone):
-         `mcp__linear__create_issue` assigned to the appropriate milestone
-     - If not found: use AskUserQuestion to ask user to pick a project or skip
-   - If Linear MCP not available: skip silently
+   - Check if Linear MCP tools are available (`mcp__linear__list_teams`)
+   - If available: search for matching Linear project (`mcp__linear__list_projects`)
+     - Found: create one **Linear milestone** per implementation milestone, one **Linear issue** per user story/task (not per milestone)
+     - Not found: AskUserQuestion to pick project or skip
+   - If MCP unavailable: skip silently
    - Print: "[N] milestones + [M] issues created under project [name]"
 
-5. Print the handoff prompt in a fenced code block.
+5. Print handoff prompt in a fenced code block.
 
 6. Print: "PRD ready at `.planning/prds/{slug}.md`. Run `/flow:go` to execute Milestone 1, or review the PRD first."
 
 ## Quality Gates
 
-Before finalizing, self-check the PRD:
+Before finalizing, self-check:
 - [ ] Every milestone has wave-based agent assignments with explicit file lists
 - [ ] Every user story has checkbox acceptance criteria that are testable
 - [ ] Every milestone has verification commands
-- [ ] "Key Existing Code" section references actual files/functions found in the codebase scan
-- [ ] PRD is written to `.planning/prds/{slug}.md`, NOT to root `PRD.md`
-- [ ] No milestone has more than 5 agents in a single wave (too many = coordination overhead)
-- [ ] Sacred code section is populated (even if empty with "None identified")
+- [ ] "Key Existing Code" references actual files/functions from the codebase scan
+- [ ] PRD written to `.planning/prds/{slug}.md`, NOT root `PRD.md`
+- [ ] No milestone has >5 agents in a single wave
+- [ ] Sacred code section is populated (even if "None identified")
 
 If any gate fails, fix the PRD before presenting it.

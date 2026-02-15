@@ -33,52 +33,47 @@ Flow is a structured workflow for Claude Code. Four core commands that turn your
 ### Command by Command
 
 **`/flow:setup`** — Run once per project
-- Asks you 4-5 questions (what is it, tech stack, verify commands, roadmap/projects)
+- Asks 4-5 questions (what is it, tech stack, verify commands, roadmap/projects)
 - Captures your full roadmap upfront (paste a list or build one project at a time)
-- Creates the scaffolding: `CLAUDE.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, `tasks/lessons.md`
-- If project already set up, tells you to use `/flow:triage` or `/flow:spec` instead
+- Creates scaffolding: `CLAUDE.md`, `.planning/STATE.md`, `.planning/ROADMAP.md`, `tasks/lessons.md`
 
 **`/flow:triage`** — Sort a brain dump into action
 - Takes unstructured text (bullets, stream of consciousness, whatever)
 - Categorizes each item: Linear Issue, ROADMAP Entry, Project, Lesson, or Discard
-- Projects get added to ROADMAP.md with status "Planned"
 - Linear issues created automatically (if Linear MCP available)
-- This is the single intake command — use it to add projects, capture ideas, or file bugs
+- Single intake command — use it to add projects, capture ideas, or file bugs
 
 **`/flow:task`** — Run anytime for small work
-- Bug fixes, cleanup, one-off features — anything that doesn't need a full PRD
+- Bug fixes, cleanup, one-off features — no PRD needed
 - Works standalone without `/flow:setup` — lowest friction entry to Flow
 - Executes, verifies, commits, and logs to STATE.md (if it exists)
-- Scope guard recommends `/flow:spec` if the task grows beyond 5 files or 3 layers (promotes to a project)
+- Scope guard recommends `/flow:spec` if task grows beyond 5 files or 3 layers
 
 **`/flow:spec`** — Run once per project
 - Interviews you about scope, user stories, technical design, trade-offs, and milestoning
-- You can say "done" or "that's enough" anytime to cut the interview short
-- Produces `.planning/prds/{project}.md` — the execution contract with wave-based milestones, file lists, and acceptance criteria
-- Can pre-spec future projects in parallel terminal windows (each project gets its own PRD file)
-- Updates ROADMAP and STATE to reflect the plan (for the current project; future project specs skip STATE updates)
+- Say "done" or "that's enough" anytime to cut the interview short
+- Produces `.planning/prds/{project}.md` — the execution contract with wave-based milestones
+- Can pre-spec future projects in parallel terminal windows
+- Updates ROADMAP and STATE to reflect the plan
 
 **`/flow:go`** — Run once per milestone (this is where the work happens)
 - Reads the PRD, finds the next pending milestone
 - Checks for staleness (did prior milestones change things this milestone references?)
 - Spawns agent teams per the wave structure in the PRD
 - Verifies after each wave, commits when done
-- Updates docs and prints "run `/flow:go` again for the next milestone"
 
 **`/flow:done`** — Run at end of every session
 - Replaces STATE.md with current status
 - Updates ROADMAP.md with milestone completions
-- Auto-transitions to the next planned project when the current one completes
-- Captures lessons as one-liners, enforces 10-item cap (promotes to CLAUDE.md when full)
-- Commits doc updates
-- Generates a handoff prompt you copy-paste to start the next session
+- Auto-transitions to the next planned project when current one completes
+- Captures lessons as one-liners, enforces 10-item cap
+- Generates a handoff prompt for the next session
 
 **`/flow:status`** — Run anytime, read-only
 - Quick "where am I?" — project, milestone progress, next step, lesson count
 
 **`/flow:update`** — Run anytime to update Flow
 - Pulls latest changes from the flow-plugin repo and re-installs all skills
-- No need to remember where you cloned the repo — it finds it automatically
 
 ### Typical Session
 
@@ -103,4 +98,3 @@ Flow is a structured workflow for Claude Code. Four core commands that turn your
 ### Learn More
 
 - Full design doc: see `DESIGN.md` in the flow-plugin repo
-- Compatible with GSD: `/gsd:debug` and `/gsd:map-codebase` still work alongside Flow

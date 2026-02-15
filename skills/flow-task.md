@@ -6,145 +6,105 @@ user_invocable: true
 
 # /flow:task — Lightweight Task Execution
 
-You are executing the `/flow:task` skill. This is for small, focused work — bug fixes, cleanup, one-off features — that doesn't warrant a full PRD. Understand the task, execute it, verify it works, commit it, and document it.
+You are executing the `/flow:task` skill. For small, focused work — bug fixes, cleanup, one-off features — that doesn't need a PRD. Understand, execute, verify, commit, document.
 
-**Skill boundary:** You are inside the `/flow:*` workflow. NEVER invoke, suggest, or reference skills from other workflow systems (`/lisa:*`, `/gsd:*`, `/superpowers:*`, etc.). Only suggest `/flow:*` commands as next steps. Do NOT use the Skill tool to call any non-flow skill.
+**Skill boundary:** Only use `/flow:*` commands. Never invoke or suggest `/lisa:*`, `/gsd:*`, `/superpowers:*` or any non-flow skill.
 
 RULES:
 - NO AGENT TEAMS. NO PRD. Single execution context.
 - Exception: ONE Task agent for an isolated subtask to prevent context bloat.
-- This skill MUST work without `/flow:setup`. Missing planning files are fine.
+- MUST work without `/flow:setup`. Missing planning files are fine.
 
 ## Step 1 — Context Load
 
-Read ALL of the following in parallel. If any file is missing, skip it gracefully:
-- `.planning/STATE.md`
-- `.planning/ROADMAP.md`
-- `CLAUDE.md`
-- `tasks/lessons.md`
-- Active PRD from `.planning/prds/` (if STATE.md "Active PRD" field exists, use that path; else check for legacy `PRD.md` at root)
-- `.claude/memory/session.md` (if exists) — personal session state
+Read ALL in parallel (skip missing files gracefully):
+- `.planning/STATE.md`, `.planning/ROADMAP.md`, `CLAUDE.md`, `tasks/lessons.md`
+- Active PRD from `.planning/prds/` via STATE.md "Active PRD" field (or legacy root `PRD.md`)
+- `.claude/memory/session.md` (if exists)
 
-Run `git config user.name` to get developer identity.
+Run `git config user.name` for developer identity.
 
-If no `.planning/` directory exists, print:
-> No `.planning/` directory found — running standalone. Task will still be executed, verified, and committed.
-
-Then continue.
+If no `.planning/` directory: print "No `.planning/` found — running standalone." Then continue.
 
 ## Step 2 — Task Understanding
 
-Parse the user's argument (text provided after `/flow:task`).
+Parse the user's argument (text after `/flow:task`).
 
-IF no argument was provided:
-- Use AskUserQuestion: "What needs to be done?"
-- Provide 2-4 example options based on common task types (fix, cleanup, add, update)
+If no argument: AskUserQuestion "What needs to be done?" with 2-4 example options (fix, cleanup, add, update).
 
-Run a quick codebase scan (Grep/Glob) for files relevant to the task description.
+Run a quick codebase scan (Grep/Glob) for files relevant to the task.
 
 ## Step 3 — Quick Clarification
 
-Ask 0-3 clarifying questions maximum.
+0-3 clarifying questions maximum. NEVER MORE THAN 3.
 
-RULES:
-- NEVER MORE THAN 3 QUESTIONS.
-- USE AskUserQuestion with 2-4 CONCRETE OPTIONS derived from codebase exploration.
-- IF THE TASK IS UNAMBIGUOUS, ASK ZERO QUESTIONS. Proceed directly.
+Use AskUserQuestion with 2-4 concrete options derived from codebase exploration. If the task is unambiguous, ask zero questions and proceed.
 
-Decision gate: Can you identify WHAT to change, WHERE to change it, and the EXPECTED OUTCOME? If yes, skip to Step 4.
+Decision gate: Can you identify WHAT, WHERE, and EXPECTED OUTCOME? If yes, skip to Step 4.
 
 ## Step 4 — Scope Guard
 
-Estimate:
-- Number of files affected
-- Number of architectural layers touched (e.g., UI, API, DB, config)
+Estimate files affected and architectural layers touched.
 
-IF 5+ files OR 3+ architectural layers:
-- Use AskUserQuestion to recommend `/flow:spec` instead:
-  - Option 1: "Switch to /flow:spec (Recommended)" — "This touches [N] files across [N] layers. A PRD will keep it organized."
-  - Option 2: "Continue with /flow:task" — "I understand the scope. Execute it here."
+IF 5+ files OR 3+ layers:
+- AskUserQuestion: recommend `/flow:spec` instead:
+  - "Switch to /flow:spec (Recommended)" — touches [N] files across [N] layers, PRD keeps it organized
+  - "Continue with /flow:task" — understood, execute here
 
-The user can always override. Do not block.
+User can always override. Do not block.
 
 ## Step 5 — Execute
 
-Do the work directly in the current context.
-
-RULES:
-- NO AGENT TEAMS. NO PRD. Direct execution.
-- Exception: ONE Task agent is allowed for a single isolated subtask if it prevents context bloat.
-- Follow existing code patterns and conventions found in CLAUDE.md and the codebase.
+Do the work directly. NO AGENT TEAMS. NO PRD. Exception: ONE Task agent for isolated subtask if it prevents context bloat. Follow existing code patterns from CLAUDE.md and codebase.
 
 ## Step 6 — Verify (MANDATORY)
 
-RULE: NEVER SILENTLY SKIP VERIFICATION.
+NEVER SILENTLY SKIP.
 
-1. Check CLAUDE.md for project-specific verification commands (build, test, lint).
-2. If no CLAUDE.md commands: check `package.json` scripts, `Makefile`, `pyproject.toml`, or similar for standard commands.
-3. If verification commands are found: run them.
-4. If NO verification commands exist anywhere: print a warning and continue.
-   > ⚠ No verification commands found. Skipping automated verification.
-5. If verification fails: fix the issue and re-verify. Up to 2 fix cycles.
-6. If still failing after 2 cycles: report the failure clearly with the error output. Do not silently move on.
+1. Check CLAUDE.md for verification commands (build, test, lint)
+2. If none: check `package.json`, `Makefile`, `pyproject.toml` for standard commands
+3. If found: run them
+4. If nothing found anywhere: warn and continue
+5. If verification fails: fix and re-verify. Up to 2 fix cycles.
+6. Still failing after 2 cycles: report failure clearly with error output. Do not silently move on.
 
 ## Step 7 — Commit
 
-- Stage ONLY the files you changed (never `git add .` or `git add -A`)
-- Commit message format: `fix:` / `feat:` / `refactor:` / `chore:` followed by a concise description
+- Stage ONLY changed files (never `git add .` or `git add -A`)
+- Message format: `fix:` / `feat:` / `refactor:` / `chore:` + concise description
 - Do NOT push
 
 ## Step 8 — Update Docs
 
-IF `.planning/STATE.md` exists:
-- Append to the "What Was Built" section (or create it if missing):
-  ```
-  - /flow:task — [description] ([N] files, commit [short SHA])
-  ```
-
-RULES:
-- DO NOT update ROADMAP.md — tasks are not project milestones.
-- DO NOT update any PRD files in `.planning/prds/` — tasks are not part of the spec.
-- DO NOT create `.planning/` if it doesn't exist.
-
-**Session state:** Write `.claude/memory/session.md` (create `.claude/memory/` directory if needed):
+IF `.planning/STATE.md` exists, append to "What Was Built":
 ```
-# Session State
-**Date:** [today]
-**Developer:** [git config user.name]
-**Branch:** [current branch]
-**Working On:** /flow:task — [task description]
-**Status:** Task complete: [brief description]
-**Next:** [suggest next action]
-**Blockers:** None
+- /flow:task — [description] ([N] files, commit [short SHA])
 ```
 
-Quick lessons prompt via AskUserQuestion:
-- "Any lessons from this task worth capturing?"
-  - Option 1: "No, nothing new" — Skip lessons.
-  - Option 2: "Yes, let me describe it" — Capture to `tasks/lessons.md` as a one-liner: `- **[topic]** The rule`
+RULES: Do NOT update ROADMAP.md, PRDs, or create `.planning/` if missing.
 
-If `tasks/lessons.md` doesn't exist, skip the lessons prompt.
-If lessons.md already has 10 items, promote the most battle-tested to `CLAUDE.md ## Learned Rules` before adding the new one.
+**Session state:** Write `.claude/memory/session.md` (create dir if needed):
+`# Session State` with Date, Developer, Branch, Working On (`/flow:task — [desc]`), Status, Next, Blockers fields.
+
+Lessons prompt via AskUserQuestion: "Any lessons worth capturing?" — "No" / "Yes, let me describe it" → capture to `tasks/lessons.md` as one-liner. Skip if lessons.md doesn't exist. If at 10, promote most battle-tested to `CLAUDE.md ## Learned Rules` first.
 
 ## Step 9 — Summary
 
-Print a compact completion block:
-
 ```
 ✓ /flow:task complete
-  [description of what was done]
+  [description]
   Files: [N] changed | Commit: [short SHA]
   Verified: [pass/fail/skipped]
 
 Next:
-  → /flow:task [description] for another quick fix
+  → /flow:task [desc] for another quick fix
   → /flow:go to continue project milestones
   → /flow:done to wrap up the session
 ```
 
-**Linear comment (if applicable):** Check if the current branch name contains a Linear issue identifier pattern (e.g., `msig-45` in `feat/msig-45-rate-modeling`). If found:
-- Try `mcp__linear__list_issues` with a query matching the identifier
-- If Linear MCP is available AND an issue is found: post a progress comment via `mcp__linear__create_comment` with the task summary from the completion block above
-- If Linear MCP is not available or no matching issue is found: skip silently
+**Linear comment:** If branch name contains a Linear issue ID (e.g., `msig-45` in `feat/msig-45-rate-modeling`):
+- Try `mcp__linear__list_issues` matching the identifier
+- If Linear MCP available AND issue found: post progress comment via `mcp__linear__create_comment` with task summary
+- Otherwise: skip silently
 
-If no Linear identifier is found in the branch name: skip silently.
+No Linear ID in branch name: skip silently.

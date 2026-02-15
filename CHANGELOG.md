@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.1] - 2026-02-14
+
+### Changed
+- All 8 active skill files compressed in-place — 67.5KB → 46KB total (-31.7%)
+- `flow-spec.md` reduced 49% (17.4KB → 8.9KB) — condensed PRD template, coverage areas, codebase scan table
+- `flow-go.md` reduced 37% (11.2KB → 7.0KB) — merged wave failure blocks, compressed agent prompt template
+- `flow-done.md` reduced 26% (10.1KB → 7.5KB) — tightened STATE template, PR body, review polling
+- `flow-setup.md` reduced 25% (6.4KB → 4.9KB) — compressed templates and question descriptions
+- `flow-task.md` reduced 29% (6.1KB → 4.3KB) — compressed scope guard, verification, session template
+- `flow-status.md` reduced 28% (5.1KB → 3.6KB) — condensed routing decision tree, status block
+- `flow-intro.md` reduced 14% (4.7KB → 4.0KB) — removed GSD compat line, trimmed command descriptions
+- `flow-triage.md` reduced 16% (4.5KB → 3.8KB) — fewer example rows, general tightening
+- Skill boundary warning standardized to 1 line across all files
+- Plan mode + skill boundary merged into single `**Constraints:**` line in flow-spec and flow-go
+
+### Fixed
+- Deleted stray `nul` file (Windows artifact) from repo root
+
 ## [0.8.0] - 2026-02-14
 
 ### Changed
