@@ -76,7 +76,8 @@ For approved items:
 - If no active project exists (all "Complete" or none):
   - Set first new project status to "Pending — needs `/flow:spec`"
   - Update STATE.md to point to new project as current
-- Optionally create a Linear project (if MCP available)
+- If Linear MCP available: create project via `mcp__linear__create_project` (team: "Monument Square", state: "planned"). Print: "Linear: project '[name]' created"
+- If MCP unavailable: print project details for manual creation
 
 **Lessons:**
 - Append to `tasks/lessons.md` as one-liners: `- **[topic]** The rule`

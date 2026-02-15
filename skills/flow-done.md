@@ -152,6 +152,10 @@ Runs when 5.25 created a PR (or one already exists for this branch).
   - Move all "In Progress" issues to "In Review" via `mcp__linear__update_issue`
   - Print: "Linear: [N] issues → In Review (PR open)"
 - If no PR: issues stay In Progress (normal mid-project session end)
+- **If project complete** (all milestones done):
+  - Find project via `mcp__linear__list_projects`, match by name from PRD `**Linear Project:**` field
+  - Move project to Completed: `mcp__linear__update_project` with `state: "Completed"`
+  - Print: "Linear: project → Completed"
 - Post progress comment on any branch-linked Linear issue
 
 ### 6. Route Next Action
@@ -184,7 +188,7 @@ Session complete.
 - Committed: [SHA | nothing to commit]
 - PR: [created #N | skipped (milestones remain)]
 - Review: [N comments addressed | pending | skipped]
-- Linear: [N issues → In Review | skipped]
+- Linear: [N issues → In Review, project → Completed | N issues → In Review | skipped]
 
 Next: [routing from Step 6]
 ```
