@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.3] - 2026-02-15
+
+### Fixed
+- `/flow:spec` now writes `**Linear Project:**` field to PRD header — downstream skills (`flow:go`, `flow:done`) depend on it
+- `/flow:spec` now sets `projectMilestoneId` on every Linear issue — fixes milestone progress showing 0% despite issues existing
+- `/flow:spec` PRD template includes `**Linear Project:**` field (was missing, causing silent Linear skips)
+- `/flow:go` Step 6 now moves completed milestone issues to "Done" in Linear (were stuck at "In Progress" forever)
+- `/flow:done` Step 5.5 now handles interim milestone completion — moves completed milestone issues to "Done" before checking PR/project status
+
 ## [0.8.2] - 2026-02-14
 
 ### Fixed

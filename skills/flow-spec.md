@@ -94,6 +94,7 @@ Write to `.planning/prds/{slug}.md` (create dir if needed) with this structure:
 **Branch:** feat/{project-slug}
 **Created:** [date]
 **Assigned To:** [developer or "unassigned"]
+**Linear Project:** [Linear project name if linked, or blank]
 
 ## Overview
 [One paragraph summary]
@@ -161,10 +162,13 @@ After writing the PRD:
 4. **Linear Integration (optional):**
    - Check if Linear MCP tools are available (`mcp__linear__list_teams`)
    - If available: search for matching Linear project (`mcp__linear__list_projects`)
-     - Found: create one **Linear milestone** per implementation milestone, one **Linear issue** per user story/task (not per milestone)
-     - Not found: AskUserQuestion to pick project or skip
+     - Found: use it. Not found: AskUserQuestion to pick existing project or skip Linear
+   - Add `**Linear Project:** [project name]` to the PRD header (after `**Assigned To:**`)
+   - For each implementation milestone: create a **Linear milestone** (`mcp__linear__create_milestone`) under the project
+   - For each user story: create a **Linear issue** (`mcp__linear__create_issue`) with BOTH `projectId` AND `projectMilestoneId` set — assign to the milestone whose `**Acceptance:**` field references that story. Title: "US-N: [story name]"
+   - **Critical:** Every issue MUST have `projectMilestoneId` set. Issues without milestone assignment break downstream status tracking.
    - If MCP unavailable: skip silently
-   - Print: "[N] milestones + [M] issues created under project [name]"
+   - Print: "[N] milestones + [M] issues created under [project name]"
 
 5. Print handoff prompt in a fenced code block.
 

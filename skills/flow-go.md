@@ -137,6 +137,8 @@ Atomic commit for this milestone. Stage only files from this milestone's agents.
 
 **ROADMAP.md (ALWAYS):** Mark milestone as "Complete ([date])"
 
+**Linear milestone (ALWAYS):** If `**Linear Project:**` in PRD and Linear MCP available: find completed milestone in Linear via `mcp__linear__list_milestones`, list its issues, move non-Done issues to "Done" via `mcp__linear__update_issue`. Print: "Linear: [N] issues → Done ([milestone name])". If 0 issues: print "Linear: [milestone name] — no issues to update". Skip silently if no Linear Project or MCP unavailable.
+
 **STATE.md (LAST MILESTONE ONLY):** Update only if this was the LAST milestone (project complete): files created/modified count, commit SHA, milestone completion note. Keep "Active PRD" pointing to resolved path. Skip STATE.md for non-final milestones.
 
 ## Step 7 — Route Next Action (MANDATORY — FINAL STEP)
